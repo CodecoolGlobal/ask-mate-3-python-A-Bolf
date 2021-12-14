@@ -3,8 +3,6 @@
 
 {% block content %}
         <h1>List of all Questions:</h1><br>
-   {# <h3>{{ user_questions.1.title }}</h3><br>
-    <h3>{{ header }}</h3><br>#}
 
     <table>
             <tr>
@@ -20,26 +18,6 @@
            </tr>
     {% endfor %}
     </table>
-           {#{%  if row.0 == 'id' or row.0 == 'ID' %}
-               <tr>
-               {% for data in row %}
-                        <th> {{ data }} </th>
-               {% endfor %}
-               </tr>
-           {% else %}
-                <tr>
-                    <td> {{ row.0 }} </td>
-                    <td> <a href="/story/{{ row.0 }}"> {{ row.1 }} </a></td>
-                    <td> {{ row.2 }} </td>
-                    <td> {{ row.3 }} </td>
-                    <td> {{ row.4 }} </td>
-                    <td> {{ row.5 }} </td>
-                    <td> {{ row.6 }} </td>
-               </tr>
-           {%  endif %}
-       {% endfor %}
-        </table>#}
-
         <br>
 
         <hr>

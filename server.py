@@ -16,6 +16,20 @@ def route_list():
     return render_template('list.html', user_questions=user_questions, header=data_handler.DATA_HEADER_QUESTIONS)
 
 
+@app.route('/add-question',methods=["POST","GET"])
+def add_question():
+    if request.method=="POST":
+        id=request.form.get("id")
+        submission_time=request.form.get("submission_time")
+        view_number=request.form.get("view_number")
+        vote_number=request.form.get("vote_number")
+        title=request.form.get("title")
+        message=request.form.get("message")
+        image=request.form.get("image")
+        data_handler.write_question([id,submission_time,view_number,vote_number,title,message,image])
+        return redirect(url_for("route_list"))
+    return render_template("add_question.html",headers=data_handler.DATA_HEADER_QUESTIONS)
+
 if __name__ == '__main__':
     app.run(
         host='0.0.0.0',

@@ -1,0 +1,15 @@
+{% extends "base_template.html" %}
+{% block title %}Main Page Super Sprinter{% endblock %}
+{% block content %}
+<p style="font-size:40px">Add new story</p>
+<form action="" method="post">
+{% for header in headers %}
+    {% if header != 'id' %}
+    <label for="title">{{ header }}<br>
+    <input type="text" name={{ header }}><br>
+        </label>
+    {% endif %}
+   {% endfor %}
+    <input type="submit" value="Add Story!">
+</form>
+{% endblock %}
