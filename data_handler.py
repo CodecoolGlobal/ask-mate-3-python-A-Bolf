@@ -8,14 +8,21 @@ DATA_HEADER_ANSWERS = ['id', 'submission_time', 'vote_number', 'question_id', 'm
 
 
 
-def get_ordered_questions(the_file):
+def get_questions(the_file):
     with open(the_file, "r") as csvfile:
         csv_reader = csv.DictReader(csvfile, delimiter=',')
         rows_list = []
         for row in csv_reader:
             rows_list.append(row)
-        sorted_rows_list = sorted(rows_list, key=lambda x: x['submission_time'])
-    return sorted_rows_list
+    return rows_list
+
+def get_ordered_questions(the_file, order_by, direction):
+    all_questions = get_questions(the_file)
+    rev = False
+    if direction == 'desc':
+        rev = True
+    sorted_questions_list = sorted(all_questions, key=lambda x: x[order_by], reverse=rev)
+    return sorted_questions_list
 
 def write_question(user_question):
     questions = get_ordered_questions(DATA_PATH_QUESTIONS)

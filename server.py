@@ -11,9 +11,15 @@ def main_page():
 
 @app.route('/list')
 def route_list():
-    user_questions = data_handler.get_ordered_questions(data_handler.DATA_PATH_QUESTIONS)
+    order_by = request.args.get('order_by', 'submission_time')
+    order_direction = request.args.get('order_direction', 'asc')
+    user_questions = data_handler.get_ordered_questions(data_handler.DATA_PATH_QUESTIONS, order_by, order_direction)
 
     return render_template('list.html', user_questions=user_questions, header=data_handler.DATA_HEADER_QUESTIONS)
+
+@app.route('/list/<int:post_id>')
+def show_post(post_id):
+    return f'Post {post_id}'
 
 
 @app.route('/add-question',methods=["POST","GET"])
