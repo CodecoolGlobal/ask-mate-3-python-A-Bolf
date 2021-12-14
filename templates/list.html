@@ -14,7 +14,7 @@
            <tr>
            {% for key in header %}
                {% if key == "id" %}
-               <td><a href="/question/{{row[key]}}">{{ row[key] }}</a></td>
+               <td><a href="/question/{{row[key]}}?question_id={{row[key]}}">{{ row[key] }}</a></td>
                {% else %}
                <td>{{ row[key] }}</td>
                {% endif %}
