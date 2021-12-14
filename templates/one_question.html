@@ -1,0 +1,9 @@
+{% extends "base_template.html" %}
+{% block title %}Main Page Super Sprinter{% endblock %}
+
+{% block content %}
+        <h1 style=" text-align: center">{{one_question["title"]}}</h1>
+        <p>{{ one_question["message"] }}</p><br>
+        <a href="/list">Back to questions</a>
+        <hr>
+{% endblock %}
