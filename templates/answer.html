@@ -1,0 +1,16 @@
+{% extends "base_template.html" %}
+{% block title %}Main Page Super Sprinter{% endblock %}
+
+{% block content %}
+       <form method="post">
+            <label for="message">Answer
+                <input type="text" name="message">
+                </label>
+
+           <label for="image"> Image
+               <input type="text" name="image">
+           </label>
+                <input type="submit" value="answer question">
+
+       </form>
+{% endblock %}

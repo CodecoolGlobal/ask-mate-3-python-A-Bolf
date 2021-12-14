@@ -4,6 +4,15 @@
 {% block content %}
         <h1 style=" text-align: center">{{one_question["title"]}}</h1>
         <p>{{ one_question["message"] }}</p><br>
+    {% for item in answers %}
+    {% if item["id"] == question_id %}
+        <p>Answer:<br>{{ item["message"] }}</p>
+        <p>Image:<br>{{ item["image"] }}</p>
+    {% endif %}
+    {% endfor %}
+        <a href={{url_for("new_answer",question_id=question_id)}}>Answer question</a><br>
+
+
         <a href="/list">Back to questions</a>
         <hr>
 {% endblock %}

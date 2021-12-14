@@ -32,12 +32,23 @@ def add_question():
 
 @app.route('/question/<question_id>')
 def question_page(question_id):
+    answers = data_handler.get_ordered_questions(data_handler.DATA_PATH_ANSWERS)
     user_question = data_handler.get_ordered_questions(data_handler.DATA_PATH_QUESTIONS)
     one_question = {}
     for question in user_question:
         if question["id"] == question_id:
             one_question = question
-    return render_template('one_question.html', question_id=question_id, one_question=one_question)
+    return render_template('one_question.html', question_id=question_id, one_question=one_question,answers=answers)
+
+
+@app.route('/question/<question_id>/new-answer', methods= ["POST","GET"])
+def new_answer(question_id):
+
+    if request.method == "POST":
+        message = [request.form.get("message"),request.form.get("image")]
+        data_handler.write_answer(message, question_id)
+        return redirect(url_for("question_page",question_id=question_id))
+    return render_template('answer.html', question_id=question_id)
 
 
 if __name__ == '__main__':

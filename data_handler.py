@@ -49,3 +49,26 @@ def update_user_story(the_file, whole_list):
         for element in whole_list:
             file.write(",".join(element))
             file.write('\n')
+
+def write_answer(answer,question_id):
+    answers = get_ordered_questions(DATA_PATH_ANSWERS)
+    if not answers:
+        identifier = "1"
+    else:
+        last_id = int(answers[0]['id'])
+        identifier = last_id + 1
+    with open(DATA_PATH_ANSWERS, "w+") as csvfile:
+        csv_writer = csv.DictWriter(csvfile, fieldnames=DATA_HEADER_ANSWERS)
+        answer_dict = {
+            DATA_HEADER_ANSWERS[0]: identifier,
+            DATA_HEADER_ANSWERS[1]: "1493088154",
+            DATA_HEADER_ANSWERS[2]: "0",
+            DATA_HEADER_ANSWERS[3]: question_id,
+            DATA_HEADER_ANSWERS[4]: answer[0],
+            DATA_HEADER_ANSWERS[5]: answer[1]
+        }
+        answers.append(answer_dict)
+        csv_writer.writeheader()
+        for answer in answers:
+            csv_writer.writerow(answer)
+
