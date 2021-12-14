@@ -38,12 +38,16 @@ def add_question():
 
 @app.route('/question/<question_id>')
 def question_page(question_id):
-    user_question = data_handler.get_ordered_questions(data_handler.DATA_PATH_QUESTIONS)
+    user_question = data_handler.get_questions(data_handler.DATA_PATH_QUESTIONS)
     one_question = {}
     for question in user_question:
         if question["id"] == question_id:
             one_question = question
     return render_template('one_question.html', question_id=question_id, one_question=one_question)
+
+@app.route('/question/<question_id>/delete')
+def question_page_delete(question_id):
+    return redirect('/')
 
 
 if __name__ == '__main__':

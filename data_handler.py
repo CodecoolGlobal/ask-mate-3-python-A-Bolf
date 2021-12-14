@@ -18,6 +18,11 @@ def get_questions(the_file):
 
 def get_ordered_questions(the_file, order_by, direction):
     all_questions = get_questions(the_file)
+    for one_question in all_questions:
+        for key in one_question:
+            if key in ['view_number', 'vote_number']:
+                one_question[key] = int(one_question[key])
+
     rev = False
     if direction == 'desc':
         rev = True
