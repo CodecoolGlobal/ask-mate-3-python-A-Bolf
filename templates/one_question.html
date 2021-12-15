@@ -2,16 +2,19 @@
 {% block title %}Main Page Super Sprinter{% endblock %}
 
 {% block content %}
-        <h1 style=" text-align: center">{{one_question["title"]}}</h1>
+        <h2 style=" text-align: center">Question: {{one_question["title"]}}</h2>
         <p>{{ one_question["message"] }}</p><br>
+    <hr>
+    <h2>Answers:</h2>
+
     {% for item in answers %}
-    {% if item["id"] == question_id %}
+    {% if item["question_id"] == question_id %}
         <p>Answer:<br>{{ item["message"] }}</p>
         <p>Image:<br>{{ item["image"] }}</p>
     {% endif %}
     {% endfor %}
         <a href={{url_for("new_answer",question_id=question_id)}}>Answer question</a><br>
-
+        <a href="/question/{{ question_id }}/delete">Delete this question</a><br>
 
         <a href="/list">Back to questions</a>
         <hr>
