@@ -41,7 +41,6 @@ def add_question():
             if uploaded_file.filename != '':
                 uploaded_file.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(uploaded_file.filename)))
                 image = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(uploaded_file.filename))
-        submission_time = int(time.time())
         view_number = "0"
         vote_number = "0"
         title = request.form.get("title")
@@ -86,6 +85,7 @@ def question_page_delete(question_id):
     data_handler.delete_question(question_id)
     return redirect('/list')
 
+
 @app.route('/question/<question_id>/vote_up')
 def question_page_vote_up(question_id):
     all_questions = connection.get_all_entries(connection.DATA_PATH_QUESTIONS)
@@ -94,6 +94,7 @@ def question_page_vote_up(question_id):
             row["vote_number"] = int(row.get('vote_number', 0)) + 1
     connection.write_all_entries(connection.DATA_PATH_QUESTIONS, connection.DATA_HEADER_QUESTIONS, all_questions)
     return redirect('/list')
+
 
 @app.route('/question/<question_id>/vote_down')
 def question_page_vote_down(question_id):
@@ -104,30 +105,20 @@ def question_page_vote_down(question_id):
     connection.write_all_entries(connection.DATA_PATH_QUESTIONS, connection.DATA_HEADER_QUESTIONS, all_questions)
     return redirect('/list')
 
-@app.route('/question/<question_id>/edit', methods= ["POST","GET"])
+
+@app.route('/question/<question_id>/edit', methods=["POST", "GET"])
 def edit_question(question_id):
     all_questions = connection.get_all_entries(connection.DATA_PATH_QUESTIONS)
     for row in all_questions:
         if row["id"] == question_id:
-            user_question=row
+            user_question = row
     if request.method == 'POST':
         for row in all_questions:
             if row["id"] == question_id:
                 row["submission_time"] = int(time.time())
                 row["title"] = request.form.get("title")
                 row["message"] = request.form.get("message")
-
-                # updated_question = {
-                # "id" : all_questions[int(question_id)-1]["id"],
-                # "submission_time" : all_questions[int(question_id)-1]["submission_time"],
-                # "view_number" : all_questions[int(question_id)-1]["view_number"],
-                # "vote_number" : all_questions[int(question_id)-1]["vote_number"],
-                # "title" : request.form.get("title"),
-                # "message" : request.form.get("message"),
-                # "image" : all_questions[int(question_id)-1]["image"]}
-                # all_questions[int(question_id)-1] = updated_question
-                # data_handler.delete_question(question_id)
-        connection.write_all_entries(connection.DATA_PATH_QUESTIONS,connection.DATA_HEADER_QUESTIONS,all_questions)
+        connection.write_all_entries(connection.DATA_PATH_QUESTIONS, connection.DATA_HEADER_QUESTIONS, all_questions)
         return redirect('/')
     return render_template('edit_question.html', question_id=question_id, user_question=user_question)
 
