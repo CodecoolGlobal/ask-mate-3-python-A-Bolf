@@ -34,7 +34,7 @@ def write_question(user_question):
     if not questions:
         identifier = "1"
     else:
-        last_id = int(questions[0]['id'])
+        last_id = int(questions[-1]['id'])
         identifier = last_id + 1
     with open(DATA_PATH_QUESTIONS, "w+") as csvfile:
         csv_writer = csv.DictWriter(csvfile, fieldnames=DATA_HEADER_QUESTIONS)
@@ -67,7 +67,7 @@ def write_answer(answer,question_id):
     if not answers:
         identifier = "1"
     else:
-        last_id = int(answers[0]['id'])
+        last_id = int(answers[-1]['id'])
         identifier = last_id + 1
     with open(DATA_PATH_ANSWERS, "w+") as csvfile:
         csv_writer = csv.DictWriter(csvfile, fieldnames=DATA_HEADER_ANSWERS)

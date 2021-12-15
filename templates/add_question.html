@@ -2,14 +2,19 @@
 {% block title %}Main Page Super Sprinter{% endblock %}
 {% block content %}
 <p style="font-size:40px">Add new story</p>
-<form action="" method="post">
+<form enctype="multipart/form-data" action="" method="post">
 {% for header in headers %}
-    {% if header != 'id' %}
-    <label for="title">{{ header }}<br>
+    {% if header=='image' %}
+            <label for={{ header }}>
+  <input type="file" name="file" accept="image/png, image/jpeg">
+            </label>
+            {% endif %}
+    {% if header != 'id' and header!="image" %}
+    <label for={{ header }}>{{ header }}<br>
     <input type="text" name={{ header }}><br>
         </label>
     {% endif %}
    {% endfor %}
-    <input type="submit" value="Add Story!">
+    <br><input type="submit" value="Add Story!">
 </form>
 {% endblock %}
