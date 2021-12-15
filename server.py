@@ -1,3 +1,5 @@
+import time
+
 from flask import Flask, render_template, request, redirect, url_for
 
 import connection
@@ -64,24 +66,29 @@ def question_page_delete(question_id):
 
     return redirect('/list')
 
-@app.route('/question/<question_id>/edit')
+@app.route('/question/<question_id>/edit', methods= ["POST","GET"])
 def edit_question(question_id):
-    question_id = request.args.get('question_id')
-    int_id = int(question_id) - 1
-
     all_questions = connection.get_all_entries(connection.DATA_PATH_QUESTIONS)
-    chosen_question = all_questions[int_id]
     if request.method == 'POST':
-        id = request.form.get("id")
-        submission_time = request.form.get("submission_time")
-        view_number = request.form.get("view_number")
-        vote_number = request.form.get("vote_number")
-        title = request.form.get("title")
-        message = request.form.get("message")
-        image = request.form.get("image")
-        updated_question = [id,submission_time,view_number,vote_number,title,message,image]
+        for row in all_questions:
+            if row["id"] == question_id:
+                row["submission_time"] = int(time.time())
+                row["title"] = request.form.get("title")
+                row["message"] = request.form.get("message")
+
+                # updated_question = {
+                # "id" : all_questions[int(question_id)-1]["id"],
+                # "submission_time" : all_questions[int(question_id)-1]["submission_time"],
+                # "view_number" : all_questions[int(question_id)-1]["view_number"],
+                # "vote_number" : all_questions[int(question_id)-1]["vote_number"],
+                # "title" : request.form.get("title"),
+                # "message" : request.form.get("message"),
+                # "image" : all_questions[int(question_id)-1]["image"]}
+                # all_questions[int(question_id)-1] = updated_question
+                # data_handler.delete_question(question_id)
+        connection.write_all_entries(connection.DATA_PATH_QUESTIONS,connection.DATA_HEADER_QUESTIONS,all_questions)
         return redirect('/')
-    return render_template('edit_question.html', question_id=question_id, user_questions=user_questions,)
+    return render_template('edit_question.html', question_id=str(question_id), user_questions=all_questions[int(question_id)-1]["id"], headers=connection.DATA_HEADER_QUESTIONS)
 
 
 @app.route('/answer/<answer_id>/delete')

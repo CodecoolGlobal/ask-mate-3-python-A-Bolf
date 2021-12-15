@@ -15,6 +15,7 @@
     {% endif %}
     {% endfor %}
         <a href={{url_for("new_answer",question_id=question_id)}}>Answer question</a><br>
+        <a href={{url_for("edit_question",question_id=question_id)}}>Edit question</a><br>
         <a href="/question/{{ question_id }}/delete">Delete this question</a><br>
 
         <a href="/list">Back to questions</a>

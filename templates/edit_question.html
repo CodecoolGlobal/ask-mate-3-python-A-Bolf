@@ -3,14 +3,16 @@
 {% block content %}
 <p style="font-size:40px">Add new question</p>
 <form action="" method="post">
-{% for header in headers %}
-    {% if header not in ['id','submission_time'] %}
-    <label for="title">{{ header }}<br>
-    <input type="text" name={{ header }}><br>
+
+        <label for="title">"title"<br>
+    <input type="text" value={{ user_questions["title"] }} name= "title"><br>
         </label><br>
-    {% endif %}
-   {% endfor %}
-    <input type="submit" value="Post question!">
+
+        <label for="message">"message"<br>
+    <input type="text" value={{ user_questions["message"] }} name= "message"><br>
+        </label><br>
+
+    <input type="submit" value="Edit question!">
 </form><br>
     <hr>
 <a href="/">Back to Main Page</a>
