@@ -1,5 +1,5 @@
 {% extends "base_template.html" %}
-{% block title %}Main Page Super Sprinter{% endblock %}
+{% block title %}Add new question{% endblock %}
 {% block content %}
 <p style="font-size:40px">Add new story</p>
 <form enctype="multipart/form-data" action="" method="post">
@@ -12,9 +12,12 @@
     {% if header != 'id' and header!="image" %}
     <label for={{ header }}>{{ header }}<br>
     <input type="text" name={{ header }}><br>
-        </label>
+        </label><br>
     {% endif %}
    {% endfor %}
-    <br><input type="submit" value="Add Story!">
-</form>
+
+    <input type="submit" value="Post question!">
+</form><br>
+    <hr>
+<a href="/">Back to Main Page</a>
 {% endblock %}

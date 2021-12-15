@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from werkzeug.utils import secure_filename
 import os
 import time
+import connection
 import data_handler
 
 UPLOAD_FOLDER = './static'
@@ -19,7 +20,7 @@ def main_page():
 def route_list():
     order_by = request.args.get('order_by', 'submission_time')
     order_direction = request.args.get('order_direction', 'asc')
-    user_questions = data_handler.get_ordered_questions(data_handler.DATA_PATH_QUESTIONS, order_by, order_direction)
+    user_questions = data_handler.get_ordered_questions(order_by, order_direction)
 
     return render_template('list.html', user_questions=user_questions, header=data_handler.DATA_HEADER_QUESTIONS)
 
@@ -50,10 +51,10 @@ def add_question():
 
 @app.route('/question/<question_id>')
 def question_page(question_id):
-    answers = data_handler.get_questions(data_handler.DATA_PATH_ANSWERS)
-    user_question = data_handler.get_questions(data_handler.DATA_PATH_QUESTIONS)
+    answers = connection.get_all_entries(connection.DATA_PATH_ANSWERS)
+    user_questions = connection.get_all_entries(connection.DATA_PATH_QUESTIONS)
     one_question = {}
-    for question in user_question:
+    for question in user_questions:
         if question["id"] == question_id:
             one_question = question
     return render_template('one_question.html', question_id=question_id, one_question=one_question, answers=answers)
@@ -76,7 +77,17 @@ def new_answer(question_id):
 
 @app.route('/question/<question_id>/delete')
 def question_page_delete(question_id):
-    return redirect('/')
+    data_handler.delete_question(question_id)
+
+    return redirect('/list')
+
+
+@app.route('/answer/<answer_id>/delete')
+def answer_delete(answer_id):
+    question_id = data_handler.get_answer_question_id(answer_id)
+    data_handler.delete_answer(answer_id)
+
+    return redirect('/question/' + question_id)
 
 
 @app.route('/', methods=['POST'])

@@ -7,7 +7,7 @@
     <table>
             <tr>
            {% for key in header %}
-               <th>{{ key|capitalize }}</th>
+               <th style="color:Teal;">{{ key|capitalize }}</th>
            {% endfor %}
            </tr>
        {% for row in user_questions %}
@@ -37,12 +37,12 @@
 
         <br>
         <input type="radio" id="order_direction" name="order_direction" value="asc">
-        <label for="order_direction">Ascending</label><br>
+        <label style="color:Red;" for="order_direction">Ascending</label><br>
         <input type="radio" id="order_direction" name="order_direction" value="desc">
-        <label for="order_direction">Descending</label><br>
+        <label style="color:Red;" for="order_direction">Descending</label><br>
         <br>
 
-        <button type="submit">Apply</button>
+        <button style="color:SlateBlue;" type="submit">Apply</button>
         <br>
      </form>
 

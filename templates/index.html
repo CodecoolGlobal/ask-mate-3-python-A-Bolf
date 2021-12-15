@@ -2,10 +2,9 @@
 {% block title %}Main Page Super Sprinter{% endblock %}
 
 {% block content %}
-        <h1>Welcome to Ask Mate</h1>
-        <p>A crowdsourced Q&A site.</p>
-        <a href="/list">List all User Stories</a></p>
-        <a href="/story_add">Add new User Story</a></p>
-        <a href="{{ url_for('add_question')}}">Add question</a>
+        <h1 style="color:Orange;">Welcome to  Ask Mate</h1>
+        <p style="color:MediumSeaGreen;"> A crowdsourced Q&A site.</p><br>
+        <a style="color:Maroon;" href="/list">List all Questions</a></p>
+        <a style="color:Olive;" href="{{ url_for('add_question')}}">Add question</a>
         <hr>
 {% endblock %}
