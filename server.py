@@ -55,6 +55,10 @@ def add_question():
 def question_page(question_id):
     answers = connection.get_all_entries(connection.DATA_PATH_ANSWERS)
     user_questions = connection.get_all_entries(connection.DATA_PATH_QUESTIONS)
+    for row in user_questions:
+        if row["id"] == question_id:
+            row["view_number"] = int(row.get('view_number', 0)) + 1
+    connection.write_all_entries(connection.DATA_PATH_QUESTIONS, connection.DATA_HEADER_QUESTIONS, user_questions)
     one_question = {}
     for question in user_questions:
         if question["id"] == question_id:
@@ -80,7 +84,24 @@ def new_answer(question_id):
 @app.route('/question/<question_id>/delete')
 def question_page_delete(question_id):
     data_handler.delete_question(question_id)
+    return redirect('/list')
 
+@app.route('/question/<question_id>/vote_up')
+def question_page_vote_up(question_id):
+    all_questions = connection.get_all_entries(connection.DATA_PATH_QUESTIONS)
+    for row in all_questions:
+        if row["id"] == question_id:
+            row["vote_number"] = int(row.get('vote_number', 0)) + 1
+    connection.write_all_entries(connection.DATA_PATH_QUESTIONS, connection.DATA_HEADER_QUESTIONS, all_questions)
+    return redirect('/list')
+
+@app.route('/question/<question_id>/vote_down')
+def question_page_vote_down(question_id):
+    all_questions = connection.get_all_entries(connection.DATA_PATH_QUESTIONS)
+    for row in all_questions:
+        if row["id"] == question_id:
+            row["vote_number"] = int(row.get('vote_number', 0)) - 1
+    connection.write_all_entries(connection.DATA_PATH_QUESTIONS, connection.DATA_HEADER_QUESTIONS, all_questions)
     return redirect('/list')
 
 @app.route('/question/<question_id>/edit', methods= ["POST","GET"])

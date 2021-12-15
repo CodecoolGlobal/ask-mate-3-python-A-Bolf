@@ -1,11 +1,11 @@
 {% extends "base_template.html" %}
 {% block title %}Add new question{% endblock %}
 {% block content %}
-<p style="font-size:40px">Add new story</p>
+<p style="font-size:40px">Add new question</p>
 <form enctype="multipart/form-data" action="" method="post">
 {% for header in headers %}
     {% if header=='image' %}
-            <label for={{ header }}>
+            <label for= {{ header }}>
   <input type="file" name="file" accept="image/png, image/jpeg">
             </label>
             {% endif %}
