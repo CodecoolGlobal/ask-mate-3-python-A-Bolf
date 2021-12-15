@@ -38,8 +38,8 @@ def add_question():
 
 @app.route('/question/<question_id>')
 def question_page(question_id):
-    answers = data_handler.get_ordered_questions(data_handler.DATA_PATH_ANSWERS)
-    user_question = data_handler.get_ordered_questions(data_handler.DATA_PATH_QUESTIONS)
+    answers = data_handler.get_questions(data_handler.DATA_PATH_ANSWERS)
+    user_question = data_handler.get_questions(data_handler.DATA_PATH_QUESTIONS)
     one_question = {}
     for question in user_question:
         if question["id"] == question_id:

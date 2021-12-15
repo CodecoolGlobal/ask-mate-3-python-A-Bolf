@@ -25,7 +25,7 @@ def get_ordered_questions(the_file, order_by, direction):
     return sorted_questions_list
 
 def write_question(user_question):
-    questions = get_ordered_questions(DATA_PATH_QUESTIONS)
+    questions = get_questions(DATA_PATH_QUESTIONS)
     if not questions:
         identifier = "1"
     else:
@@ -58,7 +58,7 @@ def update_user_story(the_file, whole_list):
             file.write('\n')
 
 def write_answer(answer,question_id):
-    answers = get_ordered_questions(DATA_PATH_ANSWERS)
+    answers = get_questions(DATA_PATH_ANSWERS)
     if not answers:
         identifier = "1"
     else:
