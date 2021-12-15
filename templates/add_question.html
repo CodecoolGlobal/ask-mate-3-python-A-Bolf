@@ -5,13 +5,13 @@
 <form enctype="multipart/form-data" action="" method="post">
 {% for header in headers %}
     {% if header=='image' %}
-            <label for={{ header }}>
+            <label>
   <input type="file" name="file" accept="image/png, image/jpeg">
             </label>
             {% endif %}
-    {% if header != 'id' and header!="image" %}
-    <label for={{ header }}>{{ header }}<br>
-    <input type="text" name={{ header }}><br>
+    {% if header not in ["image","submission_time","id"] %}
+    <label>{{header}}<br>
+    <input type="text" name={{header}}><br>
         </label><br>
     {% endif %}
    {% endfor %}
