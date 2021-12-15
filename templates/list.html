@@ -20,8 +20,8 @@
                {% endif %}
 
            {% endfor %}
-                <td><a href="/question/{{ row["id"] }}/vote_up">Vote up!</a></td>
-                <td><a href="/question/{{ row["id"] }}/vote_down">Vote down!</a></td>
+               <td><a href="/question/{{ row["id"] }}/vote_up"><button>Vote up!</button></a></td>
+               <td><a href="/question/{{ row["id"] }}/vote_down"><button>Vote down!</button></a></td>
            </tr>
     {% endfor %}
     </table>

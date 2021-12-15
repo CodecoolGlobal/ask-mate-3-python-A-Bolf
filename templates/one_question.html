@@ -11,13 +11,13 @@
     {% if item["question_id"] == question_id %}
         <p>Answer:<br>{{ item["message"] }}<br>
         Image:<br>{{ item["image"] }}<br>
-            <a href="/answer/{{ item["id"] }}/delete"><button>Delete this answer </button></a></p><br>
+            <a href="/answer/{{ item["id"]}}/delete"><button>Delete this answer </button></a></p>
     {% endif %}
     {% endfor %}
-        <a href={{url_for("new_answer",question_id=question_id)}}><button>Answer question</button></a><br>
-        <a href={{url_for("edit_question",question_id=question_id)}}><button>Edit question</button></a><br>
-        <a href="/question/{{ question_id }}/delete"><button>Delete this question</button></a><br>
-        <br>
+<hr>
+        <a href={{url_for("new_answer",question_id=question_id)}}><button>Answer question</button></a>
+        <a href={{url_for("edit_question",question_id=question_id)}}><button>Edit question</button></a>
+        <a href="/question/{{ question_id }}/delete"><button>Delete this question</button></a>
         <a href="/list"><button>Back to questions</button></a>
         <hr>
 {% endblock %}
