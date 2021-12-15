@@ -4,7 +4,6 @@ id,submission_time,vote_number,question_id,message,image
 3,1493088154,0,3,ASDASD,images/image1.jpg
 3,1493088154,0,3,this is the amazing answer,
 4,1639516108,0,4,the new answer,
-5,1639516674,0,9,the neweeeeest answer,
 6,1639516829,0,3,"Another, answer",
 7,1639517254,0,12,edfgedhdt,
 8,1639517540,0,14,answer message,
@@ -12,3 +11,5 @@ id,submission_time,vote_number,question_id,message,image
 10,1639553607,0,9,dfgehrgjffhjfjfj,
 11,1639554115,0,14,another answer to this question,
 12,1639555286,0,15,regethth,
+13,1639557502,0,7,dqdw,f3wed
+14,1639558653,0,9,asd,dsa

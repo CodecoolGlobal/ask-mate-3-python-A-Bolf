@@ -57,6 +57,7 @@ def new_answer(question_id):
         return redirect(url_for("question_page",question_id=question_id))
     return render_template('answer.html', question_id=question_id)
 
+
 @app.route('/question/<question_id>/delete')
 def question_page_delete(question_id):
     data_handler.delete_question(question_id)
@@ -81,6 +82,14 @@ def edit_question(question_id):
         updated_question = [id,submission_time,view_number,vote_number,title,message,image]
         return redirect('/')
     return render_template('edit_question.html', question_id=question_id, user_questions=user_questions,)
+
+
+@app.route('/answer/<answer_id>/delete')
+def answer_delete(answer_id):
+    question_id = data_handler.get_answer_question_id(answer_id)
+    data_handler.delete_answer(answer_id)
+
+    return redirect('/question/' + question_id)
 
 
 if __name__ == '__main__':

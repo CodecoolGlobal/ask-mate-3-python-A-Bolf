@@ -9,8 +9,9 @@
 
     {% for item in answers %}
     {% if item["question_id"] == question_id %}
-        <p>Answer:<br>{{ item["message"] }}</p>
-        <p>Image:<br>{{ item["image"] }}</p>
+        <p>Answer:<br>{{ item["message"] }}<br>
+        Image:<br>{{ item["image"] }}<br>
+            <a href="/answer/{{ item["id"] }}/delete">Delete this answer </a></p><br>
     {% endif %}
     {% endfor %}
         <a href={{url_for("new_answer",question_id=question_id)}}>Answer question</a><br>
