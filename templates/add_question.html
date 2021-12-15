@@ -1,15 +1,21 @@
 {% extends "base_template.html" %}
 {% block title %}Add new question{% endblock %}
 {% block content %}
-<p style="font-size:40px">Add new question</p>
-<form action="" method="post">
+<p style="font-size:40px">Add new story</p>
+<form enctype="multipart/form-data" action="" method="post">
 {% for header in headers %}
-    {% if header not in ['id','submission_time'] %}
-    <label for="title">{{ header }}<br>
+    {% if header=='image' %}
+            <label for={{ header }}>
+  <input type="file" name="file" accept="image/png, image/jpeg">
+            </label>
+            {% endif %}
+    {% if header != 'id' and header!="image" %}
+    <label for={{ header }}>{{ header }}<br>
     <input type="text" name={{ header }}><br>
         </label><br>
     {% endif %}
    {% endfor %}
+
     <input type="submit" value="Post question!">
 </form><br>
     <hr>
