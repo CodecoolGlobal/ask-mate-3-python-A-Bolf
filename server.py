@@ -41,12 +41,12 @@ def add_question():
             if uploaded_file.filename != '':
                 uploaded_file.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(uploaded_file.filename)))
                 image = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(uploaded_file.filename))
-        submission_time = request.form.get("submission_time")
-        view_number = request.form.get("view_number")
-        vote_number = request.form.get("vote_number")
+        submission_time = int(time.time())
+        view_number = "0"
+        vote_number = "0"
         title = request.form.get("title")
         message = request.form.get("message")
-        data_handler.write_question([submission_time, view_number, vote_number, title, message, image])
+        data_handler.write_question(['x', 'x', view_number, vote_number, title, message, image])
         return redirect(url_for("route_list"))
     return render_template("add_question.html", headers=data_handler.DATA_HEADER_QUESTIONS)
 
