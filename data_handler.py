@@ -61,12 +61,31 @@ def write_answer(answer,question_id):
     answers.append(answer_dict)
     connection.write_all_entries(connection.DATA_PATH_ANSWERS, connection.DATA_HEADER_ANSWERS, answers)
 
+
 def delete_question(question_id):
     all_questions = connection.get_all_entries(connection.DATA_PATH_QUESTIONS)
     for question in all_questions:
         if question["id"] == question_id:
             all_questions.remove(question)
     connection.write_all_entries(connection.DATA_PATH_QUESTIONS, connection.DATA_HEADER_QUESTIONS, all_questions)
+
+
+def delete_answer(answer_id):
+    all_answers = connection.get_all_entries(connection.DATA_PATH_ANSWERS)
+    for answer in all_answers:
+        if answer["id"] == answer_id:
+            all_answers.remove(answer)
+    connection.write_all_entries(connection.DATA_PATH_ANSWERS, connection.DATA_HEADER_ANSWERS, all_answers)
+
+
+def get_answer_question_id(answer_id):
+    all_answers = connection.get_all_entries(connection.DATA_PATH_ANSWERS)
+    for answer in all_answers:
+        if answer["id"] == answer_id:
+            return answer['question_id']
+
+
+
 
 
 
