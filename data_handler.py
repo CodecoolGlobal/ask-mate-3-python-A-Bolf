@@ -1,28 +1,18 @@
 import csv
 import os
+import time
+import connection
 
-DATA_PATH_QUESTIONS = os.getenv('DATA_FILE_PATH') if 'DATA_FILE_PATH' in os.environ else 'sample_data/question.csv'
-DATA_PATH_ANSWERS = os.getenv('DATA_FILE_PATH') if 'DATA_FILE_PATH' in os.environ else 'sample_data/answer.csv'
 DATA_HEADER_QUESTIONS = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
 DATA_HEADER_ANSWERS = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
 
 
-
-def get_questions(the_file):
-    with open(the_file, "r") as csvfile:
-        csv_reader = csv.DictReader(csvfile, delimiter=',')
-        rows_list = []
-        for row in csv_reader:
-            rows_list.append(row)
-    return rows_list
-
-def get_ordered_questions(the_file, order_by, direction):
-    all_questions = get_questions(the_file)
+def get_ordered_questions(order_by, direction):
+    all_questions = connection.get_all_entries(connection.DATA_PATH_QUESTIONS)
     for one_question in all_questions:
         for key in one_question:
             if key in ['view_number', 'vote_number']:
                 one_question[key] = int(one_question[key])
-
     rev = False
     if direction == 'desc':
         rev = True
@@ -30,57 +20,53 @@ def get_ordered_questions(the_file, order_by, direction):
     return sorted_questions_list
 
 def write_question(user_question):
-    questions = get_questions(DATA_PATH_QUESTIONS)
+    questions = connection.get_all_entries(connection.DATA_PATH_QUESTIONS)
     if not questions:
         identifier = "1"
     else:
-        last_id = int(questions[0]['id'])
+        all_ids = [int(question['id']) for question in questions]
+        last_id = max(all_ids)
         identifier = last_id + 1
-    with open(DATA_PATH_QUESTIONS, "w+") as csvfile:
-        csv_writer = csv.DictWriter(csvfile, fieldnames=DATA_HEADER_QUESTIONS)
-        question = {
-            'id': identifier,
-            DATA_HEADER_QUESTIONS[1]: user_question[0],
-            DATA_HEADER_QUESTIONS[2]: user_question[1],
-            DATA_HEADER_QUESTIONS[3]: user_question[2],
-            DATA_HEADER_QUESTIONS[4]: user_question[3],
-            DATA_HEADER_QUESTIONS[5]: user_question[4],
-            DATA_HEADER_QUESTIONS[6]: user_question[5]
-        }
-        questions.append(question)
-        csv_writer.writeheader()
-        for question in questions:
-            csv_writer.writerow(question)
+    submission_time = int(time.time())
+    question = {
+        'id': identifier,
+        'submission_time': submission_time,
+        DATA_HEADER_QUESTIONS[2]: user_question[2],
+        DATA_HEADER_QUESTIONS[3]: user_question[3],
+        DATA_HEADER_QUESTIONS[4]: user_question[4],
+        DATA_HEADER_QUESTIONS[5]: user_question[5],
+        DATA_HEADER_QUESTIONS[6]: user_question[6]
+    }
+    questions.append(question)
+    connection.write_all_entries(connection.DATA_PATH_QUESTIONS, connection.DATA_HEADER_QUESTIONS, questions)
 
-def append_user_story(the_file, row_to_write):
-    with open(the_file, "a") as file:
-        file.write(row_to_write)
 
-def update_user_story(the_file, whole_list):
-    with open(the_file, "w") as file:
-        for element in whole_list:
-            file.write(",".join(element))
-            file.write('\n')
 
 def write_answer(answer,question_id):
-    answers = get_questions(DATA_PATH_ANSWERS)
+    answers = connection.get_all_entries(connection.DATA_PATH_ANSWERS)
     if not answers:
         identifier = "1"
     else:
-        last_id = int(answers[0]['id'])
+        all_ids = [int(answer['id']) for answer in answers]
+        last_id = max(all_ids)
         identifier = last_id + 1
-    with open(DATA_PATH_ANSWERS, "w+") as csvfile:
-        csv_writer = csv.DictWriter(csvfile, fieldnames=DATA_HEADER_ANSWERS)
-        answer_dict = {
-            DATA_HEADER_ANSWERS[0]: identifier,
-            DATA_HEADER_ANSWERS[1]: "1493088154",
-            DATA_HEADER_ANSWERS[2]: "0",
-            DATA_HEADER_ANSWERS[3]: question_id,
-            DATA_HEADER_ANSWERS[4]: answer[0],
-            DATA_HEADER_ANSWERS[5]: answer[1]
-        }
-        answers.append(answer_dict)
-        csv_writer.writeheader()
-        for answer in answers:
-            csv_writer.writerow(answer)
+    answer_dict = {
+        DATA_HEADER_ANSWERS[0]: identifier,
+        DATA_HEADER_ANSWERS[1]: int(time.time()),
+        DATA_HEADER_ANSWERS[2]: "0",
+        DATA_HEADER_ANSWERS[3]: question_id,
+        DATA_HEADER_ANSWERS[4]: answer[0],
+        DATA_HEADER_ANSWERS[5]: answer[1]
+    }
+    answers.append(answer_dict)
+    connection.write_all_entries(connection.DATA_PATH_ANSWERS, connection.DATA_HEADER_ANSWERS, answers)
+
+def delete_question(question_id):
+    all_questions = connection.get_all_entries(connection.DATA_PATH_QUESTIONS)
+    for question in all_questions:
+        if question["id"] == question_id:
+            all_questions.remove(question)
+    connection.write_all_entries(connection.DATA_PATH_QUESTIONS, connection.DATA_HEADER_QUESTIONS, all_questions)
+
+
 
