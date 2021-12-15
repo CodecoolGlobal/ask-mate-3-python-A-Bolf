@@ -86,6 +86,9 @@ def question_page_delete(question_id):
 @app.route('/question/<question_id>/edit', methods= ["POST","GET"])
 def edit_question(question_id):
     all_questions = connection.get_all_entries(connection.DATA_PATH_QUESTIONS)
+    for row in all_questions:
+        if row["id"] == question_id:
+            user_question=row
     if request.method == 'POST':
         for row in all_questions:
             if row["id"] == question_id:
@@ -105,7 +108,7 @@ def edit_question(question_id):
                 # data_handler.delete_question(question_id)
         connection.write_all_entries(connection.DATA_PATH_QUESTIONS,connection.DATA_HEADER_QUESTIONS,all_questions)
         return redirect('/')
-    return render_template('edit_question.html', question_id=str(question_id), user_questions=all_questions[int(question_id)-1]["id"], headers=connection.DATA_HEADER_QUESTIONS)
+    return render_template('edit_question.html', question_id=question_id, user_question=user_question)
 
 
 @app.route('/answer/<answer_id>/delete')

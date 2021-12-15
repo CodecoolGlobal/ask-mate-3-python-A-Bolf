@@ -5,11 +5,11 @@
 <form action="" method="post">
 
         <label for="title">"title"<br>
-    <input type="text" value={{ user_questions["title"] }} name= "title"><br>
+            <textarea id="title" name="title">{{user_question["title"]}}</textarea><br>
         </label><br>
 
         <label for="message">"message"<br>
-    <input type="text" value={{ user_questions["message"] }} name= "message"><br>
+            <textarea id="message" name="message">{{user_question["message"]}}</textarea><br>
         </label><br>
 
     <input type="submit" value="Edit question!">
