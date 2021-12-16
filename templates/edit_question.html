@@ -1,19 +1,19 @@
 {% extends "base_template.html" %}
 {% block title %}Add new question{% endblock %}
 {% block content %}
-<p style="font-size:40px">Add new question</p>
+<p style="font-size:40px">Edit this question</p>
 <form action="" method="post">
 
-        <label for="title">"title"<br>
-            <textarea id="title" name="title">{{user_question["title"]}}</textarea><br>
+        <label for="title" style="color: teal;font-size: 17px; font-family: sans-serif">TITLE<br>
+            <textarea id="title" name="title" rows="3" cols="60">{{user_question["title"]}}</textarea><br>
         </label><br>
 
-        <label for="message">"message"<br>
-            <textarea id="message" name="message">{{user_question["message"]}}</textarea><br>
+        <label for="message" style="color: teal;font-size: 17px; font-family: sans-serif">MESSAGE<br>
+            <textarea id="message" name="message" rows="9" cols="60">{{user_question["message"]}}</textarea><br>
         </label><br>
 
     <input type="submit" value="Edit question!">
 </form><br>
     <hr>
-<a href="/">Back to Main Page</a>
+<a href="/"><button>Back to Main Page</button></a>
 {% endblock %}

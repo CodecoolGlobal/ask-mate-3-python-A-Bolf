@@ -1,18 +1,18 @@
 {% extends "base_template.html" %}
-{% block title %}Main Page Super Sprinter{% endblock %}
+{% block title %}Add new answer{% endblock %}
 
 {% block content %}
        <form enctype="multipart/form-data" method="post">
-            <label for="message">Answer
-                <input type="text" name="message">
-                </label>
-
-           <label for="image"> Image
+            <label for="message">Answer <br>
+                <textarea id="title" name="message" rows="3" cols="60">Write your answer here</textarea>
+                </label><br>
+           <label for="image"> Image<br>
                <input type="file" name="file" accept="image/png, image/jpeg">
-           </label>
-                <input type="submit" value="answer question">
-
+           </label><br><br><br>
+                <input type="submit" value="Post your answer">
        </form>
         <br>
-        <a href="/list">Back to questions</a>
+        <hr>
+        <br>
+        <a href="/list"><button>Back to questions</button></a>
 {% endblock %}
