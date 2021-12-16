@@ -11,7 +11,7 @@
   <input type="file" name="file" accept="image/png, image/jpeg">
             </label>
             {% endif %}
-    {% if header not in ["image","submission_time","id"] %}
+    {% if header in ["title","message"] %}
     <label>{{header}}<br>
     <input type="text" name={{header}}><br>
         </label><br>

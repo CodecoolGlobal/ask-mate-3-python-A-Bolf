@@ -13,6 +13,11 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
+@app.route("/static/<path:path>")
+def static_dir(path):
+    return send_from_directory("static", path)
+
+
 @app.route("/")
 def main_page():
     return redirect('/list')
@@ -116,17 +121,6 @@ def edit_question(question_id):
                 row["submission_time"] = int(time.time())
                 row["title"] = request.form.get("title")
                 row["message"] = request.form.get("message")
-
-                # updated_question = {
-                # "id" : all_questions[int(question_id)-1]["id"],
-                # "submission_time" : all_questions[int(question_id)-1]["submission_time"],
-                # "view_number" : all_questions[int(question_id)-1]["view_number"],
-                # "vote_number" : all_questions[int(question_id)-1]["vote_number"],
-                # "title" : request.form.get("title"),
-                # "message" : request.form.get("message"),
-                # "image" : all_questions[int(question_id)-1]["image"]}
-                # all_questions[int(question_id)-1] = updated_question
-                # data_handler.delete_question(question_id)
         connection.write_all_entries(connection.DATA_PATH_QUESTIONS,connection.DATA_HEADER_QUESTIONS,all_questions)
         return redirect('/')
     return render_template('edit_question.html', question_id=question_id, user_question=user_question)
