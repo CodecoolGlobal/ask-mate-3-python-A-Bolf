@@ -1,8 +1,10 @@
 id,submission_time,view_number,vote_number,title,message,image
 1,1639572602,43,3,How to make lists in Python?,I am totally new to this,
-2,1639649293,1423,58,Why do cats purr?,"Thay make such a strange noise. How do the do that? Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam...",
-3,1639513777,49,38,How long do cats live?,"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation",
-4,1639515023,60,24,Why do cats sleep so much? ,"Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+2,1639649293,1430,61,Why do cats purr?,"Thay make such a strange noise. How do the do that? Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam...",
+3,1639513777,51,38,How long do cats live?,"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation",
+4,1639515023,61,24,Why do cats sleep so much? ,"Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
 5,1639517330,7782,779,What does catnip do to cats?,I just don't understand,
-6,1639645561,23,0,imagetest,testing image upload,./static/doge.jpg
+6,1639645561,24,1,imagetest,testing image upload,./static/doge.jpg
 7,1639648346,29,3,Who is Doge?,What is there to know about this dog?,
+8,1639656690,1,0,"test question
+",test message,./static/hangman.png

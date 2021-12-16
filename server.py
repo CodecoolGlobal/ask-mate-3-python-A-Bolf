@@ -11,7 +11,8 @@ UPLOAD_FOLDER = './static'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
+ORDER_BY = 'submission_time'
+ORDER_DIRECTION = 'asc'
 
 @app.route("/static/<path:path>")
 def static_dir(path):
@@ -25,9 +26,11 @@ def main_page():
 
 @app.route('/list')
 def route_list():
-    order_by = request.args.get('order_by', 'submission_time')
-    order_direction = request.args.get('order_direction', 'asc')
-    user_questions = data_handler.get_ordered_questions(order_by, order_direction)
+    global ORDER_BY
+    ORDER_BY = request.args.get('order_by', ORDER_BY)
+    global ORDER_DIRECTION
+    ORDER_DIRECTION = request.args.get('order_direction', ORDER_DIRECTION)
+    user_questions = data_handler.get_ordered_questions(ORDER_BY, ORDER_DIRECTION)
 
     return render_template('list.html', user_questions=user_questions, header=data_handler.DATA_HEADER_QUESTIONS)
 
