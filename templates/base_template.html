@@ -4,6 +4,33 @@
     <meta charset="UTF-8">
     <title>{% block title %}{% endblock %}</title>
     <style>
+        button{
+-moz-border-radius: 5px;
+-webkit-border-radius: 5px;
+border-radius: 5px;
+-moz-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
+-webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
+box-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
+background: teal
+background:  -moz-linear-gradient(19% 75% 90deg, teal,
+#0fc9c9);
+background:  -webkit-gradient(linear, 0% 0%, 0% 100%,
+from(#0fc9c9), to(teal));
+color: #fff;
+float: left;
+font-family:  arial,helvetica,sans-serif;
+font-size: 15px;
+font-weight: bold;
+padding: 4px 10px;
+text-decoration: none;
+}
+        .button:hover{
+background: #025b5b;
+background: -moz-linear-gradient(19% 75% 90deg, #025b5b,
+#098c8c);
+background: -webkit-gradient(linear, 0% 0%, 0% 100%,
+from(#098c8c), to(#025b5b));
+}
         th{
             font-size: 17px;
         }
@@ -11,9 +38,6 @@
             font-size: 17px;
             font-weight: bold;
             font-family: sans-serif;
-        }
-        button{
-            margin: 7px;
         }
         table {
             table-layout: fixed;
