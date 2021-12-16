@@ -11,9 +11,11 @@
     {% for item in answers %}
     {% if item["question_id"] == question_id %}
         <p>Answer:<br>{{ item["message"] }}<br>
+            {%if item['image']%}}
             <a href={{url_for('static',filename = item['image'][9::])}}>
             <image src={{url_for('static',filename = item['image'][9::])}} height="200">
             </a>
+            {%endif%}
             <a href="/answer/{{ item["id"]}}/delete"><button>Delete this answer </button></a></p>
     {% endif %}
     {% endfor %}
