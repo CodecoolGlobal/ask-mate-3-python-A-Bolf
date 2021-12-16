@@ -13,9 +13,20 @@
        {% for row in user_questions %}
            <tr>
            {% for key in header %}
+               {%if key=="image" and not row['image']%}
+               <td>
+                   <p>No Image</p>
+               </td>
+               {%endif%}
+               {% if key == "image" and row['image']%}
+               <td><a href={{url_for('static',filename = row[key][9::])}}>
+            <image src={{url_for('static',filename=row[key][9::])}} height="50">
+            </a>
+               </td>
+               {%endif%}
                {% if key == "id" %}
                <td><a href="/question/{{row[key]}}?question_id={{row[key]}}">{{ row[key] }}</a></td>
-               {% else %}
+               {% elif key!="image" %}
                <td>{{ row[key] }}</td>
                {% endif %}
 

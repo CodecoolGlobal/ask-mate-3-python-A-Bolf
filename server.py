@@ -13,6 +13,11 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
+@app.route("/static/<path:path>")
+def static_dir(path):
+    return send_from_directory("static", path)
+
+
 @app.route("/")
 def main_page():
     return render_template('index.html')
