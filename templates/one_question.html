@@ -8,6 +8,7 @@
     <hr>
     <h2>Answers:</h2>
 
+
 <table>
             <tr>
                <th style="color:Teal; height:50px;">Answer</th>
@@ -21,9 +22,11 @@
             {% if item["question_id"] == question_id %}
            <tr>
                 <td>{{ item["message"] }} </td>
-               <td><a href={{url_for('static',filename = item['image'][9::])}}>
-                <image src={{url_for('static',filename = item['image'][9::])}} height="100">
-                </a></td>
+               <td>{%if item['image']%}
+            <a href={{url_for('static',filename = item['image'][9::])}}>
+            <image src={{url_for('static',filename = item['image'][9::])}} height="200">
+            </a>
+            {%endif%}</td>
                <td>{{ item["vote_number"] }}</td>
                <td><a href="/answer/{{ item["id"] }}/vote_up"><button>Vote up!</button></a></td>
                <td><a href="/answer/{{ item["id"] }}/vote_down"><button>Vote down!</button></a></td>
