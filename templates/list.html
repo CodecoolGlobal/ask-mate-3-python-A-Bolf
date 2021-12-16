@@ -2,12 +2,12 @@
 {% block title %}List of Stories{% endblock %}
 
 {% block content %}
-        <h1>List of all Questions:</h1><br>
+        <h2>List of all Questions:</h2><br>
 
     <table>
             <tr>
            {% for key in header %}
-               <th style="color:Teal;">{{ key|capitalize }}</th>
+               <th style="color:Teal; height:50px;">{{ key|upper }}</th>
            {% endfor %}
            </tr>
        {% for row in user_questions %}
@@ -37,29 +37,28 @@
     {% endfor %}
     </table>
     <br>
-    <hr>
+
     <br>
 
      <form action="/list" method="get">
         <label for="order_by">Order by:</label>
         <select id="order_by" name="order_by" value={{ header.0 }}>
           {% for element in header[1:-1] %}
-            <option value={{ element }}>"{{ element }}"</option>
+            <option value={{ element }}>{{ element|capitalize }}</option>
           {% endfor %}
-        </select><br>
+        </select>
 
-        <br>
+
         <input type="radio" id="order_direction" name="order_direction" value="asc">
-        <label style="color:Red;" for="order_direction">Ascending</label><br>
+        <label for="order_direction">Ascending</label>
         <input type="radio" id="order_direction" name="order_direction" value="desc">
-        <label style="color:Red;" for="order_direction">Descending</label><br>
-        <br>
-
-        <button style="color:SlateBlue;" type="submit">Apply</button>
+        <label for="order_direction">Descending</label>
+        <br><br>
+        <button type="submit">Apply</button>
         <br>
      </form>
 
 
         <hr>
-     <a href="/">Back to Main Page</a>
+    <a href="{{ url_for('add_question')}}"><button style="font-size:17px">Add new question</button></a><br>
 {% endblock %}

@@ -20,7 +20,7 @@ def static_dir(path):
 
 @app.route("/")
 def main_page():
-    return render_template('index.html')
+    return redirect('/list')
 
 
 @app.route('/list')
