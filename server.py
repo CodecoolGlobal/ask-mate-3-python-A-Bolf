@@ -15,7 +15,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route("/")
 def main_page():
-    return render_template('index.html')
+    return redirect('/list')
 
 
 @app.route('/list')
