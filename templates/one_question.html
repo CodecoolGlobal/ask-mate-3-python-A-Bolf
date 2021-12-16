@@ -9,15 +9,18 @@
 
     {% for item in answers %}
     {% if item["question_id"] == question_id %}
-        <p>Answer:<br>{{ item["message"] }}<br>
-        Image:<br>{{ item["image"] }}<br>
-            <a href="/answer/{{ item["id"]}}/delete"><button>Delete this answer </button></a></p>
+        <p><strong>Answer:</strong><br>{{ item["message"] }}
+        <strong>Image:</strong><br>{{ item["image"] }}<br>
+            <strong>Vote number:</strong> {{ item["vote_number"] }}
+        <a href="/answer/{{ item["id"] }}/vote_up"><button>Vote up!</button></a>
+        <a href="/answer/{{ item["id"] }}/vote_down"><button>Vote down!</button></a><br>
+        <a href="/answer/{{ item["id"]}}/delete"><button>Delete this answer </button></a></p>
     {% endif %}
     {% endfor %}
 <hr>
-        <a href={{url_for("new_answer",question_id=question_id)}}><button>Answer question</button></a>
+        <a href={{url_for("new_answer",question_id=question_id)}}><button>Add new answer</button></a>
         <a href={{url_for("edit_question",question_id=question_id)}}><button>Edit question</button></a>
-        <a href="/question/{{ question_id }}/delete"><button>Delete this question</button></a>
+        <a href="/question/{{ question_id }}/delete"><button>Delete question</button></a><br><br>
         <a href="/list"><button>Back to questions</button></a>
         <hr>
 {% endblock %}

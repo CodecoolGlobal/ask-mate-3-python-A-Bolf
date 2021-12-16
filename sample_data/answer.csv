@@ -2,7 +2,7 @@ id,submission_time,vote_number,question_id,message,image
 2,1493088154,35,1,Look it up in the Python docs,
 1,1493398154,4,1,You need to use brackets: my_list = [],
 4,1639516108,0,4,"In terms of development, the first year of a cat’s life is equal to the first 15 years of a human life.",
-7,1639517254,0,2,Cats can rotate their ears 180 degrees.,
+7,1639517254,4,2,Cats can rotate their ears 180 degrees.,
 8,1639517540,0,4,The hearing of the average cat is at least five times keener than that of a human adult,
 9,1639517671,0,2,"In the largest cat breed, the average male weighs approximately 20 pounds.",
 10,1639553607,0,3,"Some believe that if you dream about a white cat, good luck will follow.",

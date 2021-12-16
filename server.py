@@ -139,6 +139,26 @@ def answer_delete(answer_id):
 
     return redirect('/question/' + question_id)
 
+@app.route('/answer/<answer_id>/vote_up')
+def answer_page_vote_up(answer_id):
+    all_answers = connection.get_all_entries(connection.DATA_PATH_ANSWERS)
+    for row in all_answers:
+        if row["id"] == answer_id:
+            row["vote_number"] = int(row.get('vote_number', 0)) + 1
+    connection.write_all_entries(connection.DATA_PATH_ANSWERS, connection.DATA_HEADER_ANSWERS, all_answers)
+    question_id = data_handler.get_answer_question_id(answer_id)
+    return redirect('/question/' + question_id)
+
+@app.route('/answer/<answer_id>/vote_down')
+def answer_page_vote_down(answer_id):
+    all_answers = connection.get_all_entries(connection.DATA_PATH_ANSWERS)
+    for row in all_answers:
+        if row["id"] == answer_id:
+            row["vote_number"] = int(row.get('vote_number', 0)) - 1
+    connection.write_all_entries(connection.DATA_PATH_ANSWERS, connection.DATA_HEADER_ANSWERS, all_answers)
+    question_id = data_handler.get_answer_question_id(answer_id)
+    return redirect('/question/' + question_id)
+
 
 @app.route('/', methods=['POST'])
 def upload_file(redirect_url):
