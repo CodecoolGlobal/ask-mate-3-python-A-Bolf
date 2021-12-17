@@ -24,7 +24,7 @@
                 <td>{{ item["message"] }} </td>
                <td>{%if item['image']%}
             <a href={{url_for('static',filename = item['image'][9::])}}>
-            <image src={{url_for('static',filename = item['image'][9::])}} height="200">
+            <image src={{url_for('static',filename = item['image'][9::])}} height="80" width="80">
             </a>
             {%endif%}</td>
                <td>{{ item["vote_number"] }}</td>
