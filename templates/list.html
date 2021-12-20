@@ -7,8 +7,10 @@
     <table>
             <tr>
            {% for key in header %}
-               <th style="color:Teal; height:50px;">{{ key|upper }}</th>
+                <th><a href={{ url_for('route_list_order', order_by=key) }} >{{ key }}</a></th>
+
            {% endfor %}
+
            </tr>
        {% for row in user_questions %}
            <tr>
@@ -25,40 +27,18 @@
                </td>
                {%endif%}
                {% if key == "id" %}
-               <td><a href="/question/{{row[key]}}?question_id={{row[key]}}">{{ row[key] }}</a></td>
+               <td><a href="/question/{{row[key]}}?question_id={{row[key]}}"><strong>{{ row[key] }}</strong></a></td>
                {% elif key!="image" %}
                <td>{{ row[key] }}</td>
                {% endif %}
 
            {% endfor %}
-               <td><a href="/question/{{ row["id"] }}/vote_up"><button>Vote up!</button></a></td>
-               <td><a href="/question/{{ row["id"] }}/vote_down"><button>Vote down!</button></a></td>
+               <td><a href="/question/{{ row["id"] }}/vote/up"><button>Vote up!</button></a></td>
+               <td><a href="/question/{{ row["id"] }}/vote/down"><button>Vote down!</button></a></td>
            </tr>
     {% endfor %}
     </table>
-    <br>
+    <br><br>
 
-    <br>
-
-     <form action="/list" method="get">
-        <label for="order_by">Order by:</label>
-        <select id="order_by" name="order_by" value={{ header.0 }}>
-          {% for element in header[1:-1] %}
-            <option value={{ element }}>{{ element|capitalize }}</option>
-          {% endfor %}
-        </select>
-
-
-        <input style="color: teal" type="radio" id="order_direction" name="order_direction" value="asc">
-        <label for="order_direction">Ascending</label>
-        <input style="color: teal" type="radio" id="order_direction" name="order_direction" value="desc">
-        <label for="order_direction">Descending</label>
-        <br><br>
-        <button  type="submit">Apply</button>
-        <br>
-     </form>
-
-
-        <hr style="margin-top:25px">
     <a href="{{ url_for('add_question')}}"><button style="font-size:17px">Add new question</button></a><br>
 {% endblock %}

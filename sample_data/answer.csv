@@ -1,22 +1,20 @@
 id,submission_time,vote_number,question_id,message,image
 2,1493088154,35,1,Look it up in the Python docs,
 4,1639516108,0,4,"In terms of development, the first year of a cat’s life is equal to the first 15 years of a human life.",
-7,1639517254,8,2,Cats can rotate their ears 180 degrees.,
+7,1639517254,5,2,Cats can rotate their ears 180 degrees.,
 8,1639517540,0,4,The hearing of the average cat is at least five times keener than that of a human adult,
-9,1639517671,1,2,"In the largest cat breed, the average male weighs approximately 20 pounds.",
+9,1639517671,0,2,"In the largest cat breed, the average male weighs approximately 20 pounds.",
 10,1639553607,4,3,"Some believe that if you dream about a white cat, good luck will follow.",
 11,1639554115,0,5,Domestic cats spend about 70 percent of the day sleeping. And 15 percent of the day grooming.,
 12,1639555286,0,5,A cat cannot see directly under its nose.,
-15,1639575389,3,2,Most cats have no eyelashes.,
+15,1639575389,4,2,Most cats have no eyelashes.,
 16,1639608889,0,1,"Python is very useful, you just have to learn it.",
-17,1639644115,3,2,Because they love us.,
-18,1639645686,3,6,works,./static/dogeanswer.jpeg
-19,1639648386,6,7,The dog is a famous meme,
-20,1639648539,-5,7,It is just a dog.,
-21,1639648551,7,7,He is a legend.,
+17,1639644115,13,2,Because they love us.,
+19,1639648386,6,6,The dog is a famous meme,
+20,1639648539,-5,6,It is just a dog.,
+21,1639648551,7,6,He is a legend.,
 22,1639648623,5,1,Lists in Python can be created by just placing the sequence inside the square brackets,
-23,1639684888,5,7,very famous. much wow ,./static/doge.jpg
-24,1639696717,69,5,It gets your cat high,./static/cade.jpeg
+23,1639684888,5,6,very famous. much wow ,./static/doge.jpg
 25,1639696923,0,1,You need to use brackets: my_list = [] ,./static/listanswer.png
-26,1639696980,69,8,It gets your cat very high,./static/cade.jpeg
-27,1639733743,1,9,he's the richest dog in the world.,./static/dogeanswer.jpeg
+26,1639696980,69,5,It gets your cat very high,./static/cade.jpeg
+27,1639733743,2,6,he's the richest dog in the world.,./static/dogeanswer.jpeg

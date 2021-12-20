@@ -11,7 +11,7 @@ def get_ordered_questions(order_by, direction):
     all_questions = connection.get_all_entries(connection.DATA_PATH_QUESTIONS)
     for one_question in all_questions:
         for key in one_question:
-            if key in ['view_number', 'vote_number']:
+            if key in ['id', 'view_number', 'vote_number']:
                 one_question[key] = int(one_question[key])
     rev = False
     if direction == 'desc':

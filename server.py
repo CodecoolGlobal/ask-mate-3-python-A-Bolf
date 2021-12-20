@@ -1,5 +1,3 @@
-import time
-
 from flask import Flask, render_template, request, redirect, url_for
 from werkzeug.utils import secure_filename
 import os
@@ -14,6 +12,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ORDER_BY = 'submission_time'
 ORDER_DIRECTION = 'asc'
 
+
 @app.route("/static/<path:path>")
 def static_dir(path):
     return send_from_directory("static", path)
@@ -26,18 +25,23 @@ def main_page():
 
 @app.route('/list')
 def route_list():
-    global ORDER_BY
-    ORDER_BY = request.args.get('order_by', ORDER_BY)
-    global ORDER_DIRECTION
-    ORDER_DIRECTION = request.args.get('order_direction', ORDER_DIRECTION)
     user_questions = data_handler.get_ordered_questions(ORDER_BY, ORDER_DIRECTION)
-
     return render_template('list.html', user_questions=user_questions, header=data_handler.DATA_HEADER_QUESTIONS)
 
 
-@app.route('/list/<int:post_id>')
-def show_post(post_id):
-    return f'Post {post_id}'
+@app.route('/list/<order_by>')
+def route_list_order(order_by):
+    global ORDER_BY
+    global ORDER_DIRECTION
+    if order_by == ORDER_BY:
+        if ORDER_DIRECTION == 'asc':
+            ORDER_DIRECTION = 'desc'
+        else:
+            ORDER_DIRECTION = 'asc'
+    else:
+        ORDER_BY = order_by
+    user_questions = data_handler.get_ordered_questions(ORDER_BY, ORDER_DIRECTION)
+    return render_template('list.html', user_questions=user_questions, header=data_handler.DATA_HEADER_QUESTIONS)
 
 
 @app.route('/add-question', methods=["POST", "GET"])
@@ -94,23 +98,19 @@ def question_page_delete(question_id):
     data_handler.delete_question(question_id)
     return redirect('/list')
 
-@app.route('/question/<question_id>/vote_up')
-def question_page_vote_up(question_id):
+
+@app.route('/question/<question_id>/vote/<up_or_down>')
+def question_page_vote(question_id, up_or_down):
     all_questions = connection.get_all_entries(connection.DATA_PATH_QUESTIONS)
     for row in all_questions:
         if row["id"] == question_id:
-            row["vote_number"] = int(row.get('vote_number', 0)) + 1
+            if up_or_down == 'up':
+                row["vote_number"] = int(row.get('vote_number', 0)) + 1
+            elif up_or_down == 'down':
+                row["vote_number"] = int(row.get('vote_number', 0)) - 1
     connection.write_all_entries(connection.DATA_PATH_QUESTIONS, connection.DATA_HEADER_QUESTIONS, all_questions)
     return redirect('/list')
 
-@app.route('/question/<question_id>/vote_down')
-def question_page_vote_down(question_id):
-    all_questions = connection.get_all_entries(connection.DATA_PATH_QUESTIONS)
-    for row in all_questions:
-        if row["id"] == question_id:
-            row["vote_number"] = int(row.get('vote_number', 0)) - 1
-    connection.write_all_entries(connection.DATA_PATH_QUESTIONS, connection.DATA_HEADER_QUESTIONS, all_questions)
-    return redirect('/list')
 
 @app.route('/question/<question_id>/edit', methods= ["POST","GET"])
 def edit_question(question_id):
@@ -133,25 +133,18 @@ def edit_question(question_id):
 def answer_delete(answer_id):
     question_id = data_handler.get_answer_question_id(answer_id)
     data_handler.delete_answer(answer_id)
-
     return redirect('/question/' + question_id)
 
-@app.route('/answer/<answer_id>/vote_up')
-def answer_page_vote_up(answer_id):
+
+@app.route('/answer/<answer_id>/vote/<up_or_down>')
+def answer_page_vote(answer_id, up_or_down):
     all_answers = connection.get_all_entries(connection.DATA_PATH_ANSWERS)
     for row in all_answers:
         if row["id"] == answer_id:
-            row["vote_number"] = int(row.get('vote_number', 0)) + 1
-    connection.write_all_entries(connection.DATA_PATH_ANSWERS, connection.DATA_HEADER_ANSWERS, all_answers)
-    question_id = data_handler.get_answer_question_id(answer_id)
-    return redirect('/question/' + question_id)
-
-@app.route('/answer/<answer_id>/vote_down')
-def answer_page_vote_down(answer_id):
-    all_answers = connection.get_all_entries(connection.DATA_PATH_ANSWERS)
-    for row in all_answers:
-        if row["id"] == answer_id:
-            row["vote_number"] = int(row.get('vote_number', 0)) - 1
+            if up_or_down == 'up':
+                row["vote_number"] = int(row.get('vote_number', 0)) + 1
+            elif up_or_down == 'down':
+                row["vote_number"] = int(row.get('vote_number', 0)) - 1
     connection.write_all_entries(connection.DATA_PATH_ANSWERS, connection.DATA_HEADER_ANSWERS, all_answers)
     question_id = data_handler.get_answer_question_id(answer_id)
     return redirect('/question/' + question_id)

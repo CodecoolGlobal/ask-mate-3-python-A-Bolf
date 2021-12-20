@@ -28,8 +28,8 @@
             </a>
             {%endif%}</td>
                <td>{{ item["vote_number"] }}</td>
-               <td><a href="/answer/{{ item["id"] }}/vote_up"><button>Vote up!</button></a></td>
-               <td><a href="/answer/{{ item["id"] }}/vote_down"><button>Vote down!</button></a></td>
+               <td><a href="/answer/{{ item["id"] }}/vote/up"><button>Vote up!</button></a></td>
+               <td><a href="/answer/{{ item["id"] }}/vote/down"><button>Vote down!</button></a></td>
                <td><a href="/answer/{{ item["id"]}}/delete"><button>Delete this answer </button></a></td>
            </tr>
         {% endif %}
