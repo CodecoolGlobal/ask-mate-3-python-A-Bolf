@@ -60,7 +60,7 @@ def get_question_by_id(cursor, id):
     SELECT * FROM question
     WHERE id = %s"""
     cursor.execute(query, (id,))
-    return cursor.fetchall()
+    return cursor.fetchone()
 
 
 @connection.connection_handler
@@ -76,7 +76,7 @@ def get_question_id_by_answer_id(cursor, answer_id):
     query = """SELECT question_id from answer
     WHERE id=%s"""
     cursor.execute(query, (answer_id,))
-    return cursor.fetchall()
+    return cursor.fetchone()
 
 
 @connection.connection_handler

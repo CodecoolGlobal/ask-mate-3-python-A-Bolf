@@ -5,8 +5,6 @@ import time
 import connection
 import data_handler
 import data_manager
-import psycopg2
-import psycopg2.extras
 
 UPLOAD_FOLDER = './static'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
@@ -78,7 +76,7 @@ def question_page(question_id):
     #     if question["id"] == question_id:
     #         one_question = question
     question_id = question_id
-    return render_template('one_question.html', question_id=int(question_id), one_question=one_question[0], answers=answers)
+    return render_template('one_question.html', question_id=int(question_id), one_question=one_question, answers=answers)
 
 
 @app.route('/question/<question_id>/new-answer', methods=["POST", "GET"])
@@ -135,7 +133,7 @@ def edit_question(question_id):
 
 @app.route('/answer/<answer_id>/delete')
 def answer_delete(answer_id):
-    question_id = data_manager.get_question_id_by_answer_id(answer_id=answer_id)[0]['question_id']
+    question_id = data_manager.get_question_id_by_answer_id(answer_id=answer_id)['question_id']
     data_manager.delete_answer_by_id(id=answer_id)
     return redirect('/question/' + str(question_id))
 
@@ -151,7 +149,7 @@ def answer_page_vote(answer_id, up_or_down):
     #             row["vote_number"] = int(row.get('vote_number', 0)) - 1
     # connection.write_all_entries(connection.DATA_PATH_ANSWERS, connection.DATA_HEADER_ANSWERS, all_answers)
     data_manager.set_vote_count(table='answer', id=answer_id, up_or_down=up_or_down)
-    question_id = data_manager.get_question_id_by_answer_id(answer_id=answer_id)[0]['question_id']
+    question_id = data_manager.get_question_id_by_answer_id(answer_id=answer_id)['question_id']
     return redirect('/question/' + str(question_id))
 
 
