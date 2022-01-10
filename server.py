@@ -5,6 +5,8 @@ import time
 import connection
 import data_handler
 import data_manager
+import psycopg2
+import psycopg2.extras
 
 UPLOAD_FOLDER = './static'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
@@ -64,8 +66,8 @@ def add_question():
 @app.route('/question/<question_id>')
 def question_page(question_id):
     answers = data_manager.get_answers()
-    data_manager.increase_view_count(table='question',id=question_id)
-    one_question=data_manager.get_question_by_id(id=question_id)
+    data_manager.increase_view_count(table='question', id=question_id)
+    one_question = data_manager.get_question_by_id(id=question_id)
     # user_questions = data_manager.get_questions()
     # for row in user_questions:
     #     if row["id"] == question_id:
@@ -75,7 +77,8 @@ def question_page(question_id):
     # for question in user_questions:
     #     if question["id"] == question_id:
     #         one_question = question
-    return render_template('one_question.html', question_id=question_id, one_question=one_question, answers=answers)
+    question_id = question_id
+    return render_template('one_question.html', question_id=int(question_id), one_question=one_question[0], answers=answers)
 
 
 @app.route('/question/<question_id>/new-answer', methods=["POST", "GET"])
@@ -88,7 +91,7 @@ def new_answer(question_id):
             if uploaded_file.filename != '':
                 uploaded_file.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(uploaded_file.filename)))
                 image = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(uploaded_file.filename))
-        data_manager.write_answer(question_id=question_id,message=message,image=image)
+        data_manager.write_answer(question_id=question_id, message=message, image=image)
         return redirect(url_for("question_page", question_id=question_id))
     return render_template('answer.html', question_id=question_id)
 
@@ -109,7 +112,7 @@ def question_page_vote(question_id, up_or_down):
     #         elif up_or_down == 'down':
     #             row["vote_number"] = int(row.get('vote_number', 0)) - 1
     # connection.write_all_entries(connection.DATA_PATH_QUESTIONS, connection.DATA_HEADER_QUESTIONS, all_questions)
-    data_manager.set_vote_count(table='question',id=question_id,up_or_down=up_or_down)
+    data_manager.set_vote_count(table='question', id=question_id, up_or_down=up_or_down)
     return redirect('/list')
 
 
@@ -132,9 +135,9 @@ def edit_question(question_id):
 
 @app.route('/answer/<answer_id>/delete')
 def answer_delete(answer_id):
-    question_id = data_manager.get_question_id_by_answer_id(answer_id=answer_id)['question_id']
+    question_id = data_manager.get_question_id_by_answer_id(answer_id=answer_id)[0]['question_id']
     data_manager.delete_answer_by_id(id=answer_id)
-    return redirect('/question/' + question_id)
+    return redirect('/question/' + str(question_id))
 
 
 @app.route('/answer/<answer_id>/vote/<up_or_down>')
@@ -147,9 +150,9 @@ def answer_page_vote(answer_id, up_or_down):
     #         elif up_or_down == 'down':
     #             row["vote_number"] = int(row.get('vote_number', 0)) - 1
     # connection.write_all_entries(connection.DATA_PATH_ANSWERS, connection.DATA_HEADER_ANSWERS, all_answers)
-    data_manager.set_vote_count(table='answer',id=answer_id,up_or_down=up_or_down)
-    question_id = data_manager.get_question_id_by_answer_id(answer_id=answer_id)
-    return redirect('/question/' + question_id)
+    data_manager.set_vote_count(table='answer', id=answer_id, up_or_down=up_or_down)
+    question_id = data_manager.get_question_id_by_answer_id(answer_id=answer_id)[0]['question_id']
+    return redirect('/question/' + str(question_id))
 
 
 @app.route('/', methods=['POST'])
