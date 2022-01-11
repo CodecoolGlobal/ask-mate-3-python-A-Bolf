@@ -65,7 +65,16 @@ def question_page(question_id):
     data_manager.increase_view_count(table='question', id=question_id)
     one_question = data_manager.get_question_by_id(id=question_id)
     tags = data_manager.get_tags_by_question_id(id=question_id)
-    return render_template('one_question.html', question_id=int(question_id), one_question=one_question, answers=answers,tags=tags)
+    get_comments = data_manager.get_comment_by_question_id(question_id)
+    return render_template('one_question.html', question_id=int(question_id), one_question=one_question, answers=answers, get_comments=get_comments,tags=tags)
+
+@app.route('/question/<question_id>/new-comment', methods=['POST', 'GET'])
+def comment_page(question_id):
+    if request.method == "POST":
+        comment = request.form.get("message")
+        data_manager.write_question_comment(question_id=question_id, message=comment)
+        return redirect(url_for("question_page", question_id=question_id))
+    return render_template('comment.html', question_id=question_id)
 
 
 @app.route('/question/<question_id>/new-answer', methods=["POST", "GET"])
@@ -106,6 +115,17 @@ def edit_question(question_id):
     return render_template('edit_question.html', question_id=question_id, user_question=user_question)
 
 
+@app.route('/answer/<answer_id>/edit', methods=["POST"])
+def edit_answer(answer_id):
+    user_answer = data_manager.get_answer_by_id(id=answer_id)
+    if request.method == 'POST':
+        message = request.form.get("message")
+        data_manager.edit_answer_by_id(id=answer_id, message=message)
+        return redirect('/')
+    return render_template('edit_answer.html', answer_id_id=answer_id, user_answer=user_answer)
+
+
+
 @app.route('/answer/<answer_id>/delete')
 def answer_delete(answer_id):
     question_id = data_manager.get_question_id_by_answer_id(answer_id=answer_id)['question_id']
@@ -144,6 +164,9 @@ def upload_file(redirect_url):
     if uploaded_file.filename != '':
         uploaded_file.save(uploaded_file.filename)
     return redirect(url_for(redirect_url))
+
+
+
 
 
 if __name__ == '__main__':
