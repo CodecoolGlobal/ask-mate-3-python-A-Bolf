@@ -173,14 +173,13 @@ def search_question():
 
     if search_phrase:
         question_results_of_search = data_manager.get_questions_by_search_phrase(search_phrase)
-        answer_results_of_search = data_manager.get_answers_by_search_phrase(search_phrase)
     else:
         print("Something's not right with searching - no search phrase")
+        return redirect('/')
         
     return render_template('search_results.html',
                            search_phrase = search_phrase,
                            question_results=question_results_of_search,
-                           answer_results=answer_results_of_search,
                            header=DATA_HEADER_QUESTIONS)
 
 
