@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for
 from werkzeug.utils import secure_filename
 import os
-import data_handler
+import os
 import data_manager
-
+DATA_HEADER_QUESTIONS = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
+DATA_HEADER_ANSWERS = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
 UPLOAD_FOLDER = './static'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 app = Flask(__name__)
@@ -20,13 +21,13 @@ ORDER_DIRECTION = "asc"
 @app.route("/")
 def main_page():
     latest_user_questions = data_manager.get_latest_questions()
-    return render_template('index.html', latest_user_questions=latest_user_questions, header=data_handler.DATA_HEADER_QUESTIONS)
+    return render_template('index.html', latest_user_questions=latest_user_questions, header=DATA_HEADER_QUESTIONS)
 
 
 @app.route('/list')
 def route_list():
     user_questions = data_manager.get_ordered_questions(ORDER_BY, ORDER_DIRECTION)
-    return render_template('list.html', user_questions=user_questions, header=data_handler.DATA_HEADER_QUESTIONS)
+    return render_template('list.html', user_questions=user_questions, header=DATA_HEADER_QUESTIONS)
 
 
 @app.route('/list/<order_by>')
@@ -41,7 +42,7 @@ def route_list_order(order_by):
     else:
         ORDER_BY = order_by
     user_questions = data_manager.get_ordered_questions(ORDER_BY, ORDER_DIRECTION)
-    return render_template('list.html', user_questions=user_questions, header=data_handler.DATA_HEADER_QUESTIONS)
+    return render_template('list.html', user_questions=user_questions, header=DATA_HEADER_QUESTIONS)
 
 
 @app.route('/add-question', methods=["POST", "GET"])
@@ -57,7 +58,7 @@ def add_question():
         message = request.form.get("message")
         data_manager.write_question(title=title, message=message, image=image)
         return redirect(url_for("route_list"))
-    return render_template("add_question.html", headers=data_handler.DATA_HEADER_QUESTIONS)
+    return render_template("add_question.html", headers=DATA_HEADER_QUESTIONS)
 
 
 @app.route('/question/<question_id>')
@@ -180,7 +181,7 @@ def search_question():
                            search_phrase = search_phrase,
                            question_results=question_results_of_search,
                            answer_results=answer_results_of_search,
-                           header=data_handler.DATA_HEADER_QUESTIONS)
+                           header=DATA_HEADER_QUESTIONS)
 
 
 
