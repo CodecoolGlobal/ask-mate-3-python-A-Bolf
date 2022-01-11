@@ -19,7 +19,8 @@ ORDER_DIRECTION = "asc"
 
 @app.route("/")
 def main_page():
-    return redirect('/list')
+    latest_user_questions = data_manager.get_latest_questions()
+    return render_template('index.html', latest_user_questions=latest_user_questions, header=data_handler.DATA_HEADER_QUESTIONS)
 
 
 @app.route('/list')
@@ -164,6 +165,22 @@ def upload_file(redirect_url):
     if uploaded_file.filename != '':
         uploaded_file.save(uploaded_file.filename)
     return redirect(url_for(redirect_url))
+
+@app.route('/search')
+def search_question():
+    search_phrase = request.args.get('search_phrase')
+
+    if search_phrase:
+        question_results_of_search = data_manager.get_questions_by_search_phrase(search_phrase)
+        answer_results_of_search = data_manager.get_answers_by_search_phrase(search_phrase)
+    else:
+        print("Something's not right with searching - no search phrase")
+        
+    return render_template('search_results.html',
+                           search_phrase = search_phrase,
+                           question_results=question_results_of_search,
+                           answer_results=answer_results_of_search,
+                           header=data_handler.DATA_HEADER_QUESTIONS)
 
 
 

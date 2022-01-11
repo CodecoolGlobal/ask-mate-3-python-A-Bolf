@@ -12,6 +12,12 @@ def get_questions(cursor, ):
 
 
 @connection.connection_handler
+def get_latest_questions(cursor, ):
+    query = """ SELECT * FROM question ORDER BY submission_time DESC LIMIT 5"""
+    cursor.execute(query)
+    return cursor.fetchall()
+
+@connection.connection_handler
 def get_answers(cursor, ):
     query = """ SELECT * FROM answer"""
     cursor.execute(query)
@@ -174,3 +180,22 @@ def edit_answer_by_id(cursor,id,message):
     SET message = %s
     WHERE id = %s"""
     cursor.execute(query,(message,id))
+    
+
+@connection.connection_handler
+def get_questions_by_search_phrase(cursor, search_phrase):
+    search_phrase_string = f"%{search_phrase}%"
+    query = """
+    SELECT * FROM question
+    WHERE LOWER(title) LIKE LOWER(%s) OR LOWER(message) LIKE LOWER(%s)"""
+    cursor.execute(query, (search_phrase_string, search_phrase_string))
+    return cursor.fetchall()
+
+@connection.connection_handler
+def get_answers_by_search_phrase(cursor, search_phrase):
+    search_phrase_string = f"%{search_phrase}%"
+    query = """
+    SELECT * FROM answer
+    WHERE LOWER(message) LIKE LOWER(%s)"""
+    cursor.execute(query, (search_phrase_string, ))
+    return cursor.fetchall()

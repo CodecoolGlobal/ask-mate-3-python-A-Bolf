@@ -1,8 +1,8 @@
 {% extends "base_template.html" %}
-{% block title %}List of Stories{% endblock %}
+{% block title %}Search Results{% endblock %}
 
 {% block content %}
-        <h2>List of all Questions:</h2><br>
+        <h2>List of Questions with the phrase "{{ search_phrase }}" in them:</h2><br>
 
     <table>
             <tr>
@@ -12,7 +12,7 @@
            {% endfor %}
 
            </tr>
-       {% for row in user_questions %}
+       {% for row in question_results %}
            <tr>
            {% for key in header %}
                {%if key=="image" and not row['image']%}
@@ -33,15 +33,15 @@
                {% endif %}
 
            {% endfor %}
-               <td><a href="/question/{{ row["id"] }}/vote/up"><button>Vote up!</button></a></td>
-               <td><a href="/question/{{ row["id"] }}/vote/down"><button>Vote down!</button></a></td>
+
            </tr>
     {% endfor %}
     </table>
     <br><br>
 
+<a href="{{ url_for('main_page')}}"><button style="font-size:17px">Back to main page</button></a><br><br><br>
 
-    <a href="{{ url_for('add_question')}}"><button style="font-size:17px">Add new question</button></a><br><br><br>
+<a href="{{ url_for('route_list')}}"><button style="font-size:17px">Show all questions</button></a><br><br><br>
 
-    <a href="{{ url_for('main_page')}}"><button style="font-size:17px">Back to main page</button></a><br>
+
 {% endblock %}

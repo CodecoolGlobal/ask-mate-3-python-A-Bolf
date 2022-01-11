@@ -1,8 +1,16 @@
 {% extends "base_template.html" %}
-{% block title %}List of Stories{% endblock %}
+{% block title %}Index Page{% endblock %}
 
 {% block content %}
-        <h2>List of all Questions:</h2><br>
+<div class="welcome">
+    <h1>WELCOME!</h1>
+
+    <h2>This is crowdsourced Q&A site</h2><br>
+    <a href="{{ url_for('route_list')}}"><button style="font-size:17px">Show all questions</button></a><br><br><br>
+
+</div>
+
+        <h2>List of latest questions:</h2>
 
     <table>
             <tr>
@@ -12,7 +20,7 @@
            {% endfor %}
 
            </tr>
-       {% for row in user_questions %}
+       {% for row in latest_user_questions %}
            <tr>
            {% for key in header %}
                {%if key=="image" and not row['image']%}
@@ -33,15 +41,19 @@
                {% endif %}
 
            {% endfor %}
-               <td><a href="/question/{{ row["id"] }}/vote/up"><button>Vote up!</button></a></td>
-               <td><a href="/question/{{ row["id"] }}/vote/down"><button>Vote down!</button></a></td>
+
            </tr>
     {% endfor %}
     </table>
     <br><br>
 
+<div id="search_question">
+    <form action="/search">
+        <label for="search_phrase">Search in questions:</label>
+        <input id="search_phrase" type="text" name="search_phrase"><br><br>
+        <button type="submit">Search</button>
+     </form><br><br>
+</div>
 
-    <a href="{{ url_for('add_question')}}"><button style="font-size:17px">Add new question</button></a><br><br><br>
 
-    <a href="{{ url_for('main_page')}}"><button style="font-size:17px">Back to main page</button></a><br>
 {% endblock %}
