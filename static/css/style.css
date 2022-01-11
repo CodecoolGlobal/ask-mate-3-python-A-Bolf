@@ -88,3 +88,38 @@ tbody tr:nth-of-type(even) {
 tbody tr:last-of-type {
     border-bottom: 2px solid #009879;
     }
+
+#search_question {
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 10px;
+    margin 10px;
+}
+#search_question label {
+    color: white;
+}
+
+.welcome {
+    text-align: center;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 10px;
+    margin 0px;
+}
+
+.welcome h1 {
+    font-size: 80px;
+    background-color: white;
+    background-image: linear-gradient(teal, white);
+    background-size: 100%;
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -moz-text-fill-color: transparent;
+}
+
+.welcome button {
+    width: 20%;
+    margin-left: 40%;
+    margin-right: 40%
+}
