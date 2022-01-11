@@ -66,16 +66,6 @@ def question_page(question_id):
     answers = data_manager.get_answers()
     data_manager.increase_view_count(table='question', id=question_id)
     one_question = data_manager.get_question_by_id(id=question_id)
-    # user_questions = data_manager.get_questions()
-    # for row in user_questions:
-    #     if row["id"] == question_id:
-    #         row["view_number"] = int(row.get('view_number', 0)) + 1
-    # connection.write_all_entries(connection.DATA_PATH_QUESTIONS, connection.DATA_HEADER_QUESTIONS, user_questions)
-    # one_question = {}
-    # for question in user_questions:
-    #     if question["id"] == question_id:
-    #         one_question = question
-    question_id = question_id
     return render_template('one_question.html', question_id=int(question_id), one_question=one_question, answers=answers)
 
 
@@ -102,31 +92,17 @@ def question_page_delete(question_id):
 
 @app.route('/question/<question_id>/vote/<up_or_down>')
 def question_page_vote(question_id, up_or_down):
-    # all_questions = data_manager.get_questions()
-    # for row in all_questions:
-    #     if row["id"] == question_id:
-    #         if up_or_down == 'up':
-    #             row["vote_number"] = int(row.get('vote_number', 0)) + 1
-    #         elif up_or_down == 'down':
-    #             row["vote_number"] = int(row.get('vote_number', 0)) - 1
-    # connection.write_all_entries(connection.DATA_PATH_QUESTIONS, connection.DATA_HEADER_QUESTIONS, all_questions)
     data_manager.set_vote_count(table='question', id=question_id, up_or_down=up_or_down)
     return redirect('/list')
 
 
 @app.route('/question/<question_id>/edit', methods=["POST", "GET"])
 def edit_question(question_id):
-    all_questions = data_manager.get_questions()
-    for row in all_questions:
-        if row["id"] == question_id:
-            user_question = row
+    user_question = data_manager.get_question_by_id(id=question_id)
     if request.method == 'POST':
-        for row in all_questions:
-            if row["id"] == question_id:
-                row["submission_time"] = int(time.time())
-                row["title"] = request.form.get("title")
-                row["message"] = request.form.get("message")
-        connection.write_all_entries(connection.DATA_PATH_QUESTIONS, connection.DATA_HEADER_QUESTIONS, all_questions)
+        title = request.form.get("title")
+        message = request.form.get("message")
+        data_manager.edit_question_by_id(id=question_id,title=title,message=message)
         return redirect('/')
     return render_template('edit_question.html', question_id=question_id, user_question=user_question)
 
@@ -140,14 +116,6 @@ def answer_delete(answer_id):
 
 @app.route('/answer/<answer_id>/vote/<up_or_down>')
 def answer_page_vote(answer_id, up_or_down):
-    # all_answers = data_manager.get_answers()
-    # for row in all_answers:
-    #     if row["id"] == answer_id:
-    #         if up_or_down == 'up':
-    #             row["vote_number"] = int(row.get('vote_number', 0)) + 1
-    #         elif up_or_down == 'down':
-    #             row["vote_number"] = int(row.get('vote_number', 0)) - 1
-    # connection.write_all_entries(connection.DATA_PATH_ANSWERS, connection.DATA_HEADER_ANSWERS, all_answers)
     data_manager.set_vote_count(table='answer', id=answer_id, up_or_down=up_or_down)
     question_id = data_manager.get_question_id_by_answer_id(answer_id=answer_id)['question_id']
     return redirect('/question/' + str(question_id))

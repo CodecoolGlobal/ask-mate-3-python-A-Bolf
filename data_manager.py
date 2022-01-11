@@ -103,3 +103,12 @@ def set_vote_count(cursor, table, id, up_or_down):
                 WHERE id={id}""").format(
             table=sql.Identifier(table), id=sql.Literal(id))
     cursor.execute(query, )
+
+
+@connection.connection_handler
+def edit_question_by_id(cursor,id,title,message):
+    query = """
+    UPDATE question
+    SET title = %s,message = %s
+    WHERE id = %s"""
+    cursor.execute(query,(title,message,id))
