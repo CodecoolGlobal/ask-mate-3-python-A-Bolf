@@ -106,9 +106,39 @@ def set_vote_count(cursor, table, id, up_or_down):
 
 
 @connection.connection_handler
-def edit_question_by_id(cursor,id,title,message):
+def edit_question_by_id(cursor, id, title, message):
     query = """
     UPDATE question
     SET title = %s,message = %s
     WHERE id = %s"""
-    cursor.execute(query,(title,message,id))
+    cursor.execute(query, (title, message, id))
+
+
+@connection.connection_handler
+def get_tags(cursor):
+    cursor.execute("SELECT id,name FROM tag")
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def get_tags_by_question_id(cursor,id):
+    query="""
+    SELECT name FROM question_tag,tag
+    WHERE question_id=%s AND tag_id=tag.id"""
+    cursor.execute(query,(id,))
+    return cursor.fetchall()
+
+@connection.connection_handler
+def add_tag_to_id(cursor,question_id,tag_id):
+    query="""
+    INSERT into question_tag(question_id, tag_id) 
+    values(%s,%s)  ON CONFLICT DO NOTHING"""
+    cursor.execute(query,(question_id,tag_id))
+
+
+@connection.connection_handler
+def add_new_tag(cursor,tag):
+    query="""
+    INSERT INTO tag (name)
+    VALUES (%s)"""
+    cursor.execute(query,(tag,))

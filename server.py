@@ -1,8 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from werkzeug.utils import secure_filename
 import os
-import time
-import connection
 import data_handler
 import data_manager
 
@@ -14,9 +12,9 @@ ORDER_BY = "submission_time"
 ORDER_DIRECTION = "asc"
 
 
-@app.route("/static/<path:path>")
-def static_dir(path):
-    return send_from_directory("static", path)
+# @app.route("/static/<path:path>")
+# def static_dir(path):
+#     return send_from_directory("static", path)
 
 
 @app.route("/")
@@ -66,7 +64,8 @@ def question_page(question_id):
     answers = data_manager.get_answers()
     data_manager.increase_view_count(table='question', id=question_id)
     one_question = data_manager.get_question_by_id(id=question_id)
-    return render_template('one_question.html', question_id=int(question_id), one_question=one_question, answers=answers)
+    tags = data_manager.get_tags_by_question_id(id=question_id)
+    return render_template('one_question.html', question_id=int(question_id), one_question=one_question, answers=answers,tags=tags)
 
 
 @app.route('/question/<question_id>/new-answer', methods=["POST", "GET"])
@@ -102,7 +101,7 @@ def edit_question(question_id):
     if request.method == 'POST':
         title = request.form.get("title")
         message = request.form.get("message")
-        data_manager.edit_question_by_id(id=question_id,title=title,message=message)
+        data_manager.edit_question_by_id(id=question_id, title=title, message=message)
         return redirect('/')
     return render_template('edit_question.html', question_id=question_id, user_question=user_question)
 
@@ -119,6 +118,24 @@ def answer_page_vote(answer_id, up_or_down):
     data_manager.set_vote_count(table='answer', id=answer_id, up_or_down=up_or_down)
     question_id = data_manager.get_question_id_by_answer_id(answer_id=answer_id)['question_id']
     return redirect('/question/' + str(question_id))
+
+
+@app.route('/question/<question_id>/new-tag', methods=['POST', 'GET'])
+def add_new_tag(question_id):
+    tags = data_manager.get_tags()
+    question_tags = data_manager.get_tags_by_question_id(id=question_id)
+    if request.method == "POST":
+        added_ids=request.form.getlist('tag')
+        new_tag = request.form.get('new-tag')
+        if new_tag:
+            data_manager.add_new_tag(tag=new_tag)
+            tags = data_manager.get_tags()
+        if added_ids:
+            for id in added_ids:
+                data_manager.add_tag_to_id(question_id=question_id,tag_id=id)
+            return redirect(url_for("question_page",question_id=question_id))
+
+    return render_template('new-tag.html', tags=tags, question_tags=question_tags)
 
 
 @app.route('/', methods=['POST'])
