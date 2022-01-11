@@ -4,6 +4,14 @@
 {% block content %}
 <h2 style=" text-align: center">Question: {{one_question.title}}</h2>
         <p>{{ one_question.message }}</p><br>
+    <br>
+    <hr>
+        <p>comments:</p>
+        {% for comment in get_comments %}
+         <p>{{ comment.message }}</p><br>
+               {% endfor %}
+
+    <br>
     <hr>
 
 
@@ -40,5 +48,6 @@
         <a href={{url_for("new_answer",question_id=question_id)}}><button>Add new answer</button></a>
         <a href={{url_for("edit_question",question_id=question_id)}}><button>Edit question</button></a>
         <a href="/question/{{ question_id }}/delete"><button>Delete question</button></a>
+        <a href="/question/{{ question_id }}/new-comment"><button>Comment</button></a>
         <a style="margin-top: 20px" href="/list"><button>Back to questions</button></a>
 {% endblock %}

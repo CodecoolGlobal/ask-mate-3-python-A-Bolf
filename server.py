@@ -66,17 +66,17 @@ def question_page(question_id):
     answers = data_manager.get_answers()
     data_manager.increase_view_count(table='question', id=question_id)
     one_question = data_manager.get_question_by_id(id=question_id)
-    # user_questions = data_manager.get_questions()
-    # for row in user_questions:
-    #     if row["id"] == question_id:
-    #         row["view_number"] = int(row.get('view_number', 0)) + 1
-    # connection.write_all_entries(connection.DATA_PATH_QUESTIONS, connection.DATA_HEADER_QUESTIONS, user_questions)
-    # one_question = {}
-    # for question in user_questions:
-    #     if question["id"] == question_id:
-    #         one_question = question
     question_id = question_id
-    return render_template('one_question.html', question_id=int(question_id), one_question=one_question, answers=answers)
+    get_comments = data_manager.get_comment_by_question_id(question_id)
+    return render_template('one_question.html', question_id=int(question_id), one_question=one_question, answers=answers, get_comments=get_comments)
+
+@app.route('/question/<question_id>/new-comment', methods=['POST', 'GET'])
+def comment_page(question_id):
+    if request.method == "POST":
+        comment = request.form.get("message")
+        data_manager.write_question_comment(question_id=question_id, message=comment)
+        return redirect(url_for("question_page", question_id=question_id))
+    return render_template('comment.html', question_id=question_id)
 
 
 @app.route('/question/<question_id>/new-answer', methods=["POST", "GET"])

@@ -1,10 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base_template.html" %}
+{% block title %}Add new comment{% endblock %}
 
-</body>
-</html>
+{% block content %}
+    <p style="font-size:40px">Add new question</p>
+       <form enctype="multipart/form-data" method="post">
+            <label for="message">Comment <br>
+                <textarea id="title" name="message" rows="3" cols="60">Write your comment here</textarea>
+                </label><br>
+           <br><br><br>
+                <input type="submit" value="Post your comment">
+       </form>
+        <br>
+        <hr>
+        <br>
+        <a href="/list"><button>Back to questions</button></a>
+{% endblock %}

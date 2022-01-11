@@ -103,3 +103,17 @@ def set_vote_count(cursor, table, id, up_or_down):
                 WHERE id={id}""").format(
             table=sql.Identifier(table), id=sql.Literal(id))
     cursor.execute(query, )
+
+@connection.connection_handlergit
+def write_question_comment(cursor, question_id, message):
+    query = sql.SQL(""" INSERT INTO comment(question_id, message)
+        VALUES (%s,%s)""")
+    cursor.execute(query, (question_id, message))
+
+@connection.connection_handler
+def get_comment_by_question_id(cursor, question_id):
+    query = sql.SQL(""" SELECT message FROM comment
+    WHERE question_id = %s""")
+    cursor.execute(query, (question_id,))
+    return cursor.fetchall()
+
