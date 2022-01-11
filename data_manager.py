@@ -104,7 +104,8 @@ def set_vote_count(cursor, table, id, up_or_down):
             table=sql.Identifier(table), id=sql.Literal(id))
     cursor.execute(query, )
 
-@connection.connection_handlergit
+
+@connection.connection_handler
 def write_question_comment(cursor, question_id, message):
     query = sql.SQL(""" INSERT INTO comment(question_id, message)
         VALUES (%s,%s)""")
@@ -117,3 +118,29 @@ def get_comment_by_question_id(cursor, question_id):
     cursor.execute(query, (question_id,))
     return cursor.fetchall()
 
+
+@connection.connection_handler
+def edit_question_by_id(cursor,id,title,message):
+    query = """
+    UPDATE question
+    SET title = %s,message = %s
+    WHERE id = %s"""
+    cursor.execute(query,(title,message,id))
+
+
+@connection.connection_handler
+def get_answer_by_id(cursor, id):
+    query = """
+    SELECT * FROM answer
+    WHERE id = %s"""
+    cursor.execute(query, (id,))
+    return cursor.fetchone()
+
+
+@connection.connection_handler
+def edit_answer_by_id(cursor,id,message):
+    query = """
+    UPDATE answer
+    SET message = %s
+    WHERE id = %s"""
+    cursor.execute(query,(message,id))
