@@ -112,3 +112,21 @@ def edit_question_by_id(cursor,id,title,message):
     SET title = %s,message = %s
     WHERE id = %s"""
     cursor.execute(query,(title,message,id))
+
+
+@connection.connection_handler
+def get_answer_by_id(cursor, id):
+    query = """
+    SELECT * FROM answer
+    WHERE id = %s"""
+    cursor.execute(query, (id,))
+    return cursor.fetchone()
+
+
+@connection.connection_handler
+def edit_answer_by_id(cursor,id,message):
+    query = """
+    UPDATE answer
+    SET message = %s
+    WHERE id = %s"""
+    cursor.execute(query,(message,id))

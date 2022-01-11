@@ -107,6 +107,17 @@ def edit_question(question_id):
     return render_template('edit_question.html', question_id=question_id, user_question=user_question)
 
 
+@app.route('/answer/<answer_id>/edit', methods=["POST"])
+def edit_answer(answer_id):
+    user_answer = data_manager.get_answer_by_id(id=answer_id)
+    if request.method == 'POST':
+        message = request.form.get("message")
+        data_manager.edit_answer_by_id(id=answer_id, message=message)
+        return redirect('/')
+    return render_template('edit_answer.html', answer_id_id=answer_id, user_answer=user_answer)
+
+
+
 @app.route('/answer/<answer_id>/delete')
 def answer_delete(answer_id):
     question_id = data_manager.get_question_id_by_answer_id(answer_id=answer_id)['question_id']
@@ -127,6 +138,9 @@ def upload_file(redirect_url):
     if uploaded_file.filename != '':
         uploaded_file.save(uploaded_file.filename)
     return redirect(url_for(redirect_url))
+
+
+
 
 
 if __name__ == '__main__':
