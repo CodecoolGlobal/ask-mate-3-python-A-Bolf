@@ -2,13 +2,13 @@
 {% block title %}Search Results{% endblock %}
 
 {% block content %}
-        <h2>List of Questions with the phrase "{{ search_phrase }}" in them:</h2><br>
+        <h2>List of Questions with the phrase "{{ search_phrase|safe}}" in them:</h2><br>
 
 
     <table>
             <tr>
            {% for key in header %}
-                <th>{{ key }}</th>
+                <th>{{ key |safe}}</th>
            {% endfor %}
                 <th>answer</th>
 
@@ -28,12 +28,12 @@
                     </td>
                {%endif%}
                {% if key == "id" %}
-                   <td><a href="/question/{{row[key]}}?question_id={{row[key]}}"><strong>{{ row[key] }}</strong></a></td>
+                   <td><a href="/question/{{row[key]}}?question_id={{row[key]}}"><strong>{{ row[key]|safe }}</strong></a></td>
                    {% elif key!="image" %}
-                   <td>{{ row[key] }}</td>
+                   <td>{{ row[key] |safe}}</td>
                {% endif %}
            {% endfor %}
-               <td>{{ row["answ"] }}</td>
+               <td>{{ row["answ"] |safe}}</td>
 
            </tr>
         {% endfor %}
