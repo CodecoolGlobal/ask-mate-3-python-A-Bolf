@@ -113,7 +113,7 @@ def write_question_comment(cursor, question_id, message):
 
 @connection.connection_handler
 def get_comment_by_question_id(cursor, question_id):
-    query = sql.SQL(""" SELECT message FROM comment
+    query = sql.SQL(""" SELECT message,question_id,id FROM comment
     WHERE question_id = %s""")
     cursor.execute(query, (question_id,))
     return cursor.fetchall()
@@ -144,3 +144,11 @@ def edit_answer_by_id(cursor,id,message):
     SET message = %s
     WHERE id = %s"""
     cursor.execute(query,(message,id))
+
+@connection.connection_handler
+def delete_comment(cursor, id):
+    query = """
+    DELETE FROM comment
+    WHERE id = %s;
+    """
+    cursor.execute(query, (id,))

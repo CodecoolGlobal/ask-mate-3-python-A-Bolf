@@ -66,7 +66,6 @@ def question_page(question_id):
     answers = data_manager.get_answers()
     data_manager.increase_view_count(table='question', id=question_id)
     one_question = data_manager.get_question_by_id(id=question_id)
-    question_id = question_id
     get_comments = data_manager.get_comment_by_question_id(question_id)
     return render_template('one_question.html', question_id=int(question_id), one_question=one_question, answers=answers, get_comments=get_comments)
 
@@ -77,6 +76,11 @@ def comment_page(question_id):
         data_manager.write_question_comment(question_id=question_id, message=comment)
         return redirect(url_for("question_page", question_id=question_id))
     return render_template('comment.html', question_id=question_id)
+
+@app.route('/question/<question_id>/<comment_id>/delete', methods=['POST', 'GET'])
+def delete_comments(comment_id, question_id):
+        data_manager.delete_comment(comment_id)
+        return redirect(url_for("route_list", question_id=question_id))
 
 
 @app.route('/question/<question_id>/new-answer', methods=["POST", "GET"])
