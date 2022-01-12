@@ -2,8 +2,16 @@
 {% block title %}Main Page Super Sprinter{% endblock %}
 
 {% block content %}
-<h2 style=" text-align: center">Question: {{one_question.title}} <br>Tags: {% for tag in tags %}{{ tag.name}}, {% endfor %}</h2>
+    <div class="question">
+<h2 style=" text-align: center">Question: {{one_question.title}} <br></h2>
+        <h3>{% if tags %}
+        Tags:
+        {% endif %}
+    {% for tag in tags %}
+        {{ tag.name}}<a href="/question/{{ question_id}}/tag/{{ tag.id }}/delete"><button onclick="/question/{{ question_id}}/tag/{{ tag.id }}/delete" class="delete">X</button></a>
+    {% endfor %}</h3>
         <p>{{ one_question.message }}</p><br>
+    </div>
     <br>
     <hr>
     <table>
@@ -22,12 +30,7 @@
         <td>Edited {{ comment.edited_count }} times.</td>
     </tr>
             {% endfor %}
-
     </table>
-
-
-
-
     <br>
     <br>
     <hr>
@@ -46,14 +49,15 @@
                 <td>{{ item["message"] }} </td>
                <td>{%if item['image']%}
             <a href={{url_for('static',filename = item['image'][9::])}}>
-            <image src={{url_for('static',filename = item['image'][9::])}} height="80" width="80">
+                <image src={{url_for('static',filename = item['image'][9::])}} height="80" width="80"></image>
             </a>
             {%endif%}</td>
                <td>{{ item["vote_number"] }}</td>
                <td><a href="/answer/{{ item["id"] }}/vote/up"><button>Vote up!</button></a></td>
                <td><a href="/answer/{{ item["id"] }}/vote/down"><button>Vote down!</button></a></td>
                <td><a href="/answer/{{ item["id"]}}/delete"><button>Delete this answer </button></a></td>
-               <td><a href="/question/{{ question_id }}/{{ item["id"] }}/new-comment-to-answer"><button>Answer-Comment</button></a></td>
+               <td><a href="/question/{{ question_id }}/{{ item["id"] }}/new-comment-to-answer"><button>Answer comment</button></a></td>
+               <td><a href="/question/{{ question_id }}/{{ item["id"] }}/edit-answer"><button>Edit answer</button></a></td>
            </tr>
         {% endif %}
      {% endfor %}
