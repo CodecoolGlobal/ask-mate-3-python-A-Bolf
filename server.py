@@ -113,7 +113,7 @@ def edit_question(question_id):
         title = request.form.get("title")
         message = request.form.get("message")
         data_manager.edit_question_by_id(id=question_id, title=title, message=message)
-        return redirect('/')
+        return redirect('/list')
     return render_template('edit_question.html', question_id=question_id, user_question=user_question)
 
 
@@ -167,6 +167,7 @@ def upload_file(redirect_url):
         uploaded_file.save(uploaded_file.filename)
     return redirect(url_for(redirect_url))
 
+
 @app.route('/search')
 def search_question():
     search_phrase = request.args.get('search_phrase')
@@ -176,14 +177,16 @@ def search_question():
     else:
         print("Something's not right with searching - no search phrase")
         return redirect('/')
+
+    for row in question_results_of_search:
+        for key in ["title", "message", "answ"]:
+            if row.get(key) != None and search_phrase.lower() in row.get(key).lower():
+                row[key] = row[key].replace(search_phrase.lower(), search_phrase.upper()).replace(search_phrase.capitalize(), search_phrase.upper())
         
     return render_template('search_results.html',
                            search_phrase = search_phrase,
                            question_results=question_results_of_search,
                            header=DATA_HEADER_QUESTIONS)
-
-
-
 
 
 if __name__ == '__main__':

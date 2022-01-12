@@ -4,6 +4,7 @@
 {% block content %}
         <h2>List of Questions with the phrase "{{ search_phrase }}" in them:</h2><br>
 
+
     <table>
             <tr>
            {% for key in header %}
@@ -42,6 +43,5 @@
 <a href="{{ url_for('main_page')}}"><button style="font-size:17px">Back to main page</button></a><br><br><br>
 
 <a href="{{ url_for('route_list')}}"><button style="font-size:17px">Show all questions</button></a><br><br><br>
-
 
 {% endblock %}
