@@ -17,6 +17,7 @@ def get_latest_questions(cursor, ):
     cursor.execute(query)
     return cursor.fetchall()
 
+
 @connection.connection_handler
 def get_answers(cursor, ):
     query = """ SELECT * FROM answer"""
@@ -117,16 +118,24 @@ def write_question_comment(cursor, question_id, message):
         VALUES (%s,%s)""")
     cursor.execute(query, (question_id, message))
 
+
+@connection.connection_handler
+def write_answer_comment(cursor, answer_id, message):
+    query = sql.SQL(""" INSERT INTO comment(answer_id, message)
+        VALUES (%s,%s)""")
+    cursor.execute(query, (answer_id, message))
+
+
 @connection.connection_handler
 def get_comment_by_question_id(cursor, question_id):
-    query = sql.SQL(""" SELECT message FROM comment
+    query = sql.SQL(""" SELECT message,question_id,id FROM comment
     WHERE question_id = %s""")
     cursor.execute(query, (question_id,))
     return cursor.fetchall()
 
 
 @connection.connection_handler
-def edit_question_by_id(cursor,id,title,message):
+def edit_question_by_id(cursor, id, title, message):
     query = """
     UPDATE question
     SET title = %s,message = %s
@@ -141,27 +150,28 @@ def get_tags(cursor):
 
 
 @connection.connection_handler
-def get_tags_by_question_id(cursor,id):
-    query="""
-    SELECT name FROM question_tag,tag
+def get_tags_by_question_id(cursor, id):
+    query = """
+    SELECT id,name FROM question_tag,tag
     WHERE question_id=%s AND tag_id=tag.id"""
-    cursor.execute(query,(id,))
+    cursor.execute(query, (id,))
     return cursor.fetchall()
 
+
 @connection.connection_handler
-def add_tag_to_id(cursor,question_id,tag_id):
-    query="""
+def add_tag_to_id(cursor, question_id, tag_id):
+    query = """
     INSERT into question_tag(question_id, tag_id) 
     values(%s,%s)  ON CONFLICT DO NOTHING"""
-    cursor.execute(query,(question_id,tag_id))
+    cursor.execute(query, (question_id, tag_id))
 
 
 @connection.connection_handler
-def add_new_tag(cursor,tag):
-    query="""
+def add_new_tag(cursor, tag):
+    query = """
     INSERT INTO tag (name)
     VALUES (%s)"""
-    cursor.execute(query,(tag,))
+    cursor.execute(query, (tag,))
 
 
 @connection.connection_handler
@@ -174,13 +184,30 @@ def get_answer_by_id(cursor, id):
 
 
 @connection.connection_handler
-def edit_answer_by_id(cursor,id,message):
+def edit_answer_by_id(cursor, id, message):
     query = """
     UPDATE answer
     SET message = %s
     WHERE id = %s"""
-    cursor.execute(query,(message,id))
-    
+    cursor.execute(query, (message, id))
+
+
+@connection.connection_handler
+def delete_comment(cursor, id):
+    query = """
+    DELETE FROM comment
+    WHERE id = %s;
+    """
+    cursor.execute(query, (id,))
+
+
+@connection.connection_handler
+def delete_tag_from_question(cursor, question_id, tag_id):
+    query = """
+    DELETE FROM question_tag
+    WHERE question_id=%s and tag_id=%s """
+    cursor.execute(query, (question_id, tag_id))
+
 
 @connection.connection_handler
 def get_questions_by_search_phrase(cursor, search_phrase):
@@ -193,4 +220,3 @@ def get_questions_by_search_phrase(cursor, search_phrase):
     WHERE LOWER(q.title) LIKE LOWER(%s) OR LOWER(q.message) LIKE LOWER(%s) OR LOWER(answer.message) LIKE LOWER(%s)"""
     cursor.execute(query, (search_phrase_string, search_phrase_string, search_phrase_string))
     return cursor.fetchall()
-
