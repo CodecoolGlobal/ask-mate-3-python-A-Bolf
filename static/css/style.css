@@ -123,3 +123,10 @@ tbody tr:last-of-type {
     margin-left: 40%;
     margin-right: 40%
 }
+
+.delete{
+    font-size: small;
+    padding: 1px 1px;
+    display: inline;
+    float: none;
+}

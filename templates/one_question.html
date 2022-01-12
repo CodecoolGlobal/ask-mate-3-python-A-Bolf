@@ -2,7 +2,13 @@
 {% block title %}Main Page Super Sprinter{% endblock %}
 
 {% block content %}
-<h2 style=" text-align: center">Question: {{one_question.title}} <br>Tags: {% for tag in tags %}{{ tag.name}}, {% endfor %}</h2>
+<h2 style=" text-align: center">Question: {{one_question.title}} <br>
+    {% for tag in tags %}
+        {% if tags %}
+        Tags:
+        {% endif %}
+        {{ tag.name}}<a href="/question/{{ question_id}}/tag/{{ tag.id }}/delete"><button onclick="/question/{{ question_id}}/tag/{{ tag.id }}/delete" class="delete">X</button></a>
+    {% endfor %}</h2>
         <p>{{ one_question.message }}</p><br>
     <br>
     <hr>
