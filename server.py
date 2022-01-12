@@ -79,6 +79,15 @@ def comment_page(question_id):
     return render_template('comment.html', question_id=question_id)
 
 
+@app.route('/question/<question_id>/<answer_id>/new-comment-to-answer', methods=['POST', 'GET'])
+def comment_page_answer(answer_id, question_id):
+    if request.method == "POST":
+        comment = request.form.get("message")
+        data_manager.write_answer_comment(answer_id=answer_id, message=comment)
+        return redirect(url_for("question_page", question_id=question_id))
+    return render_template('answer_comment.html', answer_id=answer_id)
+
+
 @app.route('/question/<question_id>/new-answer', methods=["POST", "GET"])
 def new_answer(question_id):
     if request.method == "POST":

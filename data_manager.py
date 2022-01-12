@@ -117,6 +117,14 @@ def write_question_comment(cursor, question_id, message):
         VALUES (%s,%s)""")
     cursor.execute(query, (question_id, message))
 
+
+@connection.connection_handler
+def write_answer_comment(cursor, answer_id, message):
+    query = sql.SQL(""" INSERT INTO comment(answer_id, message)
+        VALUES (%s,%s)""")
+    cursor.execute(query, (answer_id, message))
+
+
 @connection.connection_handler
 def get_comment_by_question_id(cursor, question_id):
     query = sql.SQL(""" SELECT message FROM comment

@@ -38,6 +38,7 @@
                <td><a href="/answer/{{ item["id"] }}/vote/up"><button>Vote up!</button></a></td>
                <td><a href="/answer/{{ item["id"] }}/vote/down"><button>Vote down!</button></a></td>
                <td><a href="/answer/{{ item["id"]}}/delete"><button>Delete this answer </button></a></td>
+               <td><a href="/question/{{ question_id }}/{{ item["id"] }}/new-comment-to-answer"><button>Answer-Comment</button></a></td>
            </tr>
         {% endif %}
      {% endfor %}
