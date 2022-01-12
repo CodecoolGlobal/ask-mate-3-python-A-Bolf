@@ -117,9 +117,17 @@ def write_question_comment(cursor, question_id, message):
         VALUES (%s,%s)""")
     cursor.execute(query, (question_id, message))
 
+
+@connection.connection_handler
+def write_answer_comment(cursor, answer_id, message):
+    query = sql.SQL(""" INSERT INTO comment(answer_id, message)
+        VALUES (%s,%s)""")
+    cursor.execute(query, (answer_id, message))
+
+
 @connection.connection_handler
 def get_comment_by_question_id(cursor, question_id):
-    query = sql.SQL(""" SELECT message FROM comment
+    query = sql.SQL(""" SELECT message,question_id,id FROM comment
     WHERE question_id = %s""")
     cursor.execute(query, (question_id,))
     return cursor.fetchall()
@@ -180,25 +188,15 @@ def edit_answer_by_id(cursor,id,message):
     SET message = %s
     WHERE id = %s"""
     cursor.execute(query,(message,id))
-    
 
 @connection.connection_handler
-def get_questions_by_search_phrase(cursor, search_phrase):
-    search_phrase_string = f"%{search_phrase}%"
+def delete_comment(cursor, id):
     query = """
-    SELECT * FROM question
-    WHERE LOWER(title) LIKE LOWER(%s) OR LOWER(message) LIKE LOWER(%s)"""
-    cursor.execute(query, (search_phrase_string, search_phrase_string))
-    return cursor.fetchall()
+    DELETE FROM comment
+    WHERE id = %s;
+    """
+    cursor.execute(query, (id,))
 
-@connection.connection_handler
-def get_answers_by_search_phrase(cursor, search_phrase):
-    search_phrase_string = f"%{search_phrase}%"
-    query = """
-    SELECT * FROM answer
-    WHERE LOWER(message) LIKE LOWER(%s)"""
-    cursor.execute(query, (search_phrase_string, ))
-    return cursor.fetchall()
 
 @connection.connection_handler
 def delete_tag_from_question(cursor,question_id,tag_id):
@@ -206,3 +204,16 @@ def delete_tag_from_question(cursor,question_id,tag_id):
     DELETE FROM question_tag
     WHERE question_id=%s and tag_id=%s """
     cursor.execute(query,(question_id,tag_id))
+
+
+@connection.connection_handler
+def get_questions_by_search_phrase(cursor, search_phrase):
+    search_phrase_string = f"%{search_phrase}%"
+    query = """
+    SELECT question.id, question.submission_time, question.view_number, question.vote_number, question.title, question.message, question.image, answer.message AS answ 
+    FROM question 
+    FULL JOIN answer
+    ON question.id = answer.question_id
+    WHERE LOWER(question.title) LIKE LOWER(%s) OR LOWER(question.message) LIKE LOWER(%s) OR LOWER(answer.message) LIKE LOWER(%s)"""
+    cursor.execute(query, (search_phrase_string, search_phrase_string, search_phrase_string))
+    return cursor.fetchall()

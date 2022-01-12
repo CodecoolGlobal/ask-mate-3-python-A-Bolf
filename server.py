@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from werkzeug.utils import secure_filename
 import os
-import os
 import data_manager
 
 DATA_HEADER_QUESTIONS = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
@@ -85,6 +84,20 @@ def comment_page(question_id):
         data_manager.write_question_comment(question_id=question_id, message=comment)
         return redirect(url_for("question_page", question_id=question_id))
     return render_template('comment.html', question_id=question_id)
+
+@app.route('/question/<question_id>/<comment_id>/delete', methods=['POST', 'GET'])
+def delete_comments(comment_id, question_id):
+        data_manager.delete_comment(comment_id)
+        return redirect(url_for("route_list", question_id=question_id))
+
+
+@app.route('/question/<question_id>/<answer_id>/new-comment-to-answer', methods=['POST', 'GET'])
+def comment_page_answer(answer_id, question_id):
+    if request.method == "POST":
+        comment = request.form.get("message")
+        data_manager.write_answer_comment(answer_id=answer_id, message=comment)
+        return redirect(url_for("question_page", question_id=question_id))
+    return render_template('answer_comment.html', answer_id=answer_id)
 
 
 @app.route('/question/<question_id>/new-answer', methods=["POST", "GET"])
@@ -181,14 +194,12 @@ def search_question():
 
     if search_phrase:
         question_results_of_search = data_manager.get_questions_by_search_phrase(search_phrase)
-        answer_results_of_search = data_manager.get_answers_by_search_phrase(search_phrase)
     else:
         print("Something's not right with searching - no search phrase")
-
+        return redirect('/')
     return render_template('search_results.html',
                            search_phrase=search_phrase,
                            question_results=question_results_of_search,
-                           answer_results=answer_results_of_search,
                            header=DATA_HEADER_QUESTIONS)
 
 
