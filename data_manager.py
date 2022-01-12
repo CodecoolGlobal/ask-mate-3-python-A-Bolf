@@ -194,16 +194,11 @@ def edit_answer_by_id(cursor,id,message):
 def get_questions_by_search_phrase(cursor, search_phrase):
     search_phrase_string = f"%{search_phrase}%"
     query = """
-    SELECT * FROM question
-    WHERE LOWER(title) LIKE LOWER(%s) OR LOWER(message) LIKE LOWER(%s)"""
-    cursor.execute(query, (search_phrase_string, search_phrase_string))
+    SELECT question.id, question.submission_time, question.view_number, question.vote_number, question.title, question.message, question.image, answer.message AS answ 
+    FROM question 
+    FULL JOIN answer
+    ON question.id = answer.question_id
+    WHERE LOWER(question.title) LIKE LOWER(%s) OR LOWER(question.message) LIKE LOWER(%s) OR LOWER(answer.message) LIKE LOWER(%s)"""
+    cursor.execute(query, (search_phrase_string, search_phrase_string, search_phrase_string))
     return cursor.fetchall()
 
-@connection.connection_handler
-def get_answers_by_search_phrase(cursor, search_phrase):
-    search_phrase_string = f"%{search_phrase}%"
-    query = """
-    SELECT * FROM answer
-    WHERE LOWER(message) LIKE LOWER(%s)"""
-    cursor.execute(query, (search_phrase_string, ))
-    return cursor.fetchall()

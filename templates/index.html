@@ -2,23 +2,22 @@
 {% block title %}Index Page{% endblock %}
 
 {% block content %}
+<div class="main_page">
 <div class="welcome">
-    <h1>WELCOME!</h1>
+    <h1>WELCOME TO ASK MATE</h1>
 
-    <h2>This is crowdsourced Q&A site</h2><br>
-    <a href="{{ url_for('route_list')}}"><button style="font-size:17px">Show all questions</button></a><br><br><br>
+    <h2>This is a crowdsourced Q&A site</h2><br>
+    <a href="{{ url_for('route_list')}}"><button style="font-size:20px">SHOW ALL QUESTIONS</button></a><br><br>
 
 </div>
 
-        <h2>List of latest questions:</h2>
+        <h2 style="color: white">Latest 5 questions:</h2>
 
     <table>
             <tr>
            {% for key in header %}
-                <th><a href={{ url_for('route_list_order', order_by=key) }} >{{ key }}</a></th>
-
+                <th>{{ key }}</th>
            {% endfor %}
-
            </tr>
        {% for row in latest_user_questions %}
            <tr>
@@ -53,6 +52,7 @@
         <input id="search_phrase" type="text" name="search_phrase"><br><br>
         <button type="submit">Search</button>
      </form><br><br>
+</div>
 </div>
 
 
