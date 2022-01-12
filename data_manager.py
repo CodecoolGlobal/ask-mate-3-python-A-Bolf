@@ -151,7 +151,7 @@ def get_tags(cursor):
 @connection.connection_handler
 def get_tags_by_question_id(cursor,id):
     query="""
-    SELECT name FROM question_tag,tag
+    SELECT id,name FROM question_tag,tag
     WHERE question_id=%s AND tag_id=tag.id"""
     cursor.execute(query,(id,))
     return cursor.fetchall()
@@ -196,6 +196,14 @@ def delete_comment(cursor, id):
     WHERE id = %s;
     """
     cursor.execute(query, (id,))
+
+
+@connection.connection_handler
+def delete_tag_from_question(cursor,question_id,tag_id):
+    query="""
+    DELETE FROM question_tag
+    WHERE question_id=%s and tag_id=%s """
+    cursor.execute(query,(question_id,tag_id))
 
 
 @connection.connection_handler

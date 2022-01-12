@@ -124,6 +124,13 @@ tbody tr:last-of-type {
     margin-right: 40%
 }
 
+.delete {
+    font-size: small;
+    padding: 1px 1px;
+    display: inline;
+    float: none;
+}
+
 .main_page {
     /* The image used */
   background-image: url("teal_shore.jpg");
@@ -136,4 +143,5 @@ tbody tr:last-of-type {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+
 }
