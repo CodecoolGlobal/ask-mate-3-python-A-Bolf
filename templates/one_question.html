@@ -2,22 +2,26 @@
 {% block title %}Main Page Super Sprinter{% endblock %}
 
 {% block content %}
-<h2 style=" text-align: center">Question: {{one_question.title}} <br>
-    {% for tag in tags %}
-        {% if tags %}
+    <div class="question">
+<h2 style=" text-align: center">Question: {{one_question.title}} <br></h2>
+        <h3>{% if tags %}
         Tags:
         {% endif %}
+    {% for tag in tags %}
         {{ tag.name}}<a href="/question/{{ question_id}}/tag/{{ tag.id }}/delete"><button onclick="/question/{{ question_id}}/tag/{{ tag.id }}/delete" class="delete">X</button></a>
-    {% endfor %}</h2>
+    {% endfor %}</h3>
         <p>{{ one_question.message }}</p><br>
+    </div>
     <br>
     <hr>
-        <p>comments:</p>
+        <h2>Comments:</h2>
         {% for comment in get_comments %}
-         <p>{{ comment.message }}</p>
-            <button type="submit" style="border: 0; background: transparent" >
-            <a href="/question/{{ comment.question_id }}/{{ comment.id }}/delete"><img src="/static/trash.jpg" width="90" height="90" alt="submit" onclick="return confirm('Are you sure you want to delete this item')"></a>
+         {{ comment.message }}
+            <button class="delete" type="submit" style="border: 0; background: transparent" >
+            <a href="/question/{{ comment.question_id }}/{{ comment.id }}/delete"><img src="/static/trash.jpg" class="trash" alt="submit" onclick="return confirm('Are you sure you want to delete this item')"></a>
             </button>
+            <br>
+            <br>
         {% endfor %}
     <br>
 
@@ -43,7 +47,7 @@
                 <td>{{ item["message"] }} </td>
                <td>{%if item['image']%}
             <a href={{url_for('static',filename = item['image'][9::])}}>
-            <image src={{url_for('static',filename = item['image'][9::])}} height="80" width="80">
+                <image src={{url_for('static',filename = item['image'][9::])}} height="80" width="80"></image>
             </a>
             {%endif%}</td>
                <td>{{ item["vote_number"] }}</td>

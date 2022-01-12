@@ -131,6 +131,13 @@ tbody tr:last-of-type {
     float: none;
 }
 
+.trash{
+    display: inline;
+    float: none;
+    height: 30px;
+    width: 40px;
+}
+
 .main_page {
     /* The image used */
   background-image: url("teal_shore.jpg");
@@ -144,4 +151,7 @@ tbody tr:last-of-type {
   background-repeat: no-repeat;
   background-size: cover;
 
+}
+.question{
+    text-align: center;
 }

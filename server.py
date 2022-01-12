@@ -85,10 +85,11 @@ def comment_page(question_id):
         return redirect(url_for("question_page", question_id=question_id))
     return render_template('comment.html', question_id=question_id)
 
+
 @app.route('/question/<question_id>/<comment_id>/delete', methods=['POST', 'GET'])
 def delete_comments(comment_id, question_id):
-        data_manager.delete_comment(comment_id)
-        return redirect(url_for("route_list", question_id=question_id))
+    data_manager.delete_comment(comment_id)
+    return redirect('/question/'+question_id)
 
 
 @app.route('/question/<question_id>/<answer_id>/new-comment-to-answer', methods=['POST', 'GET'])

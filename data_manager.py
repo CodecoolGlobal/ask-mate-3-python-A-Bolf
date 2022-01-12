@@ -17,6 +17,7 @@ def get_latest_questions(cursor, ):
     cursor.execute(query)
     return cursor.fetchall()
 
+
 @connection.connection_handler
 def get_answers(cursor, ):
     query = """ SELECT * FROM answer"""
@@ -134,7 +135,7 @@ def get_comment_by_question_id(cursor, question_id):
 
 
 @connection.connection_handler
-def edit_question_by_id(cursor,id,title,message):
+def edit_question_by_id(cursor, id, title, message):
     query = """
     UPDATE question
     SET title = %s,message = %s
@@ -149,27 +150,28 @@ def get_tags(cursor):
 
 
 @connection.connection_handler
-def get_tags_by_question_id(cursor,id):
-    query="""
+def get_tags_by_question_id(cursor, id):
+    query = """
     SELECT id,name FROM question_tag,tag
     WHERE question_id=%s AND tag_id=tag.id"""
-    cursor.execute(query,(id,))
+    cursor.execute(query, (id,))
     return cursor.fetchall()
 
+
 @connection.connection_handler
-def add_tag_to_id(cursor,question_id,tag_id):
-    query="""
+def add_tag_to_id(cursor, question_id, tag_id):
+    query = """
     INSERT into question_tag(question_id, tag_id) 
     values(%s,%s)  ON CONFLICT DO NOTHING"""
-    cursor.execute(query,(question_id,tag_id))
+    cursor.execute(query, (question_id, tag_id))
 
 
 @connection.connection_handler
-def add_new_tag(cursor,tag):
-    query="""
+def add_new_tag(cursor, tag):
+    query = """
     INSERT INTO tag (name)
     VALUES (%s)"""
-    cursor.execute(query,(tag,))
+    cursor.execute(query, (tag,))
 
 
 @connection.connection_handler
@@ -182,12 +184,13 @@ def get_answer_by_id(cursor, id):
 
 
 @connection.connection_handler
-def edit_answer_by_id(cursor,id,message):
+def edit_answer_by_id(cursor, id, message):
     query = """
     UPDATE answer
     SET message = %s
     WHERE id = %s"""
-    cursor.execute(query,(message,id))
+    cursor.execute(query, (message, id))
+
 
 @connection.connection_handler
 def delete_comment(cursor, id):
@@ -199,11 +202,11 @@ def delete_comment(cursor, id):
 
 
 @connection.connection_handler
-def delete_tag_from_question(cursor,question_id,tag_id):
-    query="""
+def delete_tag_from_question(cursor, question_id, tag_id):
+    query = """
     DELETE FROM question_tag
     WHERE question_id=%s and tag_id=%s """
-    cursor.execute(query,(question_id,tag_id))
+    cursor.execute(query, (question_id, tag_id))
 
 
 @connection.connection_handler
