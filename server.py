@@ -1,11 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for
 from werkzeug.utils import secure_filename
 import os
-import time
-import connection
-import data_handler
+import os
 import data_manager
-
+DATA_HEADER_QUESTIONS = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
+DATA_HEADER_ANSWERS = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
 UPLOAD_FOLDER = './static'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 app = Flask(__name__)
@@ -14,20 +13,21 @@ ORDER_BY = "submission_time"
 ORDER_DIRECTION = "asc"
 
 
-@app.route("/static/<path:path>")
-def static_dir(path):
-    return send_from_directory("static", path)
+# @app.route("/static/<path:path>")
+# def static_dir(path):
+#     return send_from_directory("static", path)
 
 
 @app.route("/")
 def main_page():
-    return redirect('/list')
+    latest_user_questions = data_manager.get_latest_questions()
+    return render_template('index.html', latest_user_questions=latest_user_questions, header=DATA_HEADER_QUESTIONS)
 
 
 @app.route('/list')
 def route_list():
     user_questions = data_manager.get_ordered_questions(ORDER_BY, ORDER_DIRECTION)
-    return render_template('list.html', user_questions=user_questions, header=data_handler.DATA_HEADER_QUESTIONS)
+    return render_template('list.html', user_questions=user_questions, header=DATA_HEADER_QUESTIONS)
 
 
 @app.route('/list/<order_by>')
@@ -42,7 +42,7 @@ def route_list_order(order_by):
     else:
         ORDER_BY = order_by
     user_questions = data_manager.get_ordered_questions(ORDER_BY, ORDER_DIRECTION)
-    return render_template('list.html', user_questions=user_questions, header=data_handler.DATA_HEADER_QUESTIONS)
+    return render_template('list.html', user_questions=user_questions, header=DATA_HEADER_QUESTIONS)
 
 
 @app.route('/add-question', methods=["POST", "GET"])
@@ -58,7 +58,7 @@ def add_question():
         message = request.form.get("message")
         data_manager.write_question(title=title, message=message, image=image)
         return redirect(url_for("route_list"))
-    return render_template("add_question.html", headers=data_handler.DATA_HEADER_QUESTIONS)
+    return render_template("add_question.html", headers=DATA_HEADER_QUESTIONS)
 
 
 @app.route('/question/<question_id>')
@@ -66,8 +66,9 @@ def question_page(question_id):
     answers = data_manager.get_answers()
     data_manager.increase_view_count(table='question', id=question_id)
     one_question = data_manager.get_question_by_id(id=question_id)
+    tags = data_manager.get_tags_by_question_id(id=question_id)
     get_comments = data_manager.get_comment_by_question_id(question_id)
-    return render_template('one_question.html', question_id=int(question_id), one_question=one_question, answers=answers, get_comments=get_comments)
+    return render_template('one_question.html', question_id=int(question_id), one_question=one_question, answers=answers, get_comments=get_comments,tags=tags)
 
 @app.route('/question/<question_id>/new-comment', methods=['POST', 'GET'])
 def comment_page(question_id):
@@ -81,6 +82,15 @@ def comment_page(question_id):
 def delete_comments(comment_id, question_id):
         data_manager.delete_comment(comment_id)
         return redirect(url_for("route_list", question_id=question_id))
+
+
+@app.route('/question/<question_id>/<answer_id>/new-comment-to-answer', methods=['POST', 'GET'])
+def comment_page_answer(answer_id, question_id):
+    if request.method == "POST":
+        comment = request.form.get("message")
+        data_manager.write_answer_comment(answer_id=answer_id, message=comment)
+        return redirect(url_for("question_page", question_id=question_id))
+    return render_template('answer_comment.html', answer_id=answer_id)
 
 
 @app.route('/question/<question_id>/new-answer', methods=["POST", "GET"])
@@ -116,7 +126,7 @@ def edit_question(question_id):
     if request.method == 'POST':
         title = request.form.get("title")
         message = request.form.get("message")
-        data_manager.edit_question_by_id(id=question_id,title=title,message=message)
+        data_manager.edit_question_by_id(id=question_id, title=title, message=message)
         return redirect('/')
     return render_template('edit_question.html', question_id=question_id, user_question=user_question)
 
@@ -146,12 +156,45 @@ def answer_page_vote(answer_id, up_or_down):
     return redirect('/question/' + str(question_id))
 
 
+@app.route('/question/<question_id>/new-tag', methods=['POST', 'GET'])
+def add_new_tag(question_id):
+    tags = data_manager.get_tags()
+    question_tags = data_manager.get_tags_by_question_id(id=question_id)
+    if request.method == "POST":
+        added_ids=request.form.getlist('tag')
+        new_tag = request.form.get('new-tag')
+        if new_tag:
+            data_manager.add_new_tag(tag=new_tag)
+            tags = data_manager.get_tags()
+        if added_ids:
+            for id in added_ids:
+                data_manager.add_tag_to_id(question_id=question_id,tag_id=id)
+            return redirect(url_for("question_page",question_id=question_id))
+
+    return render_template('new-tag.html', tags=tags, question_tags=question_tags)
+
+
 @app.route('/', methods=['POST'])
 def upload_file(redirect_url):
     uploaded_file = request.files['file']
     if uploaded_file.filename != '':
         uploaded_file.save(uploaded_file.filename)
     return redirect(url_for(redirect_url))
+
+@app.route('/search')
+def search_question():
+    search_phrase = request.args.get('search_phrase')
+
+    if search_phrase:
+        question_results_of_search = data_manager.get_questions_by_search_phrase(search_phrase)
+    else:
+        print("Something's not right with searching - no search phrase")
+        return redirect('/')
+        
+    return render_template('search_results.html',
+                           search_phrase = search_phrase,
+                           question_results=question_results_of_search,
+                           header=DATA_HEADER_QUESTIONS)
 
 
 

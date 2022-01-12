@@ -12,6 +12,12 @@ def get_questions(cursor, ):
 
 
 @connection.connection_handler
+def get_latest_questions(cursor, ):
+    query = """ SELECT * FROM question ORDER BY submission_time DESC LIMIT 5"""
+    cursor.execute(query)
+    return cursor.fetchall()
+
+@connection.connection_handler
 def get_answers(cursor, ):
     query = """ SELECT * FROM answer"""
     cursor.execute(query)
@@ -111,6 +117,14 @@ def write_question_comment(cursor, question_id, message):
         VALUES (%s,%s)""")
     cursor.execute(query, (question_id, message))
 
+
+@connection.connection_handler
+def write_answer_comment(cursor, answer_id, message):
+    query = sql.SQL(""" INSERT INTO comment(answer_id, message)
+        VALUES (%s,%s)""")
+    cursor.execute(query, (answer_id, message))
+
+
 @connection.connection_handler
 def get_comment_by_question_id(cursor, question_id):
     query = sql.SQL(""" SELECT message,question_id,id FROM comment
@@ -125,7 +139,37 @@ def edit_question_by_id(cursor,id,title,message):
     UPDATE question
     SET title = %s,message = %s
     WHERE id = %s"""
-    cursor.execute(query,(title,message,id))
+    cursor.execute(query, (title, message, id))
+
+
+@connection.connection_handler
+def get_tags(cursor):
+    cursor.execute("SELECT id,name FROM tag")
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def get_tags_by_question_id(cursor,id):
+    query="""
+    SELECT name FROM question_tag,tag
+    WHERE question_id=%s AND tag_id=tag.id"""
+    cursor.execute(query,(id,))
+    return cursor.fetchall()
+
+@connection.connection_handler
+def add_tag_to_id(cursor,question_id,tag_id):
+    query="""
+    INSERT into question_tag(question_id, tag_id) 
+    values(%s,%s)  ON CONFLICT DO NOTHING"""
+    cursor.execute(query,(question_id,tag_id))
+
+
+@connection.connection_handler
+def add_new_tag(cursor,tag):
+    query="""
+    INSERT INTO tag (name)
+    VALUES (%s)"""
+    cursor.execute(query,(tag,))
 
 
 @connection.connection_handler
@@ -152,3 +196,16 @@ def delete_comment(cursor, id):
     WHERE id = %s;
     """
     cursor.execute(query, (id,))
+
+
+@connection.connection_handler
+def get_questions_by_search_phrase(cursor, search_phrase):
+    search_phrase_string = f"%{search_phrase}%"
+    query = """
+    SELECT question.id, question.submission_time, question.view_number, question.vote_number, question.title, question.message, question.image, answer.message AS answ 
+    FROM question 
+    FULL JOIN answer
+    ON question.id = answer.question_id
+    WHERE LOWER(question.title) LIKE LOWER(%s) OR LOWER(question.message) LIKE LOWER(%s) OR LOWER(answer.message) LIKE LOWER(%s)"""
+    cursor.execute(query, (search_phrase_string, search_phrase_string, search_phrase_string))
+    return cursor.fetchall()
