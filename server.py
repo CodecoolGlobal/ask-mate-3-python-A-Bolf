@@ -91,6 +91,16 @@ def delete_comments(comment_id, question_id):
     data_manager.delete_comment(comment_id)
     return redirect('/question/'+question_id)
 
+@app.route('/question/<question_id>/<comment_id>/edit', methods=['POST', 'GET'])
+def edit_comments(comment_id, question_id):
+    user_comment = data_manager.get_comment_by_question_id(question_id=question_id)
+    if request.method == 'POST':
+        comment = request.form.get("message")
+        data_manager.edit_comment(id=comment_id, message=comment)
+        return redirect('/question/' +question_id)
+    return render_template('edit_comment.html', question_id=question_id, user_comment=user_comment,comment_id=int(comment_id))
+
+
 
 @app.route('/question/<question_id>/<answer_id>/new-comment-to-answer', methods=['POST', 'GET'])
 def comment_page_answer(answer_id, question_id):
