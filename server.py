@@ -206,7 +206,7 @@ def search_question():
         question_results_of_search = data_manager.get_questions_by_search_phrase(search_phrase)
     else:
         print("Something's not right with searching - no search phrase")
-        return redirect('/')
+        return redirect('/welcome')
 
     for row in question_results_of_search:
         for key in ["title", "message", "answ"]:
