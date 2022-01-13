@@ -1,6 +1,7 @@
 {% extends "base_template.html" %}
 {% block title %}Add Tag(s){% endblock %}
 {% block content %}
+    <div class="form">
 <p style="font-size:40px">Add Tag(s)</p>
 <form enctype="multipart/form-data" action="" method="post">
 {% for tag in tags %}
@@ -16,5 +17,6 @@
      <input type="submit" value="add new tag">
     </form>
     <hr>
+    </div>
 <a href="/"><button>Back to Main Page</button></a>
 {% endblock %}

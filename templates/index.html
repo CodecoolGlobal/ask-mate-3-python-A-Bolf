@@ -4,17 +4,17 @@
 {% block content %}
 <div class="main_page">
 <div class="welcome">
-    <h1>WELCOME TO ASK MATE</h1>
+    <h1 class="welcome">WELCOME TO ASK MATE</h1>
 
     <h2>This is a crowdsourced Q&A site</h2><br>
     <a href="{{ url_for('route_list')}}"><button style="font-size:20px">SHOW ALL QUESTIONS</button></a><br><br>
 
 </div>
 
-        <h2 style="color: white">Latest 5 questions:</h2>
+        <h2 class="question" style="text-align: left">Latest 5 questions:</h2>
 
     <table>
-            <tr>
+            <tr class="question-header">
            {% for key in header %}
                 <th>{{ key }}</th>
            {% endfor %}

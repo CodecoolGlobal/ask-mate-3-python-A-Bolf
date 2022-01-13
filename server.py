@@ -212,9 +212,9 @@ def search_question():
     for row in question_results_of_search:
         for key in ["title", "message", "answ"]:
             if row.get(key) != None and search_phrase.lower() in row.get(key).lower():
-                row[key] = row[key].replace(search_phrase.lower(), f'<strong>{search_phrase.lower()}</strong>')
-                row[key]=row[key].replace(search_phrase.capitalize(),f'<strong>{search_phrase.capitalize()}</strong>')
-                row[key] = row[key].replace(search_phrase.upper(), f'<strong>{search_phrase.upper()}</strong>')
+                row[key] = row[key].replace(search_phrase.lower(), f'<mark>{search_phrase.lower()}</mark>')
+                row[key]=row[key].replace(search_phrase.capitalize(),f'<mark>{search_phrase.capitalize()}</mark>')
+                row[key] = row[key].replace(search_phrase.upper(), f'<mark>{search_phrase.upper()}</mark>')
         
     return render_template('search_results.html',
                            search_phrase=search_phrase,

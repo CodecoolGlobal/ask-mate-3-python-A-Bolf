@@ -59,7 +59,7 @@ th{
     font-size: 17px;
     text-transform: uppercase;
     }
-label{color: teal;
+label{color: #03e1e1;
     font-size: 17px;
     font-weight: bold;
     font-family: sans-serif;
@@ -107,14 +107,13 @@ tbody tr:last-of-type {
 .welcome {
     text-align: center;
     /*background: rgba(0, 0, 0, 0.5);*/
-    color: white;
+    color:#03e1e1;
     padding: 10px;
     margin 0px;
 }
 
 .welcome h1 {
     font-size: 70px;
-    color: white;
 
 }
 
@@ -138,7 +137,7 @@ tbody tr:last-of-type {
     width: 40px;
 }
 
-.main_page {
+html{
     /* The image used */
   background-image: url("teal_shore.jpg");
     padding: 30px;
@@ -150,8 +149,29 @@ tbody tr:last-of-type {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+    background-attachment: inherit;
 
 }
 .question{
     text-align: center;
+    color: #03e1e1;
 }
+
+#header,#footer{
+    color: #03e1e1;
+}
+#trash{
+    height: 40px;
+    width: 45px;
+}
+
+.comment-header{
+    color:teal;
+}
+
+.question-header{
+    color:teal;
+}
+.form,.form label{color: #03e1e1;}
+
+

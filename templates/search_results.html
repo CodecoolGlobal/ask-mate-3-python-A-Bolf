@@ -2,11 +2,11 @@
 {% block title %}Search Results{% endblock %}
 
 {% block content %}
-        <h2>List of Questions with the phrase "{{ search_phrase|safe}}" in them:</h2><br>
+        <h2 class="question" style="text-align: left;">List of Questions with the phrase "{{ search_phrase|safe}}" in them:</h2><br>
 
 
-    <table>
-            <tr>
+    <table >
+            <tr class="question-header">
            {% for key in header %}
                 <th>{{ key |safe}}</th>
            {% endfor %}

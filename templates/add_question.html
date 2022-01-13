@@ -1,6 +1,7 @@
 {% extends "base_template.html" %}
 {% block title %}Add new question{% endblock %}
 {% block content %}
+    <div class="form">
 <p style="font-size:40px">Add new question</p>
 <form enctype="multipart/form-data" action="" method="post">
 {% for header in headers %}
@@ -12,7 +13,7 @@
             </label>
             {% endif %}
     {% if header in ["title","message"] %}
-    <label for="title" style="color: teal;font-size: 17px; font-family: sans-serif">{{header|upper}}<br>
+    <label for="title" class="form" style="font-size: 17px; font-family: sans-serif">{{header|upper}}<br>
     <input type="text" name={{header}}><br>
         </label><br>
     {% endif %}
@@ -21,5 +22,6 @@
     <input type="submit" value="Post question!">
 </form><br>
     <hr>
+    </div>
 <a href="/"><button>Back to Main Page</button></a>
 {% endblock %}

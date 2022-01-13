@@ -2,14 +2,17 @@
 {% block title %}List of Stories{% endblock %}
 
 {% block content %}
-        <h2>List of all Questions:</h2><br>
+        <h2 class="question" style="text-align: left">List of all Questions:</h2><br>
 
     <table>
-            <tr>
+            <tr class="question-header">
            {% for key in header %}
                 <th><a href={{ url_for('route_list_order', order_by=key) }} >{{ key }}</a></th>
 
            {% endfor %}
+            <th colspan="2">
+                Vote
+            </th>
 
            </tr>
        {% for row in user_questions %}
