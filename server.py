@@ -13,12 +13,11 @@ ORDER_BY = "submission_time"
 ORDER_DIRECTION = "asc"
 
 
-# @app.route("/static/<path:path>")
-# def static_dir(path):
-#     return send_from_directory("static", path)
-
-
 @app.route("/")
+def welcome():
+    return render_template('welcome.html')
+
+@app.route("/welcome")
 def main_page():
     latest_user_questions = data_manager.get_latest_questions()
     return render_template('index.html', latest_user_questions=latest_user_questions, header=DATA_HEADER_QUESTIONS)

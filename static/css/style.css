@@ -99,7 +99,7 @@ tbody tr:last-of-type {
     }
 
 #search_question {
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0);
     color: white;
     padding: 10px;
     margin 10px;
@@ -107,7 +107,10 @@ tbody tr:last-of-type {
 #search_question label {
     color: white;
 }
-
+#search_button{
+        display: inline;
+    float: none;
+}
 .welcome {
     text-align: center;
     /*background: rgba(0, 0, 0, 0.5);*/
@@ -177,5 +180,3 @@ html{
     color:teal;
 }
 .form,.form label{color: #03e1e1;}
-
-

@@ -4,9 +4,9 @@
 {% block content %}
 <div class="main_page">
 <div class="welcome">
-    <h1 class="welcome">WELCOME TO ASK MATE</h1>
+{#    <h1 class="welcome">ASK MATE</h1>#}
 
-    <h2>This is a crowdsourced Q&A site</h2><br>
+{#    <h2>This is a crowdsourced Q&A site</h2><br>#}
     <a href="{{ url_for('route_list')}}"><button style="font-size:20px">SHOW ALL QUESTIONS</button></a><br><br>
 
 </div>
@@ -49,8 +49,8 @@
 <div id="search_question">
     <form action="/search">
         <label for="search_phrase">Search in questions:</label>
-        <input id="search_phrase" type="text" name="search_phrase"><br><br>
-        <button type="submit">Search</button>
+        <input id="search_phrase" type="text" name="search_phrase">
+        <button id="search_button" type="submit">Search</button>
      </form><br><br>
 </div>
 </div>

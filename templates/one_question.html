@@ -12,26 +12,8 @@
     {% endfor %}</h3>
         <p>{{ one_question.message }}</p><br>
     </div>
-    <br>
-    <hr>
-    <table>
-    <tr class="comment-header">
-        <th>comments:</th>
-        <th>delete</th>
-        <th>edit</th>
-        <th>edit count</th>
-    </tr>
-        {% for comment in get_comments %}
-    <tr class="comment-rows">
-        <td>{{ comment.message }}</td>
-        <td><button type="submit" style="border: 0; background: transparent" >
-            <a href="/question/{{ comment.question_id }}/{{ comment.id }}/delete"><img id="trash" src="/static/trash.jpg" alt="submit" onclick="return confirm('Are you sure you want to delete this item')"></a>
-            </button></td>
-        <td><a href='/question/{{ comment.question_id }}/{{ comment.id }}/edit'><button>Edit comment</button></a></td>
-        <td>Edited {{ comment.edited_count }} times.</td>
-    </tr>
-            {% endfor %}
-    </table>
+
+
     <br>
     <br>
     <hr>
@@ -65,8 +47,27 @@
         {% endif %}
      {% endfor %}
     </table>
-    <br>
+    <hr>
 
+
+<table>
+    <tr class="comment-header">
+        <th>comments:</th>
+        <th>delete</th>
+        <th>edit</th>
+        <th>edit count</th>
+    </tr>
+        {% for comment in get_comments %}
+    <tr class="comment-rows">
+        <td>{{ comment.message }}</td>
+        <td><button type="submit" style="border: 0; background: transparent" >
+            <a href="/question/{{ comment.question_id }}/{{ comment.id }}/delete"><img id="trash" src="/static/trash.jpg" alt="submit" onclick="return confirm('Are you sure you want to delete this item')"></a>
+            </button></td>
+        <td><a href='/question/{{ comment.question_id }}/{{ comment.id }}/edit'><button>Edit comment</button></a></td>
+        <td>Edited {{ comment.edited_count }} times.</td>
+    </tr>
+            {% endfor %}
+    </table>
 <hr>
         <a href={{url_for("new_answer",question_id=question_id)}}><button>Add new answer</button></a>
         <a href={{url_for("edit_question",question_id=question_id)}}><button>Edit question</button></a>
