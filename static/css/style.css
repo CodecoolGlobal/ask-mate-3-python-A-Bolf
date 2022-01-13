@@ -20,7 +20,7 @@ a:visited {
 
 /* mouse over link */
 a:hover {
-    color: #004d40;
+    color: #01574b;
     text-transform: uppercase;
     text-decoration: underline;
     }
@@ -48,10 +48,10 @@ button{
     }
 button:hover{
     background: #025b5b;
-    background: -moz-linear-gradient(19% 75% 90deg, #025b5b,
-    #098c8c);
+    background: -moz-linear-gradient(19% 75% 90deg, #065252,
+    #01fdfd);
     background: -webkit-gradient(linear, 0% 0%, 0% 100%,
-    from(#098c8c), to(#025b5b));
+    from(#03e1e1), to(#025b5b));
     }
 
 
@@ -79,19 +79,23 @@ td,th {
     word-wrap: break-word;
     }
 thead tr {
+    border-top: 3px solid #03e1e1;
     background-color: white;
     color: #ffffff;
     text-align: left;
     }
 tbody tr {
+    border-left:3px solid #03e1e1;
+    border-right: 3px solid #03e1e1;
+    border-top: 3px solid #03e1e1;
     border-bottom: 1px solid #dddddd;
-    background-color: rgba(255, 255, 255, 0.8)
+    background-color: rgba(255, 255, 255, 70%)
     }
 tbody tr:nth-of-type(even) {
-    background-color: rgba(227, 227, 227, 0.7);
+    background-color: rgba(227, 227, 227, 55%);
     }
 tbody tr:last-of-type {
-    border-bottom: 3px solid #009879;
+    border-bottom: 3px solid #03e1e1;
     }
 
 #search_question {
