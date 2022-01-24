@@ -1,3 +1,4 @@
+from bonus_questions import SAMPLE_QUESTIONS
 from flask import Flask, render_template, request, redirect, url_for
 from werkzeug.utils import secure_filename
 import os
@@ -13,9 +14,16 @@ ORDER_BY = "submission_time"
 ORDER_DIRECTION = "asc"
 
 
+
+
 @app.route("/")
 def welcome():
     return render_template('welcome.html')
+    
+    
+@app.route("/bonus-questions")
+def main():
+    return render_template('bonus_questions.html', questions=SAMPLE_QUESTIONS)
 
 @app.route("/welcome")
 def main_page():
