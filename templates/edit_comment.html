@@ -1,0 +1,23 @@
+{% extends "base_template.html" %}
+{% block title %}Add new comment{% endblock %}
+{% block content %}
+    <div class="form">
+    <p style="font-size:40px">Edit this comment!</p>
+       <form enctype="multipart/form-data" method="post">
+            <label for="message">Comment <br>
+                {% for comment in user_comment %}
+
+                    {% if comment.id == comment_id %}
+                         <textarea id="title" name="message" rows="3" cols="60">{{ comment.message }}</textarea>
+                         </label><br>
+                    {% endif %}
+                {% endfor %}
+           </label><br><br><br>
+       <input type="submit" value="Edit answer!">
+       </form>
+        <br>
+        <hr>
+        <br>
+    </div>
+        <a href="/list"><button>Back to questions</button></a>
+{% endblock %}

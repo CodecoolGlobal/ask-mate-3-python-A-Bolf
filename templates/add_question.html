@@ -1,0 +1,27 @@
+{% extends "base_template.html" %}
+{% block title %}Add new question{% endblock %}
+{% block content %}
+    <div class="form">
+<p style="font-size:40px">Add new question</p>
+<form enctype="multipart/form-data" action="" method="post">
+{% for header in headers %}
+    {% if header=='image' %}
+
+
+            <label>
+  <input type="file" name="file" accept="image/png, image/jpeg">
+            </label>
+            {% endif %}
+    {% if header in ["title","message"] %}
+    <label for="title" class="form" style="font-size: 17px; font-family: sans-serif">{{header|upper}}<br>
+    <input type="text" name={{header}}><br>
+        </label><br>
+    {% endif %}
+   {% endfor %}
+
+    <input type="submit" value="Post question!">
+</form><br>
+    <hr>
+    </div>
+<a href="/list"><button>Back to Questions</button></a>
+{% endblock %}

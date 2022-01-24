@@ -1,0 +1,47 @@
+{% extends "base_template.html" %}
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+        <h2 class="question" style="text-align: left;">List of Questions with the phrase "{{ search_phrase|safe}}" in them:</h2><br>
+
+
+    <table >
+            <tr class="question-header">
+           {% for key in header %}
+                <th>{{ key |safe}}</th>
+           {% endfor %}
+                <th>answer</th>
+
+           </tr>
+       {% for row in question_results %}
+           <tr>
+           {% for key in header %}
+               {%if key=="image" and not row['image']%}
+               <td>
+                   <p>No Image</p>
+               </td>
+               {%endif%}
+               {% if key == "image" and row['image']%}
+                   <td><a href={{url_for('static',filename = row[key][9::])}}>
+                    <image src={{url_for('static',filename=row[key][9::])}} height="50">
+                    </a>
+                    </td>
+               {%endif%}
+               {% if key == "id" %}
+                   <td><a href="/question/{{row[key]}}?question_id={{row[key]}}"><strong>{{ row[key]|safe }}</strong></a></td>
+                   {% elif key!="image" %}
+                   <td>{{ row[key] |safe}}</td>
+               {% endif %}
+           {% endfor %}
+               <td>{{ row["answ"] |safe}}</td>
+
+           </tr>
+        {% endfor %}
+    </table>
+    <br><br>
+
+<a href="{{ url_for('main_page')}}"><button style="font-size:17px">Back to main page</button></a><br><br><br>
+
+<a href="{{ url_for('route_list')}}"><button style="font-size:17px">Show all questions</button></a><br><br><br>
+
+{% endblock %}

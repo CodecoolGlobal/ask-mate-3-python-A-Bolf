@@ -1,0 +1,110 @@
+/* Basic styles */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root{
+    --bg-color: rgb(1, 253, 253);
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  color: rgb(1, 253, 253);
+  background-image: url("teal_shore.jpg");
+  font-family: 'Maitree', serif;
+}
+
+h1{
+    font-size: 3em;
+    font-weight: normal;
+}
+
+/* title styles */
+.home-title span{
+    position: relative;
+    overflow: hidden;
+    display: block;
+    line-height: 1.2;
+}
+
+.home-title span::after{
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 255, 226, 0);
+    animation: a-ltr-after 2s cubic-bezier(.77,0,.18,1) forwards;
+    transform: translateX(-101%);
+}
+
+.home-title span::before{
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-color);
+    animation: a-ltr-before 2s cubic-bezier(.77,0,.18,1) forwards;
+    transform: translateX(0);
+}
+
+.home-title span:nth-of-type(1)::before,
+.home-title span:nth-of-type(1)::after{
+    animation-delay: 0.1s;
+}
+
+.home-title span:nth-of-type(2)::before,
+.home-title span:nth-of-type(2)::after{
+    animation-delay: 0.7s;
+}
+
+.home-title span:nth-of-type(3)::before,
+.home-title span:nth-of-type(3)::after{
+    animation-delay: 1.4s;
+}
+
+@keyframes a-ltr-after{
+    0% {transform: translateX(-100%)}
+    100% {transform: translateX(101%)}
+}
+
+@keyframes a-ltr-before{
+    0% {transform: translateX(0)}
+    100% {transform: translateX(200%)}
+}
+
+button{
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    -moz-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
+    -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
+
+    background: #025b5b;
+    background: -moz-linear-gradient(19% 75% 90deg, #065252,
+    #025b5b);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%,
+    from(#089191), to(#025b5b));
+    color: #fff;
+    font-family:  arial,helvetica,sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 4px 10px;
+    text-decoration: none;
+    }
+button:hover{
+    background: #025e5e;
+    background:  -moz-linear-gradient(19% 75% 90deg, #025b5b, #01fdfd);
+    background:  -webkit-gradient(linear, 0% 0%, 0% 100%, from(#01fdfd), to(#01574b));
+    }

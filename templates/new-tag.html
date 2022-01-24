@@ -1,0 +1,22 @@
+{% extends "base_template.html" %}
+{% block title %}Add Tag(s){% endblock %}
+{% block content %}
+    <div class="form">
+<p style="font-size:40px">Add Tag(s)</p>
+<form enctype="multipart/form-data" action="" method="post">
+{% for tag in tags %}
+    <input type="checkbox" id={{ tag.name }} name="tag" value={{ tag.id }}>
+    <label for="tag">{{ tag.name }}</label>
+    {% endfor %}
+    <input type="submit" value="add tag(s)!">
+</form><br>
+
+    <form action="" method="post">
+    <label for="new-tag">Add new tag</label>
+    <input type="text" id="new-tag" name="new-tag">
+     <input type="submit" value="add new tag">
+    </form>
+    <hr>
+    </div>
+<a href="/list"><button>Back to Questions</button></a>
+{% endblock %}
