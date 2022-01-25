@@ -54,6 +54,7 @@ def route_list_order(order_by):
 @app.route('/add-question', methods=["POST", "GET"])
 def add_question():
     if request.method == "POST":
+        current_user_id=0
         image = request.form.get("image")
         if request.files["file"]:
             uploaded_file = request.files['file']

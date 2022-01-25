@@ -16,8 +16,11 @@ ALTER TABLE IF EXISTS ONLY public.question_tag DROP CONSTRAINT IF EXISTS fk_ques
 ALTER TABLE IF EXISTS ONLY public.tag DROP CONSTRAINT IF EXISTS pk_tag_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.question_tag DROP CONSTRAINT IF EXISTS fk_tag_id CASCADE;
 
+DROP TABLE IF EXISTS public.user_question CASCADE ;
+DROP TABLE IF EXISTS public.user_answer CASCADE;
+DROP TABLE IF EXISTS public.user_comment CASCADE;
 
-DROP TABLE IF EXISTS public.users;
+DROP TABLE IF EXISTS public.users CASCADE;
 CREATE TABLE users(
     id serial NOT NULL,
     username text,
@@ -25,32 +28,13 @@ CREATE TABLE users(
     registration_date timestamp without time zone default current_timestamp
 );
 
-DROP TABLE IF EXISTS public.user_attribute;
+DROP TABLE IF EXISTS public.user_attribute CASCADE;
 CREATE TABLE user_attribute (
     id serial NOT NULL,
     user_id integer NOT NULL,
     reputation integer DEFAULT 0
 
 );
-
-DROP TABLE IF EXISTS public.user_question;
-CREATE TABLE user_question(
-    user_id integer NOT NULL,
-    question_id integer NOT NULL
-);
-
-DROP TABLE IF EXISTS public.user_answer;
-CREATE TABLE user_answer(
-    user_id integer NOT NULL,
-    answer_id integer NOT NULL
-);
-
-DROP TABLE IF EXISTS public.user_comment;
-CREATE TABLE user_comment(
-    user_id integer NOT NULL,
-    comment_id integer NOT NULL
-);
-
 
 
 DROP TABLE IF EXISTS public.question;
@@ -61,7 +45,8 @@ CREATE TABLE question (
     vote_number integer default 0,
     title text,
     message text,
-    image text
+    image text,
+    user_id integer
 );
 
 DROP TABLE IF EXISTS public.answer;
@@ -71,7 +56,8 @@ CREATE TABLE answer (
     vote_number integer default 0,
     question_id integer,
     message text,
-    image text
+    image text,
+    user_id integer
 );
 
 DROP TABLE IF EXISTS public.comment;
@@ -81,7 +67,8 @@ CREATE TABLE comment (
     answer_id integer,
     message text,
     submission_time timestamp without time zone default current_timestamp,
-    edited_count integer default 0
+    edited_count integer default 0,
+    user_id integer
 );
 
 
@@ -104,15 +91,6 @@ ALTER TABLE ONLY users
 ALTER TABLE ONLY user_attribute
     ADD CONSTRAINT pk_user_attribute_id PRIMARY KEY (id,user_id);
 
-ALTER TABLE ONLY user_question
-    ADD CONSTRAINT pk_user_question_id PRIMARY KEY (user_id,question_id);
-
-ALTER TABLE ONLY user_answer
-    ADD CONSTRAINT pk_user_answer_id PRIMARY KEY (user_id,answer_id);
-
-ALTER TABLE ONLY user_comment
-    ADD CONSTRAINT pk_user_comment_id PRIMARY KEY (user_id,comment_id);
-
 ALTER TABLE ONLY answer
     ADD CONSTRAINT pk_answer_id PRIMARY KEY (id);
 
@@ -131,26 +109,18 @@ ALTER TABLE ONLY tag
 ALTER TABLE ONLY user_attribute
     ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY user_question
-    ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY user_answer
-    ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY user_comment
-    ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY user_question
-    ADD CONSTRAINT fk_question_id FOREIGN KEY (question_id) REFERENCES question(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY user_answer
-    ADD CONSTRAINT fk_answer_id FOREIGN KEY (answer_id) REFERENCES answer(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY user_comment
-    ADD CONSTRAINT fk_comment_id FOREIGN KEY (comment_id) REFERENCES comment(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY comment
     ADD CONSTRAINT fk_answer_id FOREIGN KEY (answer_id) REFERENCES answer(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY answer
+    ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY question
+    ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY comment
+    ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
 
 ALTER TABLE ONLY answer
     ADD CONSTRAINT fk_question_id FOREIGN KEY (question_id) REFERENCES question(id) ON DELETE CASCADE;
