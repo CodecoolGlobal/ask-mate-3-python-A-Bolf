@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Login Page</title>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    </head>
+    <body>
+<br><br>
+    <section class="login_first">
+
+     <form action="/login" method="post">
+
+        <label for="username">Username: </label><br>
+        <input id="username" type="text" name="username"><br><br>
+
+        <label for="password">Password: </label><br>
+        <input id="password" type="password" name="password"><br><br><br>
+
+        <button type="submit">Login</button>
+     </form><br><br>
+    </section>
+</body>
+</html>

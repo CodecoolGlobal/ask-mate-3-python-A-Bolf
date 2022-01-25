@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session, make_response
 from werkzeug.utils import secure_filename
 import os
 import data_manager
@@ -8,6 +8,8 @@ DATA_HEADER_ANSWERS = ['id', 'submission_time', 'vote_number', 'question_id', 'm
 UPLOAD_FOLDER = './static'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 app = Flask(__name__)
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ORDER_BY = "submission_time"
 ORDER_DIRECTION = "asc"
@@ -17,16 +19,22 @@ ORDER_DIRECTION = "asc"
 def welcome():
     return render_template('welcome.html')
 
-@app.route("/welcome")
+@app.route("/index")
 def main_page():
     latest_user_questions = data_manager.get_latest_questions()
-    return render_template('index.html', latest_user_questions=latest_user_questions, header=DATA_HEADER_QUESTIONS)
+    return render_template('index.html',
+                           latest_user_questions=latest_user_questions,
+                           header=DATA_HEADER_QUESTIONS,
+                           username=session.get('username', 0))
 
 
 @app.route('/list')
 def route_list():
     user_questions = data_manager.get_ordered_questions(ORDER_BY, ORDER_DIRECTION)
-    return render_template('list.html', user_questions=user_questions, header=DATA_HEADER_QUESTIONS)
+    return render_template('list.html',
+                           user_questions=user_questions,
+                           header=DATA_HEADER_QUESTIONS,
+                           username=session.get('username', 0))
 
 
 @app.route('/list/<order_by>')
@@ -41,7 +49,10 @@ def route_list_order(order_by):
     else:
         ORDER_BY = order_by
     user_questions = data_manager.get_ordered_questions(ORDER_BY, ORDER_DIRECTION)
-    return render_template('list.html', user_questions=user_questions, header=DATA_HEADER_QUESTIONS)
+    return render_template('list.html',
+                           user_questions=user_questions,
+                           header=DATA_HEADER_QUESTIONS,
+                           username=session.get('username', 0))
 
 
 @app.route('/add-question', methods=["POST", "GET"])
@@ -57,7 +68,7 @@ def add_question():
         message = request.form.get("message")
         data_manager.write_question(title=title, message=message, image=image)
         return redirect(url_for("route_list"))
-    return render_template("add_question.html", headers=DATA_HEADER_QUESTIONS)
+    return render_template("add_question.html", headers=DATA_HEADER_QUESTIONS, username=session.get('username', 0))
 
 
 @app.route('/question/<question_id>')
@@ -219,6 +230,56 @@ def search_question():
                            search_phrase=search_phrase,
                            question_results=question_results_of_search,
                            header=DATA_HEADER_QUESTIONS)
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        user_input_username = request.form.get("username")
+        user_input_password = request.form.get("password")
+        hashed_password = dict(data_manager.get_password_by_username(user_input_username))['password']
+        print(hashed_password)
+        print(user_input_password)
+        is_matching = data_manager.verify_password(user_input_password, hashed_password)
+
+        if is_matching:
+            session['question_index'] = '0'
+            session['correct_answers'] = '0'
+            session['username'] = request.form['username']
+            return redirect(url_for('main_page'))
+        else:
+            return render_template('login_problem.html')
+        return redirect(url_for('main_page'))
+
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    # remove the username from the session if it's there
+    session.pop('username', None)
+    return redirect(url_for('main_page'))
+
+@app.route('/registration', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        user_input_username = request.form.get("username")
+        user_input_password = request.form.get("password")
+        hashed_password = dict(data_manager.get_password_by_username(user_input_username))['password']
+        print(hashed_password)
+        print(user_input_password)
+        is_matching = data_manager.verify_password(user_input_password, hashed_password)
+
+        if is_matching:
+            session['question_index'] = '0'
+            session['correct_answers'] = '0'
+            session['username'] = request.form['username']
+            return redirect(url_for('main_page'))
+        else:
+            return render_template('login_problem.html')
+        return redirect(url_for('main_page'))
+
+    return render_template('login.html')
+
+
 
 
 if __name__ == '__main__':

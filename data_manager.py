@@ -1,6 +1,6 @@
 from psycopg2 import sql
 from psycopg2.extras import RealDictCursor
-
+import bcrypt
 import connection
 
 
@@ -230,3 +230,26 @@ def get_questions_by_search_phrase(cursor, search_phrase):
     WHERE LOWER(q.title) LIKE LOWER(%s) OR LOWER(q.message) LIKE LOWER(%s) OR LOWER(answer.message) LIKE LOWER(%s)"""
     cursor.execute(query, (search_phrase_string, search_phrase_string, search_phrase_string))
     return cursor.fetchall()
+
+@connection.connection_handler
+def get_password_by_username(cursor, username):
+    query = """
+    SELECT password FROM users
+    WHERE username = %s"""
+    cursor.execute(query, (username,))
+    return cursor.fetchone()
+
+def hash_password(plain_text_password):
+    # By using bcrypt, the salt is saved into the hash itself
+    hashed_bytes = bcrypt.hashpw(plain_text_password.encode('utf-8'), bcrypt.gensalt())
+    print(hashed_bytes)
+    return hashed_bytes #.decode('utf-8')
+
+def verify_password(plain_text_password, hashed_password):
+    hashed_bytes_password = hashed_password.encode('utf-8')
+    print(plain_text_password.encode('utf-8'))
+    print(hashed_bytes_password)
+    return bcrypt.checkpw(plain_text_password.encode('utf-8'), hashed_bytes_password)
+
+#print(verify_password('test', '$2a$12$Wbe4iNNr84z6mvxWCx9Fyu3PNyY7GW6P9ljrMiwtBirSEwPZGGugS'))
+#hash_password('test')
