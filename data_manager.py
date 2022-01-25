@@ -38,17 +38,17 @@ def get_ordered_questions(cursor, order_by, direction):
 
 
 @connection.connection_handler
-def write_question(cursor, title, message, image):
-    query = sql.SQL(""" INSERT INTO question(title,message,image)
-    VALUES (%s,%s,%s)""")
-    cursor.execute(query, (title, message, image))
+def write_question(cursor, title, message, image,user_id):
+    query = sql.SQL(""" INSERT INTO question(title,message,image,user_id)
+    VALUES (%s,%s,%s,%s)""")
+    cursor.execute(query, (title, message, image,user_id))
 
 
 @connection.connection_handler
-def write_answer(cursor, question_id, message, image):
-    query = sql.SQL(""" INSERT INTO answer(question_id,message,image)
-    VALUES (%s,%s,%s)""")
-    cursor.execute(query, (question_id, message, image))
+def write_answer(cursor, question_id, message, image,user_id):
+    query = sql.SQL(""" INSERT INTO answer(question_id,message,image,user_id)
+    VALUES (%s,%s,%s,%s)""")
+    cursor.execute(query, (question_id, message, image,user_id))
 
 
 @connection.connection_handler
@@ -113,17 +113,17 @@ def set_vote_count(cursor, table, id, up_or_down):
 
 
 @connection.connection_handler
-def write_question_comment(cursor, question_id, message):
-    query = sql.SQL(""" INSERT INTO comment(question_id, message)
-        VALUES (%s,%s)""")
-    cursor.execute(query, (question_id, message))
+def write_question_comment(cursor, question_id, message,user_id):
+    query = sql.SQL(""" INSERT INTO comment(question_id, message,user_id)
+        VALUES (%s,%s,%s)""")
+    cursor.execute(query, (question_id, message, user_id))
 
 
 @connection.connection_handler
-def write_answer_comment(cursor, answer_id, message):
-    query = sql.SQL(""" INSERT INTO comment(answer_id, message)
-        VALUES (%s,%s)""")
-    cursor.execute(query, (answer_id, message))
+def write_answer_comment(cursor, answer_id, message,user_id):
+    query = sql.SQL(""" INSERT INTO comment(answer_id, message,user_id)
+        VALUES (%s,%s,%s)""")
+    cursor.execute(query, (answer_id, message,user_id))
 
 
 @connection.connection_handler

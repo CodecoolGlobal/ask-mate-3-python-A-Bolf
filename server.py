@@ -1,22 +1,21 @@
 from bonus_questions import SAMPLE_QUESTIONS
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 from werkzeug.utils import secure_filename
 import os
 import data_manager
 
+app = Flask(__name__)
 DATA_HEADER_QUESTIONS = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
 DATA_HEADER_ANSWERS = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
-UPLOAD_FOLDER = './static'
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
-app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['UPLOAD_FOLDER'] = './static'
 ORDER_BY = "submission_time"
 ORDER_DIRECTION = "asc"
 
 
 @app.route("/")
 def welcome():
-    return render_template('welcome.html')
+    # return render_template('welcome.html')
+    return redirect('/welcome')
 
 
 @app.route("/bonus-questions")
@@ -54,7 +53,8 @@ def route_list_order(order_by):
 @app.route('/add-question', methods=["POST", "GET"])
 def add_question():
     if request.method == "POST":
-        current_user_id=0
+        current_user_id=1
+        # current_user_id = session['user_id']
         image = request.form.get("image")
         if request.files["file"]:
             uploaded_file = request.files['file']
@@ -63,19 +63,21 @@ def add_question():
                 image = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(uploaded_file.filename))
         title = request.form.get("title")
         message = request.form.get("message")
-        data_manager.write_question(title=title, message=message, image=image)
+        data_manager.write_question(title=title, message=message, image=image, user_id=current_user_id)
         return redirect(url_for("route_list"))
     return render_template("add_question.html", headers=DATA_HEADER_QUESTIONS)
 
 
 @app.route('/question/<question_id>')
 def question_page(question_id):
+    current_user_id = 1
+    # current_user_id = session['user_id']
     answers = data_manager.get_answers()
     data_manager.increase_view_count(table='question', id=question_id)
     one_question = data_manager.get_question_by_id(id=question_id)
     tags = data_manager.get_tags_by_question_id(id=question_id)
     get_comments = data_manager.get_comment_by_question_id(question_id)
-    return render_template('one_question.html', question_id=int(question_id), one_question=one_question, answers=answers, get_comments=get_comments, tags=tags)
+    return render_template('one_question.html', question_id=int(question_id), one_question=one_question, answers=answers, get_comments=get_comments, tags=tags,user_id=current_user_id)
 
 
 @app.route('/question/<question_id>/tag/<tag_id>/delete')
@@ -87,8 +89,10 @@ def delete_tag(question_id, tag_id):
 @app.route('/question/<question_id>/new-comment', methods=['POST', 'GET'])
 def comment_page(question_id):
     if request.method == "POST":
+        current_user_id = 1
+        # current_user_id = session['user_id']
         comment = request.form.get("message")
-        data_manager.write_question_comment(question_id=question_id, message=comment)
+        data_manager.write_question_comment(question_id=question_id, message=comment,user_id=current_user_id)
         return redirect(url_for("question_page", question_id=question_id))
     return render_template('comment.html', question_id=question_id)
 
@@ -112,8 +116,10 @@ def edit_comments(comment_id, question_id):
 @app.route('/question/<question_id>/<answer_id>/new-comment-to-answer', methods=['POST', 'GET'])
 def comment_page_answer(answer_id, question_id):
     if request.method == "POST":
+        current_user_id = 1
+        # current_user_id = session['user_id']
         comment = request.form.get("message")
-        data_manager.write_answer_comment(answer_id=answer_id, message=comment)
+        data_manager.write_answer_comment(answer_id=answer_id, message=comment,user_id=current_user_id)
         return redirect(url_for("question_page", question_id=question_id))
     return render_template('answer_comment.html', answer_id=answer_id)
 
@@ -131,6 +137,8 @@ def edit_answer(answer_id, question_id):
 @app.route('/question/<question_id>/new-answer', methods=["POST", "GET"])
 def new_answer(question_id):
     if request.method == "POST":
+        current_user_id = 1
+        # current_user_id = session['user_id']
         message = request.form.get("message")
         image = request.form.get("image")
         if request.files["file"]:
@@ -138,7 +146,7 @@ def new_answer(question_id):
             if uploaded_file.filename != '':
                 uploaded_file.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(uploaded_file.filename)))
                 image = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(uploaded_file.filename))
-        data_manager.write_answer(question_id=question_id, message=message, image=image)
+        data_manager.write_answer(question_id=question_id, message=message, image=image, user_id=current_user_id)
         return redirect(url_for("question_page", question_id=question_id))
     return render_template('answer.html', question_id=question_id)
 
