@@ -14,16 +14,15 @@ ORDER_BY = "submission_time"
 ORDER_DIRECTION = "asc"
 
 
-
-
 @app.route("/")
 def welcome():
     return render_template('welcome.html')
-    
-    
+
+
 @app.route("/bonus-questions")
 def main():
     return render_template('bonus_questions.html', questions=SAMPLE_QUESTIONS)
+
 
 @app.route("/welcome")
 def main_page():
@@ -96,7 +95,8 @@ def comment_page(question_id):
 @app.route('/question/<question_id>/<comment_id>/delete', methods=['POST', 'GET'])
 def delete_comments(comment_id, question_id):
     data_manager.delete_comment(comment_id)
-    return redirect('/question/'+question_id)
+    return redirect('/question/' + question_id)
+
 
 @app.route('/question/<question_id>/<comment_id>/edit', methods=['POST', 'GET'])
 def edit_comments(comment_id, question_id):
@@ -104,9 +104,8 @@ def edit_comments(comment_id, question_id):
     if request.method == 'POST':
         comment = request.form.get("message")
         data_manager.edit_comment(id=comment_id, message=comment)
-        return redirect('/question/' +question_id)
-    return render_template('edit_comment.html', question_id=question_id, user_comment=user_comment,comment_id=int(comment_id))
-
+        return redirect('/question/' + question_id)
+    return render_template('edit_comment.html', question_id=question_id, user_comment=user_comment, comment_id=int(comment_id))
 
 
 @app.route('/question/<question_id>/<answer_id>/new-comment-to-answer', methods=['POST', 'GET'])
@@ -220,9 +219,9 @@ def search_question():
         for key in ["title", "message", "answ"]:
             if row.get(key) != None and search_phrase.lower() in row.get(key).lower():
                 row[key] = row[key].replace(search_phrase.lower(), f'<mark>{search_phrase.lower()}</mark>')
-                row[key]=row[key].replace(search_phrase.capitalize(),f'<mark>{search_phrase.capitalize()}</mark>')
+                row[key] = row[key].replace(search_phrase.capitalize(), f'<mark>{search_phrase.capitalize()}</mark>')
                 row[key] = row[key].replace(search_phrase.upper(), f'<mark>{search_phrase.upper()}</mark>')
-        
+
     return render_template('search_results.html',
                            search_phrase=search_phrase,
                            question_results=question_results_of_search,
