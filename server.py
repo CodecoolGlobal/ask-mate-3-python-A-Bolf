@@ -1,6 +1,7 @@
 import os
-import utility
+
 import data_manager
+import utility
 from bonus_questions import SAMPLE_QUESTIONS
 from flask import Flask, redirect, render_template, request, session, url_for
 from werkzeug.utils import secure_filename
@@ -25,13 +26,13 @@ def main():
 @app.route("/welcome")
 def main_page():
     latest_user_questions = data_manager.get_latest_questions()
-    return render_template('index.html', latest_user_questions = latest_user_questions, header = utility.get_headers(table_name="question"))
+    return render_template('index.html', latest_user_questions = latest_user_questions, header = utility.get_headers(table_name = "question"))
 
 
 @app.route('/list')
 def route_list():
     user_questions = data_manager.get_ordered_questions(ORDER_BY, ORDER_DIRECTION)
-    return render_template('list.html', user_questions = user_questions, header = utility.get_headers(table_name="question"))
+    return render_template('list.html', user_questions = user_questions, header = utility.get_headers(table_name = "question"))
 
 
 @app.route('/list/<order_by>')
@@ -46,7 +47,7 @@ def route_list_order(order_by):
     else:
         ORDER_BY = order_by
     user_questions = data_manager.get_ordered_questions(ORDER_BY, ORDER_DIRECTION)
-    return render_template('list.html', user_questions = user_questions, header = utility.get_headers(table_name="question"))
+    return render_template('list.html', user_questions = user_questions, header = utility.get_headers(table_name = "question"))
 
 
 @app.route('/add-question', methods = ["POST", "GET"])
@@ -64,7 +65,7 @@ def add_question():
         message = request.form.get("message")
         data_manager.write_question(title = title, message = message, image = image, user_id = current_user_id)
         return redirect(url_for("route_list"))
-    return render_template("add_question.html", headers = utility.get_headers(table_name="question"))
+    return render_template("add_question.html", headers = utility.get_headers(table_name = "question"))
 
 
 @app.route('/question/<question_id>')
@@ -158,6 +159,14 @@ def question_page_delete(question_id):
 
 @app.route('/question/<question_id>/vote/<up_or_down>')
 def question_page_vote(question_id, up_or_down):
+    user_id = data_manager.get_user_id(table = "question", table_id = answer_id)['user_id']
+    if up_or_down == "up":
+        change_by = 5
+        operator = "+"
+    elif up_or_down == "down":
+        change_by = 2
+        operator = "-"
+    data_manager.change_reputation(change_by = change_by, operator = operator, user_id = user_id)
     data_manager.set_vote_count(table = 'question', id = question_id, up_or_down = up_or_down)
     return redirect('/list')
 
@@ -182,6 +191,14 @@ def answer_delete(answer_id):
 
 @app.route('/answer/<answer_id>/vote/<up_or_down>')
 def answer_page_vote(answer_id, up_or_down):
+    user_id = data_manager.get_user_id(table = "answer", table_id = answer_id)['user_id']
+    if up_or_down == "up":
+        change_by = 10
+        operator = "+"
+    elif up_or_down == "down":
+        change_by = 2
+        operator = "-"
+    data_manager.change_reputation(change_by = change_by, operator = operator, user_id = user_id)
     data_manager.set_vote_count(table = 'answer', id = answer_id, up_or_down = up_or_down)
     question_id = data_manager.get_question_id_by_answer_id(answer_id = answer_id)['question_id']
     return redirect('/question/' + str(question_id))
@@ -233,7 +250,7 @@ def search_question():
     return render_template('search_results.html',
                            search_phrase = search_phrase,
                            question_results = question_results_of_search,
-                           header = utility.get_headers(table_name="question"))
+                           header = utility.get_headers(table_name = "question"))
 
 
 if __name__ == '__main__':

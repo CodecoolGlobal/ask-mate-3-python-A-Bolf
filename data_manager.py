@@ -29,10 +29,10 @@ def get_answers(cursor, ):
 def get_ordered_questions(cursor, order_by, direction):
     if direction == 'asc':
         query = sql.SQL("SELECT * FROM question ORDER BY {order_by} ASC").format(
-            order_by=sql.Identifier(order_by))
+            order_by = sql.Identifier(order_by))
     else:
         query = sql.SQL("SELECT * FROM question ORDER BY {order_by} DESC").format(
-            order_by=sql.Identifier(order_by))
+            order_by = sql.Identifier(order_by))
     cursor.execute(query, (order_by,))
     return cursor.fetchall()
 
@@ -54,11 +54,11 @@ def write_answer(cursor, question_id, message, image, user_id):
 @connection.connection_handler
 def increase_view_count(cursor, table, id):
     query = sql.SQL("""
-    UPDATE {TABLE}
+    UPDATE {table}
     SET view_number = view_number + 1
     WHERE id={id}""").format(
-        table=sql.Identifier(table), id=sql.Literal(id))
-    cursor.execute(query, )
+        table = sql.Identifier(table), id = sql.Literal(id))
+    cursor.execute(query)
 
 
 @connection.connection_handler
@@ -99,17 +99,17 @@ def delete_answer_by_id(cursor, id):
 def set_vote_count(cursor, table, id, up_or_down):
     if up_or_down == 'up':
         query = sql.SQL("""
-        UPDATE {TABLE}
+        UPDATE {table}
         SET vote_number = vote_number + 1
         WHERE id={id}""").format(
-            table=sql.Identifier(table), id=sql.Literal(id))
+            table = sql.Identifier(table), id = sql.Literal(id))
     else:
         query = sql.SQL("""
-                UPDATE {TABLE}
+                UPDATE {table}
                 SET vote_number = vote_number - 1
                 WHERE id={id}""").format(
-            table=sql.Identifier(table), id=sql.Literal(id))
-    cursor.execute(query, )
+            table = sql.Identifier(table), id = sql.Literal(id))
+    cursor.execute(query)
 
 
 @connection.connection_handler
@@ -236,6 +236,24 @@ def get_questions_by_search_phrase(cursor, search_phrase):
 def get_headers_from_table(cursor, table):
     query = sql.SQL("""
     SELECT JSON_OBJECT_KEYS(TO_JSON((SELECT t FROM public.{table} t LIMIT 1)))
-    """).format(table=sql.Identifier(table))
+    """).format(table = sql.Identifier(table))
     cursor.execute(query)
     return cursor.fetchall()
+
+
+@connection.connection_handler
+def get_user_id(cursor, table, table_id):
+    query = sql.SQL("""
+    SELECT user_id FROM {table} WHERE id = {table_id} 
+    """).format(table = sql.Identifier(table), table_id = sql.Literal(table_id))
+    cursor.execute(query)
+    return cursor.fetchone()
+
+@connection.connection_handler
+def change_reputation(cursor,change_by,operator,user_id):
+    query=sql.SQL("""
+    UPDATE user_attribute
+    SET reputation = reputation {operator} {change_by}
+    WHERE user_id={user_id}
+    """).format(user_id=sql.Literal(user_id),operator=sql.SQL(operator),change_by=sql.Literal(change_by))
+    cursor.execute(query)
