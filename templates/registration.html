@@ -22,7 +22,14 @@
      </form><br><br>
     </section>
 <br>
-    <a href="/login" ><button>...or go to Login</button></a><br><br><br>
+    <a href="/login" ><button>Login</button></a><br><br><br>
     <a href="/" ><button>Back</button></a><br>
+
+    {% if alert_message == 'taken' %}
+        <script>alert("Username {{ username }} is already taken.")</script>
+    {% elif alert_message == 'missing' %}
+        <script>alert("You have to fill out both input fields.")</script>
+    {% endif %}
+
 </body>
 </html>

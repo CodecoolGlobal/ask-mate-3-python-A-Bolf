@@ -257,32 +257,34 @@ def login():
 
 @app.route('/logout')
 def logout():
-    # remove the username from the session if it's there
     session.pop('username', None)
     return redirect(url_for('welcome'))
 
 @app.route('/registration', methods=['GET', 'POST'])
 def registration():
+    alert_message = ""
+    user_input_username = ""
     if request.method == 'POST':
         user_input_username = request.form.get("username")
         user_input_password = request.form.get("password")
         hashed_password = data_manager.hash_password(user_input_password)
 
-        user_list_realdictrow = list(data_manager.get_usernames())
-        user_list = []
-        for row in user_list_realdictrow:
-            user_list.append(row['username'])
-        print(user_list)
-
-        if user_input_username not in user_list:
-            data_manager.add_new_user(user_input_username, hashed_password)
-            session['username'] = request.form['username']
-            return redirect(url_for('main_page'))
+        if not (user_input_username and user_input_password):
+            alert_message = "missing"
         else:
-            return "Username already taken"
-        return redirect(url_for('main_page'))
+            user_list_realdictrow = list(data_manager.get_usernames())
+            user_list = []
+            for row in user_list_realdictrow:
+                user_list.append(row['username'])
 
-    return render_template('registration.html')
+            if user_input_username not in user_list:
+                data_manager.add_new_user(user_input_username, hashed_password)
+                session['username'] = request.form['username']
+                return redirect(url_for('main_page'))
+            else:
+                alert_message = "taken"
+
+    return render_template('registration.html', alert_message=alert_message, username=user_input_username)
 
 
 if __name__ == '__main__':
