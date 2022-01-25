@@ -239,6 +239,21 @@ def get_password_by_username(cursor, username):
     cursor.execute(query, (username,))
     return cursor.fetchone()
 
+@connection.connection_handler
+def get_usernames(cursor, ):
+    query = """
+    SELECT username FROM users
+    """
+    cursor.execute(query)
+    return cursor.fetchall()
+
+@connection.connection_handler
+def add_new_user(cursor, username, hashed_password):
+    query = """
+    INSERT INTO users (username, password)
+    VALUES (%s, %s)"""
+    cursor.execute(query, (username, hashed_password))
+
 def hash_password(plain_text_password):
     # By using bcrypt, the salt is saved into the hash itself
     hashed_bytes = bcrypt.hashpw(plain_text_password.encode('utf-8'), bcrypt.gensalt())

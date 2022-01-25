@@ -191,7 +191,15 @@ html{
     width: 20%;
     margin-left: 40%;
     margin-right: 40%
+}
 
-.login{
+.login {
+    color: white;
     text-align: right;
+}
+
+.login button{
+    width: 10%;
+    margin-left: 90%;
+    margin-right: 0%
 }

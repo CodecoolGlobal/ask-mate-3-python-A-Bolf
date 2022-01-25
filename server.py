@@ -78,7 +78,7 @@ def question_page(question_id):
     one_question = data_manager.get_question_by_id(id=question_id)
     tags = data_manager.get_tags_by_question_id(id=question_id)
     get_comments = data_manager.get_comment_by_question_id(question_id)
-    return render_template('one_question.html', question_id=int(question_id), one_question=one_question, answers=answers, get_comments=get_comments, tags=tags)
+    return render_template('one_question.html', question_id=int(question_id), one_question=one_question, answers=answers, get_comments=get_comments, tags=tags, username=session.get('username', 0))
 
 
 @app.route('/question/<question_id>/tag/<tag_id>/delete')
@@ -93,7 +93,7 @@ def comment_page(question_id):
         comment = request.form.get("message")
         data_manager.write_question_comment(question_id=question_id, message=comment)
         return redirect(url_for("question_page", question_id=question_id))
-    return render_template('comment.html', question_id=question_id)
+    return render_template('comment.html', question_id=question_id, username=session.get('username', 0))
 
 
 @app.route('/question/<question_id>/<comment_id>/delete', methods=['POST', 'GET'])
@@ -108,7 +108,7 @@ def edit_comments(comment_id, question_id):
         comment = request.form.get("message")
         data_manager.edit_comment(id=comment_id, message=comment)
         return redirect('/question/' +question_id)
-    return render_template('edit_comment.html', question_id=question_id, user_comment=user_comment,comment_id=int(comment_id))
+    return render_template('edit_comment.html', question_id=question_id, user_comment=user_comment,comment_id=int(comment_id), username=session.get('username', 0))
 
 
 
@@ -118,7 +118,7 @@ def comment_page_answer(answer_id, question_id):
         comment = request.form.get("message")
         data_manager.write_answer_comment(answer_id=answer_id, message=comment)
         return redirect(url_for("question_page", question_id=question_id))
-    return render_template('answer_comment.html', answer_id=answer_id)
+    return render_template('answer_comment.html', answer_id=answer_id, username=session.get('username', 0))
 
 
 @app.route('/question/<question_id>/<answer_id>/edit-answer', methods=["POST", "GET"])
@@ -128,7 +128,7 @@ def edit_answer(answer_id, question_id):
         message = request.form.get("message")
         data_manager.edit_answer_by_id(id=answer_id, message=message)
         return redirect(url_for("question_page", question_id=question_id))
-    return render_template('edit_answer.html', answer_id_id=answer_id, user_answer=user_answer)
+    return render_template('edit_answer.html', answer_id_id=answer_id, user_answer=user_answer, username=session.get('username', 0))
 
 
 @app.route('/question/<question_id>/new-answer', methods=["POST", "GET"])
@@ -143,7 +143,7 @@ def new_answer(question_id):
                 image = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(uploaded_file.filename))
         data_manager.write_answer(question_id=question_id, message=message, image=image)
         return redirect(url_for("question_page", question_id=question_id))
-    return render_template('answer.html', question_id=question_id)
+    return render_template('answer.html', question_id=question_id, username=session.get('username', 0))
 
 
 @app.route('/question/<question_id>/delete')
@@ -166,7 +166,7 @@ def edit_question(question_id):
         message = request.form.get("message")
         data_manager.edit_question_by_id(id=question_id, title=title, message=message)
         return redirect('/list')
-    return render_template('edit_question.html', question_id=question_id, user_question=user_question)
+    return render_template('edit_question.html', question_id=question_id, user_question=user_question, username=session.get('username', 0))
 
 
 @app.route('/answer/<answer_id>/delete')
@@ -198,7 +198,7 @@ def add_new_tag(question_id):
                 data_manager.add_tag_to_id(question_id=question_id, tag_id=id)
             return redirect(url_for("question_page", question_id=question_id))
 
-    return render_template('new-tag.html', tags=tags, question_tags=question_tags)
+    return render_template('new-tag.html', tags=tags, question_tags=question_tags, username=session.get('username', 0))
 
 
 @app.route('/', methods=['POST'])
@@ -217,7 +217,7 @@ def search_question():
         question_results_of_search = data_manager.get_questions_by_search_phrase(search_phrase)
     else:
         print("Something's not right with searching - no search phrase")
-        return redirect('/welcome')
+        return redirect('/index')
 
     for row in question_results_of_search:
         for key in ["title", "message", "answ"]:
@@ -229,21 +229,24 @@ def search_question():
     return render_template('search_results.html',
                            search_phrase=search_phrase,
                            question_results=question_results_of_search,
-                           header=DATA_HEADER_QUESTIONS)
+                           header=DATA_HEADER_QUESTIONS,
+                           username=session.get('username', 0))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         user_input_username = request.form.get("username")
         user_input_password = request.form.get("password")
-        hashed_password = dict(data_manager.get_password_by_username(user_input_username))['password']
-        print(hashed_password)
-        print(user_input_password)
-        is_matching = data_manager.verify_password(user_input_password, hashed_password)
 
+        if not (user_input_username and user_input_password):
+            return render_template('login_problem.html')
+        try:
+            hashed_password = dict(data_manager.get_password_by_username(user_input_username)).get('password',0)
+        except:
+            return render_template('login_problem.html')
+
+        is_matching = data_manager.verify_password(user_input_password, hashed_password)
         if is_matching:
-            session['question_index'] = '0'
-            session['correct_answers'] = '0'
             session['username'] = request.form['username']
             return redirect(url_for('main_page'))
         else:
@@ -256,30 +259,30 @@ def login():
 def logout():
     # remove the username from the session if it's there
     session.pop('username', None)
-    return redirect(url_for('main_page'))
+    return redirect(url_for('welcome'))
 
 @app.route('/registration', methods=['GET', 'POST'])
-def login():
+def registration():
     if request.method == 'POST':
         user_input_username = request.form.get("username")
         user_input_password = request.form.get("password")
-        hashed_password = dict(data_manager.get_password_by_username(user_input_username))['password']
-        print(hashed_password)
-        print(user_input_password)
-        is_matching = data_manager.verify_password(user_input_password, hashed_password)
+        hashed_password = data_manager.hash_password(user_input_password)
 
-        if is_matching:
-            session['question_index'] = '0'
-            session['correct_answers'] = '0'
+        user_list_realdictrow = list(data_manager.get_usernames())
+        user_list = []
+        for row in user_list_realdictrow:
+            user_list.append(row['username'])
+        print(user_list)
+
+        if user_input_username not in user_list:
+            data_manager.add_new_user(user_input_username, hashed_password)
             session['username'] = request.form['username']
             return redirect(url_for('main_page'))
         else:
-            return render_template('login_problem.html')
+            return "Username already taken"
         return redirect(url_for('main_page'))
 
-    return render_template('login.html')
-
-
+    return render_template('registration.html')
 
 
 if __name__ == '__main__':
