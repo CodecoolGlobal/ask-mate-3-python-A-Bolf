@@ -30,7 +30,6 @@ CREATE TABLE users(
 
 DROP TABLE IF EXISTS public.user_attribute CASCADE;
 CREATE TABLE user_attribute (
-    id serial NOT NULL,
     user_id integer NOT NULL,
     reputation integer DEFAULT 0
 
@@ -89,7 +88,7 @@ ALTER TABLE ONLY users
     ADD CONSTRAINT pk_user_id PRIMARY KEY (id);
 
 ALTER TABLE ONLY user_attribute
-    ADD CONSTRAINT pk_user_attribute_id PRIMARY KEY (id,user_id);
+    ADD CONSTRAINT pk_user_attribute_id PRIMARY KEY (user_id);
 
 ALTER TABLE ONLY answer
     ADD CONSTRAINT pk_answer_id PRIMARY KEY (id);
