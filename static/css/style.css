@@ -203,3 +203,19 @@ html{
     margin-left: 90%;
     margin-right: 0%
 }
+
+#accepted{
+    font-size: 30px;
+    color: #03e1e1;
+   -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: black;
+}
+
+#unaccept{
+     font-size: small;
+    padding: 1px 1px;
+    display: inline;
+    float: none;
+    -webkit-text-stroke-width: unset;
+  -webkit-text-stroke-color: transparent;
+}

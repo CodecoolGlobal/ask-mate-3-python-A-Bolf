@@ -54,7 +54,7 @@ def write_answer(cursor, question_id, message, image, user_id):
 @connection.connection_handler
 def increase_view_count(cursor, table, id):
     query = sql.SQL("""
-    UPDATE {TABLE}
+    UPDATE {table}
     SET view_number = view_number + 1
     WHERE id={id}""").format(
         table=sql.Identifier(table), id=sql.Literal(id))
@@ -99,13 +99,13 @@ def delete_answer_by_id(cursor, id):
 def set_vote_count(cursor, table, id, up_or_down):
     if up_or_down == 'up':
         query = sql.SQL("""
-        UPDATE {TABLE}
+        UPDATE {table}
         SET vote_number = vote_number + 1
         WHERE id={id}""").format(
             table=sql.Identifier(table), id=sql.Literal(id))
     else:
         query = sql.SQL("""
-                UPDATE {TABLE}
+                UPDATE {table}
                 SET vote_number = vote_number - 1
                 WHERE id={id}""").format(
             table=sql.Identifier(table), id=sql.Literal(id))
@@ -258,7 +258,7 @@ def add_new_user(cursor, username, hashed_password):
 def hash_password(plain_text_password):
     # By using bcrypt, the salt is saved into the hash itself
     hashed_bytes = bcrypt.hashpw(plain_text_password.encode('utf-8'), bcrypt.gensalt())
-    return hashed_bytes #.decode('utf-8')
+    return hashed_bytes.decode('utf-8')
 
 def verify_password(plain_text_password, hashed_password):
     hashed_bytes_password = hashed_password.encode('utf-8')
@@ -273,3 +273,33 @@ def get_headers_from_table(cursor, table):
     cursor.execute(query)
     return cursor.fetchall()
 
+
+@connection.connection_handler
+def accept_answer(cursor,answer_id):
+    query="""
+    UPDATE answer
+    SET accepted = TRUE
+    WHERE answer.id=%s
+    RETURNING answer.user_id
+    """
+    cursor.execute(query,(answer_id,))
+    return cursor.fetchone()
+
+@connection.connection_handler
+def unaccept_answer(cursor,answer_id):
+    query="""
+    UPDATE answer
+    SET accepted = FALSE
+    WHERE answer.id=%s
+    RETURNING answer.user_id
+    """
+    cursor.execute(query,(answer_id,))
+    return cursor.fetchone()
+
+@connection.connection_handler
+def get_id_by_name(cursor,username):
+    query="""SELECT id 
+    FROM users 
+    WHERE username like %s"""
+    cursor.execute(query,(username,))
+    return cursor.fetchone()
