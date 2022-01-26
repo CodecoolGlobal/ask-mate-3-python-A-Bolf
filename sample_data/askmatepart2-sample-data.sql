@@ -16,6 +16,26 @@ ALTER TABLE IF EXISTS ONLY public.question_tag DROP CONSTRAINT IF EXISTS fk_ques
 ALTER TABLE IF EXISTS ONLY public.tag DROP CONSTRAINT IF EXISTS pk_tag_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.question_tag DROP CONSTRAINT IF EXISTS fk_tag_id CASCADE;
 
+DROP TABLE IF EXISTS public.user_question CASCADE ;
+DROP TABLE IF EXISTS public.user_answer CASCADE;
+DROP TABLE IF EXISTS public.user_comment CASCADE;
+
+DROP TABLE IF EXISTS public.users CASCADE;
+CREATE TABLE users(
+    id serial NOT NULL,
+    username text,
+    password text,
+    registration_date timestamp without time zone default current_timestamp
+);
+
+DROP TABLE IF EXISTS public.user_attribute CASCADE;
+CREATE TABLE user_attribute (
+    user_id integer NOT NULL,
+    reputation integer DEFAULT 0
+
+);
+
+
 DROP TABLE IF EXISTS public.question;
 CREATE TABLE question (
     id serial NOT NULL,
@@ -24,7 +44,8 @@ CREATE TABLE question (
     vote_number integer default 0,
     title text,
     message text,
-    image text
+    image text,
+    user_id integer
 );
 
 DROP TABLE IF EXISTS public.answer;
@@ -34,7 +55,8 @@ CREATE TABLE answer (
     vote_number integer default 0,
     question_id integer,
     message text,
-    image text
+    image text,
+    user_id integer
 );
 
 DROP TABLE IF EXISTS public.comment;
@@ -44,7 +66,8 @@ CREATE TABLE comment (
     answer_id integer,
     message text,
     submission_time timestamp without time zone default current_timestamp,
-    edited_count integer default 0
+    edited_count integer default 0,
+    user_id integer
 );
 
 
@@ -61,6 +84,12 @@ CREATE TABLE tag (
 );
 
 
+ALTER TABLE ONLY users
+    ADD CONSTRAINT pk_user_id PRIMARY KEY (id);
+
+ALTER TABLE ONLY user_attribute
+    ADD CONSTRAINT pk_user_attribute_id PRIMARY KEY (user_id);
+
 ALTER TABLE ONLY answer
     ADD CONSTRAINT pk_answer_id PRIMARY KEY (id);
 
@@ -76,8 +105,21 @@ ALTER TABLE ONLY question_tag
 ALTER TABLE ONLY tag
     ADD CONSTRAINT pk_tag_id PRIMARY KEY (id);
 
+ALTER TABLE ONLY user_attribute
+    ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY comment
     ADD CONSTRAINT fk_answer_id FOREIGN KEY (answer_id) REFERENCES answer(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY answer
+    ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY question
+    ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY comment
+    ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
 
 ALTER TABLE ONLY answer
     ADD CONSTRAINT fk_question_id FOREIGN KEY (question_id) REFERENCES question(id) ON DELETE CASCADE;
@@ -121,3 +163,5 @@ SELECT pg_catalog.setval('tag_id_seq', 3, true);
 INSERT INTO question_tag VALUES (0, 1);
 INSERT INTO question_tag VALUES (1, 3);
 INSERT INTO question_tag VALUES (2, 3);
+
+INSERT INTO users (username,password) VALUES ('test@test.com','$2b$12$R4ZSqYz1ZURhI2uYa275OervVgwVczaMxToGK2fA6tuzavL0b0Hsm')
