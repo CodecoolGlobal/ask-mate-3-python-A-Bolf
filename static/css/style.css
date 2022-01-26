@@ -210,3 +210,12 @@ html{
    -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: black;
 }
+
+#unaccept{
+     font-size: small;
+    padding: 1px 1px;
+    display: inline;
+    float: none;
+    -webkit-text-stroke-width: unset;
+  -webkit-text-stroke-color: transparent;
+}

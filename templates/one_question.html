@@ -51,7 +51,10 @@
                        </td>
                    {% endif %}
                        {% if item.accepted==true %}
-                       <td id="accepted"> Accepted Answer </td>
+                           <td id="accepted">
+                           Accepted Answer
+                           <a href="/answer/{{ item["id"]}}/unaccept"><button onclick="/answer/{{ item["id"]}}/unaccept" id="unaccept">Unaccept</button></a>
+                           </td>
                    {% endif %}
 
            </tr>

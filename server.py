@@ -203,6 +203,12 @@ def answer_accept(answer_id):
     question_id = data_manager.get_question_id_by_answer_id(answer_id = answer_id)['question_id']
     return redirect('/question/' + str(question_id))
 
+@app.route('/answer/<answer_id>/unaccept')
+def answer_unaccept(answer_id):
+    data_manager.unaccept_answer(answer_id = answer_id)
+    question_id = data_manager.get_question_id_by_answer_id(answer_id = answer_id)['question_id']
+    return redirect('/question/' + str(question_id))
+
 
 @app.route('/answer/<answer_id>/vote/<up_or_down>')
 def answer_page_vote(answer_id, up_or_down):

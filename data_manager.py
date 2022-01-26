@@ -286,6 +286,17 @@ def accept_answer(cursor,answer_id):
     return cursor.fetchone()
 
 @connection.connection_handler
+def unaccept_answer(cursor,answer_id):
+    query="""
+    UPDATE answer
+    SET accepted = FALSE
+    WHERE answer.id=%s
+    RETURNING answer.user_id
+    """
+    cursor.execute(query,(answer_id,))
+    return cursor.fetchone()
+
+@connection.connection_handler
 def get_id_by_name(cursor,username):
     query="""SELECT id 
     FROM users 
