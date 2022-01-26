@@ -227,6 +227,15 @@ def search_question():
                            question_results=question_results_of_search,
                            header=DATA_HEADER_QUESTIONS)
 
+@app.route('/user')
+def list_users():
+    id = 1
+    username = data_manager.get_user_by_id(id=id)
+    informations = data_manager.user_informations(id=id)
+    print(username['username'], informations)
+    if True:
+        return render_template('users.html', username=username, informations=informations)
+
 
 if __name__ == '__main__':
     app.run(

@@ -230,3 +230,25 @@ def get_questions_by_search_phrase(cursor, search_phrase):
     WHERE LOWER(q.title) LIKE LOWER(%s) OR LOWER(q.message) LIKE LOWER(%s) OR LOWER(answer.message) LIKE LOWER(%s)"""
     cursor.execute(query, (search_phrase_string, search_phrase_string, search_phrase_string))
     return cursor.fetchall()
+
+@connection.connection_handler
+def get_user_by_id(cursor, id):
+    query = """
+    SELECT username FROM users
+    WHERE id = %s"""
+    cursor.execute(query, (id,))
+    return cursor.fetchone()
+
+@connection.connection_handler
+def user_informations(cursor, id):
+    query = """
+    SELECT users.username, users.registration_date, count(DISTINCT answer.id) as Number_of_answers, count(DISTINCT question.message) as Number_of_asked_questions, count(DISTINCT comment.message) as Number_of_comments, user_attribute.reputation
+    FROM users
+    JOIN answer  on users.id = answer.user_id
+    JOIN question on users.id = question.user_id
+    JOIN comment on users.id = comment.user_id
+    JOIN user_attribute on users.id = user_attribute.user_id
+    GROUP BY username, users.registration_date, user_attribute.reputation """
+    cursor.execute(query, (id,id,id))
+    return cursor.fetchall()
+
