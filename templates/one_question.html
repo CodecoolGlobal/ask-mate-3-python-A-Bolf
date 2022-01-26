@@ -22,11 +22,12 @@
                <th style="color:Teal; height:50px;">Answer</th>
                 <th style="color:Teal; height:50px;">Image</th>
                 <th style="color:Teal; height:50px;">Vote Number</th>
-                <th style="color:Teal; height:50px;">Vote up!</th>
-                <th style="color:Teal; height:50px;">Vote down!</th>
-                <th style="color:Teal; height:50px;">Delete</th>
-                <th style="color:Teal; height:50px;">comment</th>
-                <th style="color:Teal; height:50px;">Edit</th>
+                <th style="color:Teal; height:50px;"></th>
+                <th style="color:Teal; height:50px;"></th>
+                <th style="color:Teal; height:50px;"></th>
+                <th style="color:Teal; height:50px;"></th>
+                <th style="color:Teal; height:50px;"></th>
+                {% if one_question.user_id==user_id %}<th style="color:Teal; height:50px;"></th>{% endif %}
             </tr>
        {% for item in answers %}
             {% if item["question_id"] == question_id %}
@@ -43,6 +44,16 @@
                <td><a href="/answer/{{ item["id"]}}/delete"><button>Delete this answer </button></a></td>
                <td><a href="/question/{{ question_id }}/{{ item["id"] }}/new-comment-to-answer"><button>Add comment</button></a></td>
                <td><a href="/question/{{ question_id }}/{{ item["id"] }}/edit-answer"><button>Edit answer</button></a></td>
+
+                   {% if one_question.user_id==user_id and item.accepted == false%}
+                       <td>
+                       <a href="/answer/{{ item["id"]}}/accept"><button>Mark as accepted </button></a>
+                       </td>
+                   {% endif %}
+                       {% if item.accepted==true %}
+                       <td id="accepted"> Accepted Answer </td>
+                   {% endif %}
+
            </tr>
         {% endif %}
      {% endfor %}
