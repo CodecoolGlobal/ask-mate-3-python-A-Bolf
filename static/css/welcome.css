@@ -84,6 +84,11 @@ h1{
 }
 
 button{
+
+    width: 80%;
+    margin-left: 10%;
+    margin-right: 10%
+
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     border-radius: 5px;

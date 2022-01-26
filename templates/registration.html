@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Registration Page</title>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    </head>
+<body onload="alertMessage()">
+<br><br>
+<h1 style= "color:white; text-align:center">Registration</h1>
+    <section class="login_first">
+
+     <form action="/registration" method="post">
+
+        <label for="username">Username : <br> (Your e-mail address) </label><br>
+        <input id="username" type="email" name="username" required><br><br>
+
+        <label for="password">Password : <br> (At least 4 characters) </label><br>
+        <input id="password" type="password" name="password" minlength="4" required><br><br><br>
+
+        <button type="submit">Register</button>
+     </form><br><br>
+    </section>
+<br>
+    <a href="/login" ><button>Login</button></a><br><br><br>
+    <a href="/" ><button>Back</button></a><br>
+
+</body>
+
+
+<script>
+
+    function alertMessage() {
+        if ("{{alert_message}}" == "taken")
+        {
+            alert("Username {{ username }} is already taken.");
+        }
+        if ("{{alert_message}}" == "missing")
+        {
+            alert("You have to fill out both input fields.");
+        }
+    }
+</script>
+
+</html>
