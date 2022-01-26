@@ -1,7 +1,6 @@
 
 from flask import Flask, render_template, request, redirect, url_for, session, make_response
 from werkzeug.utils import secure_filename
-
 import os
 import utility
 import data_manager
@@ -20,8 +19,7 @@ ORDER_DIRECTION = "asc"
 
 @app.route("/")
 def welcome():
-    # return render_template('welcome.html')
-    return redirect('/welcome')
+    return render_template('welcome.html')
 
 
 @app.route("/bonus-questions")
