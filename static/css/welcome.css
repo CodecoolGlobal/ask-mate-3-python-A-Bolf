@@ -65,14 +65,21 @@ h1{
 
 .home-title span:nth-of-type(2)::before,
 .home-title span:nth-of-type(2)::after{
-    animation-delay: 0.7s;
+    animation-delay: 0.1s;
 }
 
 .home-title span:nth-of-type(3)::before,
 .home-title span:nth-of-type(3)::after{
-    animation-delay: 1.4s;
+    animation-delay: 1s;
 }
-
+.home-title span:nth-of-type(4)::before,
+.home-title span:nth-of-type(4)::after{
+    animation-delay: 1s;
+}
+.home-title span:nth-of-type(5)::before,
+.home-title span:nth-of-type(5)::after{
+    animation-delay: 1s;
+}
 @keyframes a-ltr-after{
     0% {transform: translateX(-100%)}
     100% {transform: translateX(101%)}
@@ -95,7 +102,6 @@ button{
     -moz-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
     -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
     box-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
-
     background: #025b5b;
     background: -moz-linear-gradient(19% 75% 90deg, #065252,
     #025b5b);
@@ -107,6 +113,7 @@ button{
     font-weight: bold;
     padding: 4px 10px;
     text-decoration: none;
+    margin-bottom: 15px;
     }
 button:hover{
     background: #025e5e;
