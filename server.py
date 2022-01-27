@@ -209,13 +209,15 @@ def answer_delete(answer_id):
 
 @app.route('/answer/<answer_id>/accept')
 def answer_accept(answer_id):
-    data_manager.accept_answer(answer_id = answer_id)
+    user_id=data_manager.accept_answer(answer_id = answer_id)['user_id']
+    data_manager.change_reputation(operator="+",change_by=15,user_id=user_id)
     question_id = data_manager.get_question_id_by_answer_id(answer_id = answer_id)['question_id']
     return redirect('/question/' + str(question_id))
 
 @app.route('/answer/<answer_id>/unaccept')
 def answer_unaccept(answer_id):
-    data_manager.unaccept_answer(answer_id = answer_id)
+    user_id=data_manager.unaccept_answer(answer_id = answer_id)['user_id']
+    data_manager.change_reputation(operator = "-", change_by = 15, user_id = user_id)
     question_id = data_manager.get_question_id_by_answer_id(answer_id = answer_id)['question_id']
     return redirect('/question/' + str(question_id))
 
@@ -302,7 +304,7 @@ def login():
         is_matching = data_manager.verify_password(user_input_password, hashed_password)
         if is_matching:
             session['username'] = request.form['username']
-            session['user_id'] = data_manager.get_id_by_name(username=request.form['username'])['id']
+            session['user_id'] = data_manager.get_id_by_name(name=request.form['username'])['id']
             return redirect(url_for('main_page'))
         else:
             return render_template('login_problem.html')
