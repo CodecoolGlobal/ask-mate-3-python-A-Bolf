@@ -480,7 +480,7 @@ def list_users():
 @app.route('/tags')
 def list_tags():
     tags = data_manager.get_tag_count()
-    return render_template('tags.html', tags=tags, username=session.get('username', 0))
+    return render_template('tags.html', tags=tags, username=session.get('username', 0), user_id=session.get('user_id', 0))
 
 @app.route('/user/<user_id>')
 def one_user_page(user_id):
@@ -497,7 +497,7 @@ def one_user_page(user_id):
                            user_answers=user_answers,
                            user_comments=user_comments,
                            username=session.get('username', 0),
-                           user_id=current_user_id)
+                           user_id=session.get('user_id', 0))
 
 
 if __name__ == '__main__':
