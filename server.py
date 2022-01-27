@@ -1,3 +1,7 @@
+
+from flask import Flask, render_template, request, redirect, url_for, session, make_response
+from werkzeug.utils import secure_filename
+
 import os
 
 from flask import Flask, redirect, render_template, request, session, url_for
@@ -36,9 +40,10 @@ def main_page():
         session['user_id'] = 0
         current_user_id = 0
     return render_template('index.html',
-                           latest_user_questions = latest_user_questions,
-                           header = utility.get_headers(table_name = "question"),
-                           username = session.get('username', 0))
+                           latest_user_questions=latest_user_questions,
+                           header=utility.get_headers(table_name="question"),
+                           username=session.get('username', 0),
+                           user_id=session.get('user_id', 0))
 
 
 @app.route('/list')
@@ -46,9 +51,10 @@ def route_list():
     user_questions = data_manager.get_ordered_questions(ORDER_BY, ORDER_DIRECTION)
 
     return render_template('list.html',
-                           user_questions = user_questions,
-                           header = utility.get_headers(table_name = "question"),
-                           username = session.get('username', 0))
+                           user_questions=user_questions,
+                           header=utility.get_headers(table_name="question"),
+                           username=session.get('username', 0),
+                           user_id=session.get('user_id', 0))
 
 
 @app.route('/list/<order_by>')
@@ -65,9 +71,10 @@ def route_list_order(order_by):
     user_questions = data_manager.get_ordered_questions(ORDER_BY, ORDER_DIRECTION)
 
     return render_template('list.html',
-                           user_questions = user_questions,
-                           header = utility.get_headers(table_name = "question"),
-                           username = session.get('username', 0))
+                           user_questions=user_questions,
+                           header=utility.get_headers(table_name="question"),
+                           username=session.get('username', 0),
+                           user_id=session.get('user_id', 0))
 
 
 @app.route('/add-question', methods = ["POST", "GET"])
@@ -91,7 +98,8 @@ def add_question():
     elif request.method == "POST" and current_user_id == 0:
         return redirect(url_for("route_list"))
 
-    return render_template("add_question.html", headers = utility.get_headers(table_name = "question"), username = session.get('username', 0))
+    return render_template("add_question.html", headers=utility.get_headers(table_name="question"), username=session.get('username', 0),
+                           user_id=session.get('user_id', 0))
 
 
 @app.route('/question/<question_id>')
@@ -133,9 +141,11 @@ def comment_page(question_id):
 
         data_manager.write_question_comment(question_id = question_id, message = comment, user_id = current_user_id)
         return redirect(url_for("question_page", question_id = question_id))
+    
     elif request.method == "POST" and current_user_id == 0:
         return redirect(url_for("question_page", question_id = question_id))
-    return render_template('comment.html', question_id = question_id, username = session.get('username', 0))
+    return render_template('comment.html', question_id = question_id, username=session.get('username', 0),
+                           user_id=session.get('user_id', 0))
 
 
 @app.route('/question/<question_id>/<comment_id>/delete', methods = ['POST', 'GET'])
@@ -163,10 +173,11 @@ def edit_comments(comment_id, question_id):
 
         data_manager.edit_comment(id = comment_id, message = comment)
         return redirect('/question/' + question_id)
+
     elif request.method == "POST" and current_user_id == 0:
         return redirect('/question/' + question_id)
-    return render_template('edit_comment.html', question_id = question_id, user_comment = user_comment, comment_id = int(comment_id), username = session.get('username', 0))
-
+    return render_template('edit_comment.html', question_id = question_id, user_comment = user_comment, comment_id = int(comment_id), username=session.get('username', 0),
+                           user_id=session.get('user_id', 0))
 
 @app.route('/question/<question_id>/<answer_id>/new-comment-to-answer', methods = ['POST', 'GET'])
 def comment_page_answer(answer_id, question_id):
@@ -182,7 +193,8 @@ def comment_page_answer(answer_id, question_id):
         return redirect(url_for("question_page", question_id = question_id))
     elif request.method == "POST" and current_user_id == 0:
         return redirect(url_for("question_page", question_id = question_id))
-    return render_template('answer_comment.html', answer_id = answer_id, username = session.get('username', 0))
+    return render_template('answer_comment.html', answer_id = answer_id, username=session.get('username', 0),
+                           user_id=session.get('user_id', 0))
 
 
 @app.route('/question/<question_id>/<answer_id>/edit-answer', methods = ["POST", "GET"])
@@ -200,8 +212,8 @@ def edit_answer(answer_id, question_id):
         return redirect(url_for("question_page", question_id = question_id))
     elif request.method == 'POST' and current_user_id == 0:
         return redirect(url_for("question_page", question_id = question_id))
-    return render_template('edit_answer.html', answer_id_id = answer_id, user_answer = user_answer, username = session.get('username', 0))
-
+    return render_template('edit_answer.html', answer_id_id = answer_id, user_answer = user_answer, username=session.get('username', 0),
+                           user_id=session.get('user_id', 0))
 
 @app.route('/question/<question_id>/new-answer', methods = ["POST", "GET"])
 def new_answer(question_id):
@@ -221,7 +233,8 @@ def new_answer(question_id):
 
         data_manager.write_answer(question_id = question_id, message = message, image = image, user_id = current_user_id)
         return redirect(url_for("question_page", question_id = question_id))
-    return render_template('answer.html', question_id = question_id, username = session.get('username', 0))
+    return render_template('answer.html', question_id = question_id, username=session.get('username', 0),
+                           user_id=session.get('user_id', 0))
 
 
 @app.route('/question/<question_id>/delete')
@@ -271,7 +284,8 @@ def edit_question(question_id):
         return redirect('/list')
     elif request.method == 'POST' and current_user_id == 0:
         return redirect('/list')
-    return render_template('edit_question.html', question_id = question_id, user_question = user_question, username = session.get('username', 0))
+    return render_template('edit_question.html', question_id=question_id, user_question=user_question, username=session.get('username', 0),
+                           user_id=session.get('user_id', 0))
 
 
 @app.route('/answer/<answer_id>/delete')
@@ -357,7 +371,8 @@ def add_new_tag(question_id):
             return redirect(url_for("question_page", question_id = question_id))
     elif request.method == "POST" and current_user_id == 0:
         return redirect(url_for("question_page", question_id = question_id))
-    return render_template('new-tag.html', tags = tags, question_tags = question_tags, username = session.get('username', 0))
+    return render_template('new-tag.html', tags=tags, question_tags=question_tags, username=session.get('username', 0),
+                           user_id=session.get('user_id', 0))
 
 
 @app.route('/', methods = ['POST'])
@@ -380,17 +395,17 @@ def search_question():
 
     for row in question_results_of_search:
         for key in ["title", "message", "answ"]:
-            if row.get(key) is None and search_phrase.lower() in row.get(key).lower():
+            if row.get(key) is not None and search_phrase.lower() in row.get(key).lower():
                 row[key] = row[key].replace(search_phrase.lower(), f'<mark>{search_phrase.lower()}</mark>')
                 row[key] = row[key].replace(search_phrase.capitalize(), f'<mark>{search_phrase.capitalize()}</mark>')
                 row[key] = row[key].replace(search_phrase.upper(), f'<mark>{search_phrase.upper()}</mark>')
 
     return render_template('search_results.html',
-                           search_phrase = search_phrase,
-                           question_results = question_results_of_search,
-
-                           header = utility.get_headers(table_name = "question"),
-                           username = session.get('username', 0))
+                           search_phrase=search_phrase,
+                           question_results=question_results_of_search,
+                           header = utility.get_headers(table_name="question"),
+                           username=session.get('username', 0),
+                           user_id=session.get('user_id', 0))
 
 
 @app.route('/login', methods = ['GET', 'POST'])
@@ -466,6 +481,23 @@ def list_users():
 def list_tags():
     tags = data_manager.get_tags()
     return render_template('tags.html', tags = tags)
+
+@app.route('/user/<user_id>')
+def one_user_page(user_id):
+    current_user_id = session.get('user_id', 0)
+    user_info = data_manager.get_user_by_id(current_user_id)
+    user_questions = data_manager.get_questions_by_user_id(user_id=current_user_id)
+    user_answers = data_manager.get_answers_by_user_id(user_id=current_user_id)
+    user_comments = data_manager.get_comments_by_user_id(user_id=current_user_id)
+
+    return render_template('one_user.html',
+                           user_info=user_info,
+                           question_header=utility.get_headers(table_name="question"),
+                           user_questions=user_questions,
+                           user_answers=user_answers,
+                           user_comments=user_comments,
+                           username=session.get('username', 0),
+                           user_id=current_user_id)
 
 
 if __name__ == '__main__':
