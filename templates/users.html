@@ -13,7 +13,7 @@
             </tr>
         {% for row in informations %}
             <tr>
-                <td><a href="/{{ user_id }}/">{{ row['username'] }}</a></td>
+                <td><a href="/user/{{ row["id"] }}">{{ row['username'] }}</a></td>
                 <td>{{ row['registration_date'] }}</td>
                 <td>{{ row['number_of_answers'] }}</td>
                 <td>{{ row['number_of_asked_questions'] }}</td>
