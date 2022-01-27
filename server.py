@@ -1,4 +1,5 @@
 import os
+
 from flask import Flask, redirect, render_template, request, session, url_for
 from werkzeug.utils import secure_filename
 
@@ -29,7 +30,11 @@ def main():
 @app.route("/index")
 def main_page():
     latest_user_questions = data_manager.get_latest_questions()
-
+    try:
+        current_user_id = session['user_id']
+    except KeyError:
+        session['user_id'] = 0
+        current_user_id = 0
     return render_template('index.html',
                            latest_user_questions = latest_user_questions,
                            header = utility.get_headers(table_name = "question"),
@@ -65,11 +70,14 @@ def route_list_order(order_by):
                            username = session.get('username', 0))
 
 
-
 @app.route('/add-question', methods = ["POST", "GET"])
 def add_question():
-    if request.method == "POST":
+    try:
         current_user_id = session['user_id']
+    except KeyError:
+        session['user_id'] = 0
+        current_user_id = 0
+    if request.method == "POST" and current_user_id != 0:
         image = request.form.get("image")
         if request.files["file"]:
             uploaded_file = request.files['file']
@@ -80,14 +88,19 @@ def add_question():
         message = request.form.get("message")
         data_manager.write_question(title = title, message = message, image = image, user_id = current_user_id)
         return redirect(url_for("route_list"))
-
+    elif request.method == "POST" and current_user_id == 0:
+        return redirect(url_for("route_list"))
 
     return render_template("add_question.html", headers = utility.get_headers(table_name = "question"), username = session.get('username', 0))
 
 
 @app.route('/question/<question_id>')
 def question_page(question_id):
-    current_user_id = session['user_id']
+    try:
+        current_user_id = session['user_id']
+    except KeyError:
+        session['user_id'] = 0
+        current_user_id = 0
     answers = data_manager.get_answers()
     data_manager.increase_view_count(table = 'question', id = question_id)
     one_question = data_manager.get_question_by_id(id = question_id)
@@ -98,45 +111,76 @@ def question_page(question_id):
 
 @app.route('/question/<question_id>/tag/<tag_id>/delete')
 def delete_tag(question_id, tag_id):
-    data_manager.delete_tag_from_question(question_id = question_id, tag_id = tag_id)
+    try:
+        current_user_id = session['user_id']
+    except KeyError:
+        session['user_id'] = 0
+        current_user_id = 0
+    if current_user_id != 0:
+        data_manager.delete_tag_from_question(question_id = question_id, tag_id = tag_id)
     return redirect(f'/question/{question_id}')
 
 
 @app.route('/question/<question_id>/new-comment', methods = ['POST', 'GET'])
 def comment_page(question_id):
-    if request.method == "POST":
+    try:
         current_user_id = session['user_id']
+    except KeyError:
+        session['user_id'] = 0
+        current_user_id = 0
+    if request.method == "POST" and current_user_id != 0:
         comment = request.form.get("message")
 
         data_manager.write_question_comment(question_id = question_id, message = comment, user_id = current_user_id)
+        return redirect(url_for("question_page", question_id = question_id))
+    elif request.method == "POST" and current_user_id == 0:
         return redirect(url_for("question_page", question_id = question_id))
     return render_template('comment.html', question_id = question_id, username = session.get('username', 0))
 
 
 @app.route('/question/<question_id>/<comment_id>/delete', methods = ['POST', 'GET'])
 def delete_comments(comment_id, question_id):
-    data_manager.delete_comment(comment_id)
+    try:
+        current_user_id = session['user_id']
+    except KeyError:
+        session['user_id'] = 0
+        current_user_id = 0
+    if current_user_id != 0:
+        data_manager.delete_comment(comment_id)
     return redirect('/question/' + question_id)
 
 
 @app.route('/question/<question_id>/<comment_id>/edit', methods = ['POST', 'GET'])
 def edit_comments(comment_id, question_id):
     user_comment = data_manager.get_comment_by_question_id(question_id = question_id)
-    if request.method == 'POST':
+    try:
+        current_user_id = session['user_id']
+    except KeyError:
+        session['user_id'] = 0
+        current_user_id = 0
+    if request.method == 'POST' and current_user_id != 0:
         comment = request.form.get("message")
 
         data_manager.edit_comment(id = comment_id, message = comment)
+        return redirect('/question/' + question_id)
+    elif request.method == "POST" and current_user_id == 0:
         return redirect('/question/' + question_id)
     return render_template('edit_comment.html', question_id = question_id, user_comment = user_comment, comment_id = int(comment_id), username = session.get('username', 0))
 
 
 @app.route('/question/<question_id>/<answer_id>/new-comment-to-answer', methods = ['POST', 'GET'])
 def comment_page_answer(answer_id, question_id):
-    if request.method == "POST":
+    try:
         current_user_id = session['user_id']
+    except KeyError:
+        session['user_id'] = 0
+        current_user_id = 0
+    if request.method == "POST" and current_user_id != 0:
         comment = request.form.get("message")
 
         data_manager.write_answer_comment(answer_id = answer_id, message = comment, user_id = current_user_id)
+        return redirect(url_for("question_page", question_id = question_id))
+    elif request.method == "POST" and current_user_id == 0:
         return redirect(url_for("question_page", question_id = question_id))
     return render_template('answer_comment.html', answer_id = answer_id, username = session.get('username', 0))
 
@@ -144,18 +188,29 @@ def comment_page_answer(answer_id, question_id):
 @app.route('/question/<question_id>/<answer_id>/edit-answer', methods = ["POST", "GET"])
 def edit_answer(answer_id, question_id):
     user_answer = data_manager.get_answer_by_id(id = answer_id)
-    if request.method == 'POST':
+    try:
+        current_user_id = session['user_id']
+    except KeyError:
+        session['user_id'] = 0
+        current_user_id = 0
+    if request.method == 'POST' and current_user_id != 0:
         message = request.form.get("message")
 
         data_manager.edit_answer_by_id(id = answer_id, message = message)
+        return redirect(url_for("question_page", question_id = question_id))
+    elif request.method == 'POST' and current_user_id == 0:
         return redirect(url_for("question_page", question_id = question_id))
     return render_template('edit_answer.html', answer_id_id = answer_id, user_answer = user_answer, username = session.get('username', 0))
 
 
 @app.route('/question/<question_id>/new-answer', methods = ["POST", "GET"])
 def new_answer(question_id):
-    if request.method == "POST":
+    try:
         current_user_id = session['user_id']
+    except KeyError:
+        session['user_id'] = 0
+        current_user_id = 0
+    if request.method == "POST" and current_user_id != 0:
         message = request.form.get("message")
         image = request.form.get("image")
         if request.files["file"]:
@@ -171,68 +226,112 @@ def new_answer(question_id):
 
 @app.route('/question/<question_id>/delete')
 def question_page_delete(question_id):
-    data_manager.delete_question_by_id(id = question_id)
+    try:
+        current_user_id = session['user_id']
+    except KeyError:
+        session['user_id'] = 0
+        current_user_id = 0
+    if current_user_id != 0:
+        data_manager.delete_question_by_id(id = question_id)
     return redirect('/list')
 
 
 @app.route('/question/<question_id>/vote/<up_or_down>')
 def question_page_vote(question_id, up_or_down):
-    user_id = data_manager.get_user_id(table = "question", table_id = answer_id)['user_id']
-    if up_or_down == "up":
-        change_by = 5
-        operator = "+"
-    elif up_or_down == "down":
-        change_by = 2
-        operator = "-"
-    data_manager.change_reputation(change_by = change_by, operator = operator, user_id = user_id)
-    data_manager.set_vote_count(table = 'question', id = question_id, up_or_down = up_or_down)
+    try:
+        current_user_id = session['user_id']
+    except KeyError:
+        session['user_id'] = 0
+        current_user_id = 0
+    if current_user_id != 0:
+        user_id = data_manager.get_user_id(table = "question", table_id = answer_id)['user_id']
+        if up_or_down == "up":
+            change_by = 5
+            operator = "+"
+        elif up_or_down == "down":
+            change_by = 2
+            operator = "-"
+        data_manager.change_reputation(change_by = change_by, operator = operator, user_id = user_id)
+        data_manager.set_vote_count(table = 'question', id = question_id, up_or_down = up_or_down)
     return redirect('/list')
 
 
 @app.route('/question/<question_id>/edit', methods = ["POST", "GET"])
 def edit_question(question_id):
     user_question = data_manager.get_question_by_id(id = question_id)
-    if request.method == 'POST':
+    try:
+        current_user_id = session['user_id']
+    except KeyError:
+        session['user_id'] = 0
+        current_user_id = 0
+    if request.method == 'POST' and current_user_id != 0:
         title = request.form.get("title")
         message = request.form.get("message")
         data_manager.edit_question_by_id(id = question_id, title = title, message = message)
+        return redirect('/list')
+    elif request.method == 'POST' and current_user_id == 0:
         return redirect('/list')
     return render_template('edit_question.html', question_id = question_id, user_question = user_question, username = session.get('username', 0))
 
 
 @app.route('/answer/<answer_id>/delete')
 def answer_delete(answer_id):
+    try:
+        current_user_id = session['user_id']
+    except KeyError:
+        session['user_id'] = 0
+        current_user_id = 0
     question_id = data_manager.get_question_id_by_answer_id(answer_id = answer_id)['question_id']
-    data_manager.delete_answer_by_id(id = answer_id)
+    if current_user_id != 0:
+        data_manager.delete_answer_by_id(id = answer_id)
     return redirect('/question/' + str(question_id))
 
 
 @app.route('/answer/<answer_id>/accept')
 def answer_accept(answer_id):
-    user_id=data_manager.accept_answer(answer_id = answer_id)['user_id']
-    data_manager.change_reputation(operator="+",change_by=15,user_id=user_id)
+    try:
+        current_user_id = session['user_id']
+    except KeyError:
+        session['user_id'] = 0
+        current_user_id = 0
+    if current_user_id != 0:
+        user_id = data_manager.accept_answer(answer_id = answer_id)['user_id']
+        data_manager.change_reputation(operator = "+", change_by = 15, user_id = user_id)
     question_id = data_manager.get_question_id_by_answer_id(answer_id = answer_id)['question_id']
     return redirect('/question/' + str(question_id))
 
+
 @app.route('/answer/<answer_id>/unaccept')
 def answer_unaccept(answer_id):
-    user_id=data_manager.unaccept_answer(answer_id = answer_id)['user_id']
-    data_manager.change_reputation(operator = "-", change_by = 15, user_id = user_id)
+    try:
+        current_user_id = session['user_id']
+    except KeyError:
+        session['user_id'] = 0
+        current_user_id = 0
+    if current_user_id != 0:
+        user_id = data_manager.unaccept_answer(answer_id = answer_id)['user_id']
+        data_manager.change_reputation(operator = "-", change_by = 15, user_id = user_id)
     question_id = data_manager.get_question_id_by_answer_id(answer_id = answer_id)['question_id']
     return redirect('/question/' + str(question_id))
 
 
 @app.route('/answer/<answer_id>/vote/<up_or_down>')
 def answer_page_vote(answer_id, up_or_down):
-    user_id = data_manager.get_user_id(table = "answer", table_id = answer_id)['user_id']
-    if up_or_down == "up":
-        change_by = 10
-        operator = "+"
-    elif up_or_down == "down":
-        change_by = 2
-        operator = "-"
-    data_manager.change_reputation(change_by = change_by, operator = operator, user_id = user_id)
-    data_manager.set_vote_count(table = 'answer', id = answer_id, up_or_down = up_or_down)
+    try:
+        current_user_id = session['user_id']
+    except KeyError:
+        session['user_id'] = 0
+        current_user_id = 0
+    if current_user_id != 0:
+        user_id = data_manager.get_user_id(table = "answer", table_id = answer_id)['user_id']
+        if up_or_down == "up":
+            change_by = 10
+            operator = "+"
+        elif up_or_down == "down":
+            change_by = 2
+            operator = "-"
+        data_manager.change_reputation(change_by = change_by, operator = operator, user_id = user_id)
+        data_manager.set_vote_count(table = 'answer', id = answer_id, up_or_down = up_or_down)
     question_id = data_manager.get_question_id_by_answer_id(answer_id = answer_id)['question_id']
     return redirect('/question/' + str(question_id))
 
@@ -241,7 +340,12 @@ def answer_page_vote(answer_id, up_or_down):
 def add_new_tag(question_id):
     tags = data_manager.get_tags()
     question_tags = data_manager.get_tags_by_question_id(id = question_id)
-    if request.method == "POST":
+    try:
+        current_user_id = session['user_id']
+    except KeyError:
+        session['user_id'] = 0
+        current_user_id = 0
+    if request.method == "POST" and current_user_id != 0:
         added_ids = request.form.getlist('tag')
         new_tag = request.form.get('new-tag')
         if new_tag:
@@ -251,7 +355,8 @@ def add_new_tag(question_id):
             for id in added_ids:
                 data_manager.add_tag_to_id(question_id = question_id, tag_id = id)
             return redirect(url_for("question_page", question_id = question_id))
-
+    elif request.method == "POST" and current_user_id == 0:
+        return redirect(url_for("question_page", question_id = question_id))
     return render_template('new-tag.html', tags = tags, question_tags = question_tags, username = session.get('username', 0))
 
 
@@ -304,7 +409,7 @@ def login():
         is_matching = data_manager.verify_password(user_input_password, hashed_password)
         if is_matching:
             session['username'] = request.form['username']
-            session['user_id'] = data_manager.get_id_by_name(name=request.form['username'])['id']
+            session['user_id'] = data_manager.get_id_by_name(name = request.form['username'])['id']
             return redirect(url_for('main_page'))
         else:
             return render_template('login_problem.html')
@@ -315,6 +420,7 @@ def login():
 @app.route('/logout')
 def logout():
     session.pop('username', None)
+    session.pop('user_id', None)
     return redirect(url_for('welcome'))
 
 
@@ -338,26 +444,29 @@ def registration():
             if user_input_username not in user_list:
                 data_manager.add_new_user(user_input_username, hashed_password)
                 session['username'] = request.form['username']
-                user_id=data_manager.get_id_by_name(name=session['username'])['id']
-                data_manager.create_attributes_for_id(id=user_id)
+                user_id = data_manager.get_id_by_name(name = session['username'])['id']
+                data_manager.create_attributes_for_id(id = user_id)
                 return redirect(url_for('main_page'))
             else:
                 alert_message = "taken"
 
     return render_template('registration.html', alert_message = alert_message, username = user_input_username)
 
+
 @app.route('/user')
 def list_users():
-        username = session['username']
-        informations = data_manager.user_informations(id=id)
+    username = session['username']
+    informations = data_manager.user_informations(id = id)
 
-        if True:
-            return render_template('users.html', username=username, informations=informations)
+    if True:
+        return render_template('users.html', username = username, informations = informations)
+
 
 @app.route('/tags')
 def list_tags():
-        tags = data_manager.get_tags()
-        return render_template('tags.html', tags=tags)
+    tags = data_manager.get_tags()
+    return render_template('tags.html', tags = tags)
+
 
 if __name__ == '__main__':
     app.run(
