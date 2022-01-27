@@ -242,13 +242,13 @@ def get_user_by_id(cursor, id):
 @connection.connection_handler
 def user_informations(cursor, id):
     query = """
-    SELECT users.username, users.registration_date, count(DISTINCT answer.id) as Number_of_answers, count(DISTINCT question.message) as Number_of_asked_questions, count(DISTINCT comment.message) as Number_of_comments, user_attribute.reputation
+    SELECT users.id, users.username, users.registration_date, count(DISTINCT answer.id) as Number_of_answers, count(DISTINCT question.message) as Number_of_asked_questions, count(DISTINCT comment.message) as Number_of_comments, user_attribute.reputation
     FROM users
     LEFT JOIN answer  on users.id = answer.user_id
     LEFT JOIN question on users.id = question.user_id
     LEFT JOIN comment on users.id = comment.user_id
     LEFT JOIN user_attribute on users.id = user_attribute.user_id
-    GROUP BY username, users.registration_date, user_attribute.reputation"""
+    GROUP BY users.id, username, users.registration_date, user_attribute.reputation"""
     cursor.execute(query, (id,))
     return cursor.fetchall()
 

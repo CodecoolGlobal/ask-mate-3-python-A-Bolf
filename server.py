@@ -484,7 +484,7 @@ def list_tags():
 
 @app.route('/user/<user_id>')
 def one_user_page(user_id):
-    current_user_id = session.get('user_id', 0)
+    current_user_id = user_id
     user_info = data_manager.get_user_by_id(current_user_id)
     user_questions = data_manager.get_questions_by_user_id(user_id=current_user_id)
     user_answers = data_manager.get_answers_by_user_id(user_id=current_user_id)
