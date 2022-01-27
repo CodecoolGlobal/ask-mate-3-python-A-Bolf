@@ -1,6 +1,6 @@
 from psycopg2 import sql
 from psycopg2.extras import RealDictCursor
-
+import bcrypt
 import connection
 
 
@@ -231,6 +231,60 @@ def get_questions_by_search_phrase(cursor, search_phrase):
     cursor.execute(query, (search_phrase_string, search_phrase_string, search_phrase_string))
     return cursor.fetchall()
 
+@connection.connection_handler
+def get_user_by_id(cursor, id):
+    query = """
+    SELECT username FROM users
+    WHERE id = %s"""
+    cursor.execute(query, (id,))
+    return cursor.fetchone()
+
+@connection.connection_handler
+def user_informations(cursor, id):
+    query = """
+    SELECT users.username, users.registration_date, count(DISTINCT answer.id) as Number_of_answers, count(DISTINCT question.message) as Number_of_asked_questions, count(DISTINCT comment.message) as Number_of_comments, user_attribute.reputation
+    FROM users
+    LEFT JOIN answer  on users.id = answer.user_id
+    LEFT JOIN question on users.id = question.user_id
+    LEFT JOIN comment on users.id = comment.user_id
+    LEFT JOIN user_attribute on users.id = user_attribute.user_id
+    GROUP BY username, users.registration_date, user_attribute.reputation"""
+    cursor.execute(query, (id,))
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def get_password_by_username(cursor, username):
+    query = """
+    SELECT password FROM users
+    WHERE username = %s"""
+    cursor.execute(query, (username,))
+    return cursor.fetchone()
+
+@connection.connection_handler
+def get_usernames(cursor, ):
+    query = """
+    SELECT username FROM users
+    """
+    cursor.execute(query)
+    return cursor.fetchall()
+
+@connection.connection_handler
+def add_new_user(cursor, username, hashed_password):
+    query = """
+    INSERT INTO users (username, password)
+    VALUES (%s, %s)"""
+    cursor.execute(query, (username, hashed_password))
+
+def hash_password(plain_text_password):
+    # By using bcrypt, the salt is saved into the hash itself
+    hashed_bytes = bcrypt.hashpw(plain_text_password.encode('utf-8'), bcrypt.gensalt())
+    return hashed_bytes.decode('utf-8')
+
+def verify_password(plain_text_password, hashed_password):
+    hashed_bytes_password = hashed_password.encode('utf-8')
+    return bcrypt.checkpw(plain_text_password.encode('utf-8'), hashed_bytes_password)
+
 
 @connection.connection_handler
 def get_headers_from_table(cursor, table):
@@ -257,3 +311,35 @@ def change_reputation(cursor,change_by,operator,user_id):
     WHERE user_id={user_id}
     """).format(user_id=sql.Literal(user_id),operator=sql.SQL(operator),change_by=sql.Literal(change_by))
     cursor.execute(query)
+
+
+@connection.connection_handler
+def accept_answer(cursor,answer_id):
+    query="""
+    UPDATE answer
+    SET accepted = TRUE
+    WHERE answer.id=%s
+    RETURNING answer.user_id
+    """
+    cursor.execute(query,(answer_id,))
+    return cursor.fetchone()
+
+@connection.connection_handler
+def unaccept_answer(cursor,answer_id):
+    query="""
+    UPDATE answer
+    SET accepted = FALSE
+    WHERE answer.id=%s
+    RETURNING answer.user_id
+    """
+    cursor.execute(query,(answer_id,))
+    return cursor.fetchone()
+
+@connection.connection_handler
+def get_id_by_name(cursor,username):
+    query="""SELECT id 
+    FROM users 
+    WHERE username like %s"""
+    cursor.execute(query,(username,))
+    return cursor.fetchone()
+

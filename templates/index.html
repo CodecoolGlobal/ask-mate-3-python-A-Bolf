@@ -45,7 +45,9 @@
     {% endfor %}
     </table>
     <br><br>
-
+    {% if 'username' in session: %}
+        <a href="/user">Users</a>
+    {% endif %}
 <div id="search_question">
     <form action="/search">
         <label for="search_phrase">Search in questions:</label>
