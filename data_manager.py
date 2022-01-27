@@ -231,6 +231,58 @@ def get_questions_by_search_phrase(cursor, search_phrase):
     cursor.execute(query, (search_phrase_string, search_phrase_string, search_phrase_string))
     return cursor.fetchall()
 
+@connection.connection_handler
+def get_user_by_id(cursor, id):
+    query = """
+    SELECT username FROM users
+    WHERE id = %s"""
+    cursor.execute(query, (id,))
+    return cursor.fetchone()
+
+@connection.connection_handler
+def user_informations(cursor, id):
+    query = """
+    SELECT users.username, users.registration_date, count(DISTINCT answer.id) as Number_of_answers, count(DISTINCT question.message) as Number_of_asked_questions, count(DISTINCT comment.message) as Number_of_comments, user_attribute.reputation
+    FROM users
+    LEFT JOIN answer  on users.id = answer.user_id
+    LEFT JOIN question on users.id = question.user_id
+    LEFT JOIN comment on users.id = comment.user_id
+    LEFT JOIN user_attribute on users.id = user_attribute.user_id
+    GROUP BY username, users.registration_date, user_attribute.reputation"""
+    cursor.execute(query, (id,))
+    return cursor.fetchall()
+
+
+# @connection.connection_handler
+# def user_num_answer(cursor, id):
+#     query = """
+#     SELECT user_id, count(DISTINCT answer.id) as Number_of_answers
+#     FROM users
+#     LEFT JOIN answer on users.id = answer.user_id
+#     GROUP BY users.id, user_id"""
+#     cursor.execute(query, (id,))
+#     return cursor.fetchall()
+#
+# @connection.connection_handler
+# def user_num_question(cursor, id):
+#     query = """
+#     SELECT user_id, count(DISTINCT question.message) as Number_of_asked_questions
+#     FROM users
+#     LEFT JOIN question on users.id = question.user_id
+#     GROUP BY users.id, user_id"""
+#     cursor.execute(query, (id,))
+#     return cursor.fetchall()
+#
+# @connection.connection_handler
+# def user_num_comment(cursor, id):
+#     query = """
+#     SELECT user_id, count(DISTINCT comment.message) as Number_of_comments
+#     FROM users
+#     LEFT JOIN comment on users.id = comment.user_id
+#     GROUP BY users.id, user_id"""
+#     cursor.execute(query, (id,))
+#     return cursor.fetchall()
+
 
 @connection.connection_handler
 def get_password_by_username(cursor, username):
@@ -311,3 +363,35 @@ def get_answers_by_user_id(cursor, user_id):
     cursor.execute(query, (user_id,))
     return cursor.fetchall()
 
+<<<<<<< HEAD
+=======
+
+@connection.connection_handler
+def accept_answer(cursor,answer_id):
+    query="""
+    UPDATE answer
+    SET accepted = TRUE
+    WHERE answer.id=%s
+    RETURNING answer.user_id
+    """
+    cursor.execute(query,(answer_id,))
+    return cursor.fetchone()
+
+@connection.connection_handler
+def unaccept_answer(cursor,answer_id):
+    query="""
+    UPDATE answer
+    SET accepted = FALSE
+    WHERE answer.id=%s
+    RETURNING answer.user_id
+    """
+    cursor.execute(query,(answer_id,))
+    return cursor.fetchone()
+
+@connection.connection_handler
+def get_id_by_name(cursor,username):
+    query="""SELECT id 
+    FROM users 
+    WHERE username like %s"""
+    cursor.execute(query,(username,))
+    return cursor.fetchone()
