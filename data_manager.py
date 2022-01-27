@@ -407,3 +407,15 @@ def get_id_by_name(cursor, name):
 def create_attributes_for_id(cursor,id):
     query="""INSERT INTO user_attribute (user_id) VALUES (%s) """
     cursor.execute(query,(id,))
+
+@connection.connection_handler
+def get_tag_count(cursor, ):
+    query = """
+    SELECT tag.id, tag.name, COUNT(qt.tag_id) as tag_count
+    FROM tag
+    LEFT JOIN question_tag qt on tag.id = qt.tag_id
+    GROUP BY tag.id, tag.name
+    ORDER BY tag.id
+    """
+    cursor.execute(query)
+    return cursor.fetchall()

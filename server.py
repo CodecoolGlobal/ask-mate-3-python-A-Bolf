@@ -474,13 +474,13 @@ def list_users():
     informations = data_manager.user_informations(id = id)
 
     if True:
-        return render_template('users.html', username = username, informations = informations)
+        return render_template('users.html', username = username, informations = informations, user_id=session.get('user_id', 0))
 
 
 @app.route('/tags')
 def list_tags():
-    tags = data_manager.get_tags()
-    return render_template('tags.html', tags = tags)
+    tags = data_manager.get_tag_count()
+    return render_template('tags.html', tags=tags, username=session.get('username', 0))
 
 @app.route('/user/<user_id>')
 def one_user_page(user_id):
