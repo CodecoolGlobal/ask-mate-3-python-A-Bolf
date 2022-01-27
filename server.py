@@ -354,6 +354,10 @@ def list_users():
         if True:
             return render_template('users.html', username=username, informations=informations)
 
+@app.route('/tags')
+def list_tags():
+        tags = data_manager.get_tags()
+        return render_template('tags.html', tags=tags)
 
 if __name__ == '__main__':
     app.run(
