@@ -1,0 +1,71 @@
+{% extends "base_template.html" %}
+{% block title %}User Page{% endblock %}
+
+{% block content %}
+
+   <h1 style="text-align: center; color: white">User Page</h1>
+
+{#-------------USER INFO TABLE----------------#}
+    <h2 class="question" style="text-align: left; color:white">Your user information:</h2>
+
+        <table>
+            <tr>
+               <th style="color:Teal; height:50px;">Id</th>
+                <th style="color:Teal; height:50px;">Username</th>
+                <th style="color:Teal; height:50px;">Registration Date</th>
+                <th style="color:Teal; height:50px;">Reputation</th>
+            </tr>
+            <tr>
+                {% for key in user_info %}
+                    <td>{{ user_info.get(key) }}</td>
+                {% endfor %}
+            </tr>
+        </table><br>
+
+{#-----------QUESTIONS TABLE------------------#}
+
+    <h2 class="question" style="text-align: left; color:white">List of Questions you posted:</h2>
+
+    <table>
+            <tr class="question-header">
+           {% for key in question_header[0:7] %}
+                <th><a href={{ url_for('route_list_order', order_by=key) }} >{{ key }}</a></th>
+           {% endfor %}
+
+           </tr>
+       {% for row in user_questions %}
+           <tr>
+           {% for key in question_header[0:7] %}
+               {%if key=="image" and not row['image']%}
+               <td>
+                   <p>No Image</p>
+               </td>
+               {%endif%}
+               {% if key == "image" and row['image']%}
+               <td><a href={{url_for('static',filename = row[key][9::])}}>
+            <image src={{url_for('static',filename=row[key][9::])}} height="50">
+            </a>
+               </td>
+               {%endif%}
+               {% if key == "id" %}
+               <td><a href="/question/{{row[key]}}?question_id={{row[key]}}"><strong>{{ row[key] }}</strong></a></td>
+               {% elif key!="image" %}
+               <td>{{ row[key] }}</td>
+               {% endif %}
+
+           {% endfor %}
+
+           </tr>
+    {% endfor %}
+    </table>
+
+{#--------------ANSWERS TABLE----------------#}
+
+    <h2 class="question" style="text-align: left; color:white">List of Questions you posted:</h2>
+
+
+
+
+
+        <a style="margin-top: 20px" href="/index"><button>Back to Main Page</button></a>
+{% endblock %}

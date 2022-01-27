@@ -54,7 +54,7 @@ def write_answer(cursor, question_id, message, image, user_id):
 @connection.connection_handler
 def increase_view_count(cursor, table, id):
     query = sql.SQL("""
-    UPDATE {TABLE}
+    UPDATE {table}
     SET view_number = view_number + 1
     WHERE id={id}""").format(
         table=sql.Identifier(table), id=sql.Literal(id))
@@ -99,13 +99,13 @@ def delete_answer_by_id(cursor, id):
 def set_vote_count(cursor, table, id, up_or_down):
     if up_or_down == 'up':
         query = sql.SQL("""
-        UPDATE {TABLE}
+        UPDATE {table}
         SET vote_number = vote_number + 1
         WHERE id={id}""").format(
             table=sql.Identifier(table), id=sql.Literal(id))
     else:
         query = sql.SQL("""
-                UPDATE {TABLE}
+                UPDATE {table}
                 SET vote_number = vote_number - 1
                 WHERE id={id}""").format(
             table=sql.Identifier(table), id=sql.Literal(id))
@@ -249,11 +249,33 @@ def get_usernames(cursor, ):
     return cursor.fetchall()
 
 @connection.connection_handler
+def get_user_by_id(cursor, id):
+    query = """
+    SELECT u.id, u.username, u.registration_date, ua.reputation 
+    FROM users AS u 
+    LEFT JOIN user_attribute AS ua
+    ON u.id = ua.user_id
+    WHERE u.id = %s 
+    """
+    cursor.execute(query, (id,))
+    return cursor.fetchone()
+
+@connection.connection_handler
 def add_new_user(cursor, username, hashed_password):
     query = """
     INSERT INTO users (username, password)
     VALUES (%s, %s)"""
     cursor.execute(query, (username, hashed_password))
+
+
+@connection.connection_handler
+def get_user_id_by_username(cursor, username):
+    query = """
+    SELECT id FROM users
+    WHERE username = %s"""
+    cursor.execute(query, (username,))
+    return cursor.fetchone()
+
 
 def hash_password(plain_text_password):
     # By using bcrypt, the salt is saved into the hash itself
@@ -271,5 +293,21 @@ def get_headers_from_table(cursor, table):
     SELECT JSON_OBJECT_KEYS(TO_JSON((SELECT t FROM public.{table} t LIMIT 1)))
     """).format(table=sql.Identifier(table))
     cursor.execute(query)
+    return cursor.fetchall()
+
+@connection.connection_handler
+def get_questions_by_user_id(cursor, user_id):
+    query = """
+    SELECT * FROM question
+    WHERE user_id = %s"""
+    cursor.execute(query, (user_id,))
+    return cursor.fetchall()
+
+@connection.connection_handler
+def get_answers_by_user_id(cursor, user_id):
+    query = """
+    SELECT * FROM answer
+    WHERE user_id = %s"""
+    cursor.execute(query, (user_id,))
     return cursor.fetchall()
 
