@@ -1,0 +1,16 @@
+{% extends "base_template.html" %}
+{% block title %}Add new question{% endblock %}
+{% block content %}
+
+<table class="user-table">
+            <tr class="table">
+                <th colspan="2" style="color:Teal; height:50px;">Tags</th>
+            </tr>
+        {% for row in tags %}
+            <tr>
+                <td>{{ row['id'] }}</td>
+                <td>{{ row['name'] }}</td>
+            </tr>
+     {% endfor %}
+
+{% endblock %}
