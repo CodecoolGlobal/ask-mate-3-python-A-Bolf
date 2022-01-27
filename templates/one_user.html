@@ -3,7 +3,7 @@
 
 {% block content %}
 
-   <h1 style="text-align: center; color: white">User Page</h1>
+   <h1 style="text-align: center; color: white">User Page for {{ username }}</h1>
 
 {#-------------USER INFO TABLE----------------#}
     <h2 class="question" style="text-align: left; color:white">Your user information:</h2>
@@ -13,9 +13,12 @@
                <th style="color:Teal; height:50px;">Id</th>
                 <th style="color:Teal; height:50px;">Username</th>
                 <th style="color:Teal; height:50px;">Registration Date</th>
+                <th style="color:Teal; height:50px;">Number of asked questions</th>
+                <th style="color:Teal; height:50px;">Number of answers</th>
+                <th style="color:Teal; height:50px;">Number of comments</th>
                 <th style="color:Teal; height:50px;">Reputation</th>
             </tr>
-            <tr>
+            <tr style="height:50px;">
                 {% for key in user_info %}
                     <td>{{ user_info.get(key) }}</td>
                 {% endfor %}
@@ -29,7 +32,7 @@
     <table>
             <tr class="question-header">
            {% for key in question_header[0:7] %}
-                <th><a href={{ url_for('route_list_order', order_by=key) }} >{{ key }}</a></th>
+                <th>{{ key }}</th>
            {% endfor %}
 
            </tr>
@@ -48,7 +51,7 @@
                </td>
                {%endif%}
                {% if key == "id" %}
-               <td><a href="/question/{{row[key]}}?question_id={{row[key]}}"><strong>{{ row[key] }}</strong></a></td>
+               <td><a href="/question/{{row[key]}}"><strong>{{ row[key] }}</strong></a></td>
                {% elif key!="image" %}
                <td>{{ row[key] }}</td>
                {% endif %}
@@ -57,15 +60,63 @@
 
            </tr>
     {% endfor %}
-    </table>
+    </table><br>
 
 {#--------------ANSWERS TABLE----------------#}
 
-    <h2 class="question" style="text-align: left; color:white">List of Questions you posted:</h2>
+    <h2 class="question" style="text-align: left; color:white">List of Answers you posted:</h2>
 
+    <table>
+            <tr class="question-header">
+                <th>ANSWER</th>
+                <th>ID OF QUESTION</th>
+                <th>IMAGE</th>
+           </tr>
+       {% for row in user_answers %}
+           <tr>
+           {% for key in ['message', 'question_id', 'image'] %}
+               {%if key=="image" and not row['image']%}
+               <td>
+                   <p>No Image</p>
+               </td>
+               {%endif%}
+               {% if key == "image" and row['image']%}
+               <td><a href={{url_for('static',filename = row[key][9::])}}>
+            <image src={{url_for('static',filename=row[key][9::])}} height="50">
+            </a>
+               </td>
+               {%endif%}
+               {% if key == "question_id" %}
+               <td><a href="/question/{{row[key]}}"><strong>{{ row[key] }}</strong></a></td>
+               {% elif key!="image" %}
+               <td>{{ row[key] }}</td>
+               {% endif %}
+           {% endfor %}
+           </tr>
+    {% endfor %}
+    </table><br>
 
+{#--------------COMMENTS TABLE----------------#}
 
+    <h2 class="question" style="text-align: left; color:white">List of Comments you posted:</h2>
 
+    <table>
+            <tr class="question-header">
+                <th>COMMENT</th>
+                <th>ID OF QUESTION</th>
+           </tr>
+       {% for row in user_comments %}
+           <tr style="height:50px;">
+           {% for key in ['message', 'question_id'] %}
+              {% if key == "question_id" %}
+               <td><a href="/question/{{row[key]}}"><strong>{{ row[key] }}</strong></a></td>
+               {% elif key!="image" %}
+               <td>{{ row[key] }}</td>
+               {% endif %}
+           {% endfor %}
+           </tr>
+    {% endfor %}
+    </table><br><br>
 
         <a style="margin-top: 20px" href="/index"><button>Back to Main Page</button></a>
 {% endblock %}

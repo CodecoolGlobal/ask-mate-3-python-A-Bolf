@@ -356,14 +356,16 @@ def list_users():
 def one_user_page(user_id):
     current_user_id = session.get('user_id', 0)
     user_info = data_manager.get_user_by_id(current_user_id)
-    user_questions = data_manager.get_questions_by_user_id(user_id = current_user_id)
-    user_answers = data_manager.get_answers_by_user_id(user_id= current_user_id)
+    user_questions = data_manager.get_questions_by_user_id(user_id=current_user_id)
+    user_answers = data_manager.get_answers_by_user_id(user_id=current_user_id)
+    user_comments = data_manager.get_comments_by_user_id(user_id=current_user_id)
 
     return render_template('one_user.html',
                            user_info=user_info,
                            question_header=utility.get_headers(table_name="question"),
                            user_questions=user_questions,
                            user_answers=user_answers,
+                           user_comments=user_comments,
                            username=session.get('username', 0),
                            user_id=current_user_id)
 

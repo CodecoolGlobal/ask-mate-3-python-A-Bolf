@@ -303,11 +303,16 @@ def get_usernames(cursor, ):
 @connection.connection_handler
 def get_user_by_id(cursor, id):
     query = """
-    SELECT u.id, u.username, u.registration_date, ua.reputation 
+    SELECT u.id, u.username, u.registration_date, count(DISTINCT answer.id) as Number_of_answers, 
+        count(DISTINCT question.message) as Number_of_asked_questions, 
+        count(DISTINCT comment.message) as Number_of_comments, ua.reputation 
     FROM users AS u 
-    LEFT JOIN user_attribute AS ua
-    ON u.id = ua.user_id
+    LEFT JOIN user_attribute AS ua ON u.id = ua.user_id
+    LEFT JOIN answer on u.id = answer.user_id
+    LEFT JOIN question on u.id = question.user_id
+    LEFT JOIN comment on u.id = comment.user_id
     WHERE u.id = %s 
+    GROUP BY u.id, u.username, u.registration_date, ua.reputation
     """
     cursor.execute(query, (id,))
     return cursor.fetchone()
@@ -363,8 +368,14 @@ def get_answers_by_user_id(cursor, user_id):
     cursor.execute(query, (user_id,))
     return cursor.fetchall()
 
-<<<<<<< HEAD
-=======
+@connection.connection_handler
+def get_comments_by_user_id(cursor, user_id):
+    query = """
+    SELECT * FROM comment
+    WHERE user_id = %s"""
+    cursor.execute(query, (user_id,))
+    return cursor.fetchall()
+
 
 @connection.connection_handler
 def accept_answer(cursor,answer_id):
