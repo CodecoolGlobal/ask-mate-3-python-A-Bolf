@@ -315,6 +315,8 @@ def registration():
             if user_input_username not in user_list:
                 data_manager.add_new_user(user_input_username, hashed_password)
                 session['username'] = request.form['username']
+                user_id=data_manager.get_id_by_name(name=session['username'])['id']
+                data_manager.create_attributes_for_id(id=user_id)
                 return redirect(url_for('main_page'))
             else:
                 alert_message = "taken"

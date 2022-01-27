@@ -1,6 +1,6 @@
-from psycopg2 import sql
-from psycopg2.extras import RealDictCursor
 import bcrypt
+from psycopg2 import sql
+
 import connection
 
 
@@ -29,10 +29,10 @@ def get_answers(cursor, ):
 def get_ordered_questions(cursor, order_by, direction):
     if direction == 'asc':
         query = sql.SQL("SELECT * FROM question ORDER BY {order_by} ASC").format(
-            order_by=sql.Identifier(order_by))
+            order_by = sql.Identifier(order_by))
     else:
         query = sql.SQL("SELECT * FROM question ORDER BY {order_by} DESC").format(
-            order_by=sql.Identifier(order_by))
+            order_by = sql.Identifier(order_by))
     cursor.execute(query, (order_by,))
     return cursor.fetchall()
 
@@ -54,10 +54,10 @@ def write_answer(cursor, question_id, message, image, user_id):
 @connection.connection_handler
 def increase_view_count(cursor, table, id):
     query = sql.SQL("""
-    UPDATE {TABLE}
+    UPDATE {table}
     SET view_number = view_number + 1
     WHERE id={id}""").format(
-        table=sql.Identifier(table), id=sql.Literal(id))
+        table = sql.Identifier(table), id = sql.Literal(id))
     cursor.execute(query, )
 
 
@@ -99,16 +99,16 @@ def delete_answer_by_id(cursor, id):
 def set_vote_count(cursor, table, id, up_or_down):
     if up_or_down == 'up':
         query = sql.SQL("""
-        UPDATE {TABLE}
+        UPDATE {table}
         SET vote_number = vote_number + 1
         WHERE id={id}""").format(
-            table=sql.Identifier(table), id=sql.Literal(id))
+            table = sql.Identifier(table), id = sql.Literal(id))
     else:
         query = sql.SQL("""
-                UPDATE {TABLE}
+                UPDATE {table}
                 SET vote_number = vote_number - 1
                 WHERE id={id}""").format(
-            table=sql.Identifier(table), id=sql.Literal(id))
+            table = sql.Identifier(table), id = sql.Literal(id))
     cursor.execute(query, )
 
 
@@ -240,6 +240,7 @@ def get_password_by_username(cursor, username):
     cursor.execute(query, (username,))
     return cursor.fetchone()
 
+
 @connection.connection_handler
 def get_usernames(cursor, ):
     query = """
@@ -248,17 +249,21 @@ def get_usernames(cursor, ):
     cursor.execute(query)
     return cursor.fetchall()
 
+
 @connection.connection_handler
 def add_new_user(cursor, username, hashed_password):
     query = """
     INSERT INTO users (username, password)
-    VALUES (%s, %s)"""
+    VALUES (%s, %s);
+    """
     cursor.execute(query, (username, hashed_password))
+
 
 def hash_password(plain_text_password):
     # By using bcrypt, the salt is saved into the hash itself
     hashed_bytes = bcrypt.hashpw(plain_text_password.encode('utf-8'), bcrypt.gensalt())
-    return hashed_bytes #.decode('utf-8')
+    return hashed_bytes  # .decode('utf-8')
+
 
 def verify_password(plain_text_password, hashed_password):
     hashed_bytes_password = hashed_password.encode('utf-8')
@@ -269,7 +274,21 @@ def verify_password(plain_text_password, hashed_password):
 def get_headers_from_table(cursor, table):
     query = sql.SQL("""
     SELECT JSON_OBJECT_KEYS(TO_JSON((SELECT t FROM public.{table} t LIMIT 1)))
-    """).format(table=sql.Identifier(table))
+    """).format(table = sql.Identifier(table))
     cursor.execute(query)
     return cursor.fetchall()
 
+
+@connection.connection_handler
+def get_id_by_name(cursor, name):
+    query = """
+    SELECT id FROM users
+    WHERE username LIKE %s
+    """
+    cursor.execute(query,(name,))
+    return cursor.fetchone()
+
+@connection.connection_handler
+def create_attributes_for_id(cursor,id):
+    query="""INSERT INTO user_attribute (user_id) VALUES (%s) """
+    cursor.execute(query,(id,))
