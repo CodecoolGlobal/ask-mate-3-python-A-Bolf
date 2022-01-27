@@ -325,8 +325,6 @@ def get_headers_from_table(cursor, table):
     cursor.execute(query)
     return cursor.fetchall()
 
-<<<<<<< HEAD
-=======
 
 @connection.connection_handler
 def accept_answer(cursor,answer_id):
