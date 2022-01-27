@@ -272,6 +272,23 @@ def get_usernames(cursor, ):
 
 
 @connection.connection_handler
+def get_user_by_id(cursor, id):
+    query = """
+    SELECT u.id, u.username, u.registration_date, count(DISTINCT answer.id) as Number_of_answers, 
+        count(DISTINCT question.message) as Number_of_asked_questions, 
+        count(DISTINCT comment.message) as Number_of_comments, ua.reputation 
+    FROM users AS u 
+    LEFT JOIN user_attribute AS ua ON u.id = ua.user_id
+    LEFT JOIN answer on u.id = answer.user_id
+    LEFT JOIN question on u.id = question.user_id
+    LEFT JOIN comment on u.id = comment.user_id
+    WHERE u.id = %s 
+    GROUP BY u.id, u.username, u.registration_date, ua.reputation
+    """
+    cursor.execute(query, (id,))
+    return cursor.fetchone()
+
+@connection.connection_handler
 def add_new_user(cursor, username, hashed_password):
     query = """
     INSERT INTO users (username, password)
@@ -280,10 +297,21 @@ def add_new_user(cursor, username, hashed_password):
     cursor.execute(query, (username, hashed_password))
 
 
+
+@connection.connection_handler
+def get_user_id_by_username(cursor, username):
+    query = """
+    SELECT id FROM users
+    WHERE username = %s"""
+    cursor.execute(query, (username,))
+    return cursor.fetchone()
+
+
+
 def hash_password(plain_text_password):
     # By using bcrypt, the salt is saved into the hash itself
     hashed_bytes = bcrypt.hashpw(plain_text_password.encode('utf-8'), bcrypt.gensalt())
-    return hashed_bytes.decode('utf-8')
+    return hashed_bytes #.decode('utf-8')
 
 
 def verify_password(plain_text_password, hashed_password):
@@ -301,6 +329,30 @@ def get_headers_from_table(cursor, table):
 
 
 @connection.connection_handler
+def get_questions_by_user_id(cursor, user_id):
+    query = """
+    SELECT * FROM question
+    WHERE user_id = %s"""
+    cursor.execute(query, (user_id,))
+    return cursor.fetchall()
+
+@connection.connection_handler
+def get_answers_by_user_id(cursor, user_id):
+    query = """
+    SELECT * FROM answer
+    WHERE user_id = %s"""
+    cursor.execute(query, (user_id,))
+    return cursor.fetchall()
+
+@connection.connection_handler
+def get_comments_by_user_id(cursor, user_id):
+    query = """
+    SELECT * FROM comment
+    WHERE user_id = %s"""
+    cursor.execute(query, (user_id,))
+    return cursor.fetchall()
+
+@connection.connection_handler
 def get_user_id(cursor, table, table_id):
     query = sql.SQL("""
     SELECT user_id FROM {table} WHERE id = {table_id} 
@@ -316,6 +368,7 @@ def change_reputation(cursor,change_by,operator,user_id):
     WHERE user_id={user_id}
     """).format(user_id=sql.Literal(user_id),operator=sql.SQL(operator),change_by=sql.Literal(change_by))
     cursor.execute(query)
+
 
 
 @connection.connection_handler
