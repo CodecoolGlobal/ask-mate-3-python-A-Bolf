@@ -28,10 +28,8 @@ function getSortedItems(items, sortField, sortDirection) {
 function getFilteredItems(items, filterValue) {
     let results = [];
     for (let i=0; i<items.length; i++) {
-        console.log(filterValue.includes('Description'))
         if (filterValue[0] ==='!'){
-
-            if (!items[i]['Description'].includes(filterValue)){
+            if (filterValue.includes('Description')){
                 if (!items[i]['Description'].includes(filterValue.substr(13,filterValue.length))){
 
                     results.push(items[i])
@@ -42,7 +40,7 @@ function getFilteredItems(items, filterValue) {
 
             }
         }
-        else if (items[i]['Description'].includes(filterValue)){
+        else if (filterValue.includes('Description')){
             if (items[i]['Description'].includes(filterValue.substr(12,filterValue.length))){
                 results.push(items[i])
             }
