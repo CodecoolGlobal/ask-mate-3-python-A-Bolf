@@ -2,35 +2,47 @@
 var size=15;
 document.getElementById('table').style.fontSize=size.toString()+'px';
 function getSortedItems(items, sortField, sortDirection) {
-    if (sortDirection === "asc") {
-        const firstItem = items.shift()
-        if (firstItem) {
-            items.push(firstItem)
+    if ((sortField==="VoteCount") || (sortField==="ViewNumber"))
+    {
+        if (sortDirection==="asc")
+        {
+         return items.sort((a, b) => parseInt(a[sortField]) - parseInt(b[sortField]))
         }
-    } else {
-        const lastItem = items.pop()
-        if (lastItem) {
-            items.push(lastItem)
+        else
+        {
+            return items.sort((a, b) => parseInt(b[sortField]) - parseInt(a[sortField]))
         }
+
+    }
+    if (sortDirection === "asc")
+    {
+        return items.sort((a, b) => a[sortField] > b[sortField] ? 1:-1)
+    }
+    else
+    {
+        return items.sort((a, b) => a[sortField] < b[sortField]? 1:-1)
     }
 
-    return items
 }
 
 function getFilteredItems(items, filterValue) {
     let results = [];
     for (let i=0; i<items.length; i++) {
+        console.log(filterValue.includes('Description'))
         if (filterValue[0] ==='!'){
-            if (filterValue.includes('Description')){
+
+            if (!items[i]['Description'].includes(filterValue)){
                 if (!items[i]['Description'].includes(filterValue.substr(13,filterValue.length))){
+
                     results.push(items[i])
                 }
             }
             else if (!items[i]['Title'].includes(filterValue.substr(1,filterValue.length))){
                 results.push(items[i])
+
             }
         }
-        else if (filterValue.includes('Description')){
+        else if (items[i]['Description'].includes(filterValue)){
             if (items[i]['Description'].includes(filterValue.substr(12,filterValue.length))){
                 results.push(items[i])
             }
