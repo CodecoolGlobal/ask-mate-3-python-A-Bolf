@@ -5,13 +5,11 @@
     <h1 style="text-align: center; color: #01fdfd">Tag Page</h1>
 <table class="user-table">
             <tr>
-                <th style="color:Teal; height:50px;">Tag id</th>
                 <th style="color:Teal; height:50px;">Tag name</th>
                 <th style="color:Teal; height:50px;">Number of questions with this tag</th>
             </tr>
         {% for row in tags %}
             <tr>
-                <td style="height: 50px">{{ row['id'] }}</td>
                 <td style="height: 50px">{{ row['name'] }}</td>
                 <td style="height: 50px">{{ row['tag_count'] }}</td>
             </tr>

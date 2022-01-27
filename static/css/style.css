@@ -228,3 +228,15 @@ html{
     -webkit-text-stroke-width: unset;
   -webkit-text-stroke-color: transparent;
 }
+
+#username{
+    color: #01fdfd;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-size: 17px;
+    }
+#username:hover {
+    color: #009d9d;
+    text-transform: uppercase;
+    text-decoration: underline;
+    }
