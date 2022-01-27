@@ -257,7 +257,7 @@ def question_page_vote(question_id, up_or_down):
         session['user_id'] = 0
         current_user_id = 0
     if current_user_id != 0:
-        user_id = data_manager.get_user_id(table = "question", table_id = answer_id)['user_id']
+        user_id = data_manager.get_user_id(table = "question", table_id = question_id)['user_id']
         if up_or_down == "up":
             change_by = 5
             operator = "+"

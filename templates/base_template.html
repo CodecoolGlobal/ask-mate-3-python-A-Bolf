@@ -9,8 +9,7 @@
 <div class="login">
 
     {% if username != 0 or username == None %}
-        <p>You are logged in as <strong>{{ username }}<strong></p>
-        <a href="/user/{{ user_id }}"><button>User Page</button></a>
+        <p>You are logged in as <a href="/user/{{ user_id }}"><strong>{{ username }}<strong></a></p>
         <a href="{{ url_for('logout') }}"><button>Log out</button></a>
 
     {% else %}

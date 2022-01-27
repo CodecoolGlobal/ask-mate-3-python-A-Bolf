@@ -10,9 +10,14 @@
     <a href="{{ url_for('route_list')}}"><button style="font-size:20px">SHOW ALL QUESTIONS</button></a><br><br>
 
 </div>
-
-        <h2 class="question" style="text-align: left">Latest 5 questions:</h2>
-
+    <h2 class="question" style="text-align: left">Latest 5 questions:</h2>
+ <div id="search_question">
+    <form action="/search">
+        <label for="search_phrase">Search in questions:</label>
+        <input id="search_phrase" type="text" name="search_phrase">
+        <button id="search_button" type="submit">Search</button>
+     </form>
+ </div>
     <table>
             <tr class="question-header">
            {% for key in header %}
@@ -45,18 +50,12 @@
     {% endfor %}
     </table>
     <br><br>
+<div id="search_question">
     {% if 'username' in session: %}
         <a href="/user" id="user_content"><button>Users</button></a>
     {% endif %}
     <a href="/tags" id="tag_content"><button>Tags</button></a>
-    <div id="search_question">
-    <form action="/search">
-        <label for="search_phrase">Search in questions:</label>
-        <input id="search_phrase" type="text" name="search_phrase">
-        <button id="search_button" type="submit">Search</button>
-     </form><br><br>
-</div>
-<a href="/user/{{ user_id }}"><button>User Page</button></a>
+   <br><br>
 <a href="/bonus-questions" ><button>Go to Bonus Questions</button></a>
 </div>
 
