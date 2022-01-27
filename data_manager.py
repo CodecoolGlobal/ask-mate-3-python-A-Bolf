@@ -29,10 +29,10 @@ def get_answers(cursor, ):
 def get_ordered_questions(cursor, order_by, direction):
     if direction == 'asc':
         query = sql.SQL("SELECT * FROM question ORDER BY {order_by} ASC").format(
-            order_by=sql.Identifier(order_by))
+            order_by = sql.Identifier(order_by))
     else:
         query = sql.SQL("SELECT * FROM question ORDER BY {order_by} DESC").format(
-            order_by=sql.Identifier(order_by))
+            order_by = sql.Identifier(order_by))
     cursor.execute(query, (order_by,))
     return cursor.fetchall()
 
@@ -57,8 +57,8 @@ def increase_view_count(cursor, table, id):
     UPDATE {table}
     SET view_number = view_number + 1
     WHERE id={id}""").format(
-        table=sql.Identifier(table), id=sql.Literal(id))
-    cursor.execute(query, )
+        table = sql.Identifier(table), id = sql.Literal(id))
+    cursor.execute(query)
 
 
 @connection.connection_handler
@@ -102,14 +102,14 @@ def set_vote_count(cursor, table, id, up_or_down):
         UPDATE {table}
         SET vote_number = vote_number + 1
         WHERE id={id}""").format(
-            table=sql.Identifier(table), id=sql.Literal(id))
+            table = sql.Identifier(table), id = sql.Literal(id))
     else:
         query = sql.SQL("""
                 UPDATE {table}
                 SET vote_number = vote_number - 1
                 WHERE id={id}""").format(
-            table=sql.Identifier(table), id=sql.Literal(id))
-    cursor.execute(query, )
+            table = sql.Identifier(table), id = sql.Literal(id))
+    cursor.execute(query)
 
 
 @connection.connection_handler
@@ -253,37 +253,6 @@ def user_informations(cursor, id):
     return cursor.fetchall()
 
 
-# @connection.connection_handler
-# def user_num_answer(cursor, id):
-#     query = """
-#     SELECT user_id, count(DISTINCT answer.id) as Number_of_answers
-#     FROM users
-#     LEFT JOIN answer on users.id = answer.user_id
-#     GROUP BY users.id, user_id"""
-#     cursor.execute(query, (id,))
-#     return cursor.fetchall()
-#
-# @connection.connection_handler
-# def user_num_question(cursor, id):
-#     query = """
-#     SELECT user_id, count(DISTINCT question.message) as Number_of_asked_questions
-#     FROM users
-#     LEFT JOIN question on users.id = question.user_id
-#     GROUP BY users.id, user_id"""
-#     cursor.execute(query, (id,))
-#     return cursor.fetchall()
-#
-# @connection.connection_handler
-# def user_num_comment(cursor, id):
-#     query = """
-#     SELECT user_id, count(DISTINCT comment.message) as Number_of_comments
-#     FROM users
-#     LEFT JOIN comment on users.id = comment.user_id
-#     GROUP BY users.id, user_id"""
-#     cursor.execute(query, (id,))
-#     return cursor.fetchall()
-
-
 @connection.connection_handler
 def get_password_by_username(cursor, username):
     query = """
@@ -321,12 +290,28 @@ def verify_password(plain_text_password, hashed_password):
 def get_headers_from_table(cursor, table):
     query = sql.SQL("""
     SELECT JSON_OBJECT_KEYS(TO_JSON((SELECT t FROM public.{table} t LIMIT 1)))
-    """).format(table=sql.Identifier(table))
+    """).format(table = sql.Identifier(table))
     cursor.execute(query)
     return cursor.fetchall()
 
-<<<<<<< HEAD
-=======
+
+@connection.connection_handler
+def get_user_id(cursor, table, table_id):
+    query = sql.SQL("""
+    SELECT user_id FROM {table} WHERE id = {table_id} 
+    """).format(table = sql.Identifier(table), table_id = sql.Literal(table_id))
+    cursor.execute(query)
+    return cursor.fetchone()
+
+@connection.connection_handler
+def change_reputation(cursor,change_by,operator,user_id):
+    query=sql.SQL("""
+    UPDATE user_attribute
+    SET reputation = reputation {operator} {change_by}
+    WHERE user_id={user_id}
+    """).format(user_id=sql.Literal(user_id),operator=sql.SQL(operator),change_by=sql.Literal(change_by))
+    cursor.execute(query)
+
 
 @connection.connection_handler
 def accept_answer(cursor,answer_id):
@@ -357,3 +342,4 @@ def get_id_by_name(cursor,username):
     WHERE username like %s"""
     cursor.execute(query,(username,))
     return cursor.fetchone()
+
