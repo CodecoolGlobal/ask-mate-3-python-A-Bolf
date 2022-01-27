@@ -3,8 +3,8 @@
 {% block content %}
 
 <table class="user-table">
-            <tr class="table">
-                <th style="color:Teal; height:50px;"><a href="/{{ user_id }}">Username</th>
+            <tr>
+                <th style="color:Teal; height:50px;">Username</th>
                 <th style="color:Teal; height:50px;">Registration date</th>
                 <th style="color:Teal; height:50px;">Number of asked questions</th>
                 <th style="color:Teal; height:50px;">Number of answers</th>
@@ -13,7 +13,7 @@
             </tr>
         {% for row in informations %}
             <tr>
-                <td>{{ row['username'] }}</td>
+                <td><a href="/{{ user_id }}/">{{ row['username'] }}</a></td>
                 <td>{{ row['registration_date'] }}</td>
                 <td>{{ row['number_of_answers'] }}</td>
                 <td>{{ row['number_of_asked_questions'] }}</td>
@@ -21,4 +21,8 @@
                 <td>{{ row['reputation'] }}</td>
             </tr>
      {% endfor %}
+
+<a href="/list"><button>Back to Questions</button></a>
+
+
 {% endblock %}

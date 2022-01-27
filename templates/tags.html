@@ -3,7 +3,7 @@
 {% block content %}
 
 <table class="user-table">
-            <tr class="table">
+            <tr>
                 <th colspan="2" style="color:Teal; height:50px;">Tags</th>
             </tr>
         {% for row in tags %}
@@ -12,5 +12,7 @@
                 <td>{{ row['name'] }}</td>
             </tr>
      {% endfor %}
+
+<a href="/list"><button>Back to Questions</button></a>
 
 {% endblock %}

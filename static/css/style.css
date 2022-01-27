@@ -25,6 +25,14 @@ a:hover {
     text-decoration: underline;
     }
 
+#tag_content {
+    color: #03e1e1;
+    padding: 10px;
+    }
+
+#user_content {
+    color: #03e1e1;
+    }
 
 button{
     -moz-border-radius: 5px;

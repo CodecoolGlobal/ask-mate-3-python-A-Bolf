@@ -46,9 +46,9 @@
     </table>
     <br><br>
     {% if 'username' in session: %}
-        <a href="/user">Users</a>
+        <a href="/user" id="user_content"><button>Users</button></a>
     {% endif %}
-    <a href="/tags">Tags</a>
+    <a href="/tags" id="tag_content"><button>Tags</button></a>
     <div id="search_question">
     <form action="/search">
         <label for="search_phrase">Search in questions:</label>
