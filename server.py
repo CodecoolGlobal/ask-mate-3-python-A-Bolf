@@ -283,6 +283,7 @@ def login():
         is_matching = data_manager.verify_password(user_input_password, hashed_password)
         if is_matching:
             session['username'] = request.form['username']
+            session['user_id'] = data_manager.get_id_by_name(username=request.form['username'])['id']
             return redirect(url_for('main_page'))
         else:
             return render_template('login_problem.html')
@@ -323,12 +324,11 @@ def registration():
 
 @app.route('/user')
 def list_users():
-    id = 1
-    username = data_manager.get_user_by_id(id=id)
-    informations = data_manager.user_informations(id=id)
-    print(username['username'], informations)
-    if True:
-        return render_template('users.html', username=username, informations=informations)
+        username = session['username']
+        informations = data_manager.user_informations(id=id)
+
+        if True:
+            return render_template('users.html', username=username, informations=informations)
 
 
 if __name__ == '__main__':
