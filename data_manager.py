@@ -29,10 +29,10 @@ def get_answers(cursor, ):
 def get_ordered_questions(cursor, order_by, direction):
     if direction == 'asc':
         query = sql.SQL("SELECT * FROM question ORDER BY {order_by} ASC").format(
-            order_by = sql.Identifier(order_by))
+            order_by=sql.Identifier(order_by))
     else:
         query = sql.SQL("SELECT * FROM question ORDER BY {order_by} DESC").format(
-            order_by = sql.Identifier(order_by))
+            order_by=sql.Identifier(order_by))
     cursor.execute(query, (order_by,))
     return cursor.fetchall()
 
@@ -58,7 +58,7 @@ def increase_view_count(cursor, table, id):
     SET view_number = view_number + 1
     WHERE id={id}""").format(
         table = sql.Identifier(table), id = sql.Literal(id))
-    cursor.execute(query, )
+    cursor.execute(query)
 
 
 @connection.connection_handler
@@ -231,6 +231,27 @@ def get_questions_by_search_phrase(cursor, search_phrase):
     cursor.execute(query, (search_phrase_string, search_phrase_string, search_phrase_string))
     return cursor.fetchall()
 
+@connection.connection_handler
+def get_user_by_id(cursor, id):
+    query = """
+    SELECT username FROM users
+    WHERE id = %s"""
+    cursor.execute(query, (id,))
+    return cursor.fetchone()
+
+@connection.connection_handler
+def user_informations(cursor, id):
+    query = """
+    SELECT users.username, users.registration_date, count(DISTINCT answer.id) as Number_of_answers, count(DISTINCT question.message) as Number_of_asked_questions, count(DISTINCT comment.message) as Number_of_comments, user_attribute.reputation
+    FROM users
+    LEFT JOIN answer  on users.id = answer.user_id
+    LEFT JOIN question on users.id = question.user_id
+    LEFT JOIN comment on users.id = comment.user_id
+    LEFT JOIN user_attribute on users.id = user_attribute.user_id
+    GROUP BY username, users.registration_date, user_attribute.reputation"""
+    cursor.execute(query, (id,))
+    return cursor.fetchall()
+
 
 @connection.connection_handler
 def get_password_by_username(cursor, username):
@@ -262,7 +283,7 @@ def add_new_user(cursor, username, hashed_password):
 def hash_password(plain_text_password):
     # By using bcrypt, the salt is saved into the hash itself
     hashed_bytes = bcrypt.hashpw(plain_text_password.encode('utf-8'), bcrypt.gensalt())
-    return hashed_bytes  # .decode('utf-8')
+    return hashed_bytes.decode('utf-8')
 
 
 def verify_password(plain_text_password, hashed_password):
@@ -277,6 +298,47 @@ def get_headers_from_table(cursor, table):
     """).format(table = sql.Identifier(table))
     cursor.execute(query)
     return cursor.fetchall()
+
+
+@connection.connection_handler
+def get_user_id(cursor, table, table_id):
+    query = sql.SQL("""
+    SELECT user_id FROM {table} WHERE id = {table_id} 
+    """).format(table = sql.Identifier(table), table_id = sql.Literal(table_id))
+    cursor.execute(query)
+    return cursor.fetchone()
+
+@connection.connection_handler
+def change_reputation(cursor,change_by,operator,user_id):
+    query=sql.SQL("""
+    UPDATE user_attribute
+    SET reputation = reputation {operator} {change_by}
+    WHERE user_id={user_id}
+    """).format(user_id=sql.Literal(user_id),operator=sql.SQL(operator),change_by=sql.Literal(change_by))
+    cursor.execute(query)
+
+
+@connection.connection_handler
+def accept_answer(cursor,answer_id):
+    query="""
+    UPDATE answer
+    SET accepted = TRUE
+    WHERE answer.id=%s
+    RETURNING answer.user_id
+    """
+    cursor.execute(query,(answer_id,))
+    return cursor.fetchone()
+
+@connection.connection_handler
+def unaccept_answer(cursor,answer_id):
+    query="""
+    UPDATE answer
+    SET accepted = FALSE
+    WHERE answer.id=%s
+    RETURNING answer.user_id
+    """
+    cursor.execute(query,(answer_id,))
+    return cursor.fetchone()
 
 
 @connection.connection_handler
